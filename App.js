@@ -1,21 +1,57 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from "react";
+import { NativeRouter, Route, Switch } from "react-router-native";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import Home from "./Home";
+import BookDetails from "./BookDetails";
+import WelcomePage from "./WelcomePage";
+import LoginPage from "./LoginPage";
+//import createHistory from "history/createMemoryHistory";
+//import history from "./history";
+
+//const history = createHistory();
+
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <NativeRouter>
+        <Switch>
+          <Route exact path="/">
+            <WelcomePage />
+          </Route>
+          <Route exact path="/home">
+            <Home library={MyLibrary} />
+          </Route>
+          <Route exact path="/login" component={LoginPage} />
+          <Route exact path="/bookDetails" component={BookDetails} />
+        </Switch>
+      </NativeRouter>
+    );
+  }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+const MyLibrary = [
+  {
+    bookID: "MKfYLAAACAAJ",
+    bookImg:
+      "http://books.google.com/books/content?id=NHE7CQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
   },
-});
+  {
+    bookID: "2zW3zQEACAAJ",
+    bookImg:
+      "http://books.google.com/books/content?id=vglvBgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+  },
+  {
+    bookID: "ydhcbc56x7xch",
+    bookImg:
+      "http://books.google.com/books/content?id=NHE7CQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+  },
+  {
+    bookID: "NHE7CQAAQBAJ",
+    bookImg:
+      "http://books.google.com/books/content?id=M3evDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+  },
+];
