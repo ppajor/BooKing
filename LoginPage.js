@@ -9,6 +9,8 @@ import {
   BackHandler,
 } from "react-native";
 
+//import history from "./history";
+
 export default function LoginPage(props) {
   useEffect(() => {
     const backAction = () => {

@@ -14,7 +14,7 @@ const SearchResult = (props) => {
   const data = props.data.items;
   var img_key = 0;
   var image;
-  console.log(data.length);
+  var cover;
 
   /*if (data.length == 0) {
     text_no_results = <Text>No results found </Text>;
@@ -22,40 +22,59 @@ const SearchResult = (props) => {
   */
   return (
     <ScrollView class={{ marginBottom: 200 }}>
-      {data.map((el) => {
-        if (!el.volumeInfo.hasOwnProperty("imageLinks")) {
-          image = (
-            <Image
-              key={img_key++}
-              source={require("./img/no_cover_book.jpg")}
-              style={{ width: 75, height: 100 }}
-            />
-          );
-        } else {
-          image = (
-            <Image
-              key={img_key++}
-              source={{ uri: el.volumeInfo.imageLinks.smallThumbnail }}
-              style={{ width: 75, height: 100 }}
-            />
-          );
-        }
+      {data
+        .filter((el) => {
+          if (!el.volumeInfo.hasOwnProperty("authors")) return false;
 
-        return (
-          <View style={styles.bookrow}>
-            <Link to="./bookDetails">
-              <TouchableOpacity>{image}</TouchableOpacity>
-            </Link>
-            <View style={styles.bookrowTextContainer}>
-              <Text key={el.volumeInfo.id} style={styles.title}>
-                {el.volumeInfo.title}
-              </Text>
-              <Text style={styles.author}>{el.volumeInfo.authors[0]}</Text>
-              <Text style={styles.addToLibrary}>Add to My Library</Text>
+          return true;
+        })
+        .map((el) => {
+          if (!el.volumeInfo.hasOwnProperty("imageLinks")) {
+            //sprawdzamy czy obiekt volumeinfo ma imageLinks
+            image = (
+              <Image
+                key={img_key++}
+                source={require("./img/no_cover_book.jpg")}
+                style={{ width: 75, height: 100 }}
+              />
+            );
+          } else {
+            image = (
+              <Image
+                key={img_key++}
+                source={{ uri: el.volumeInfo.imageLinks.thumbnail }}
+                style={{ width: 75, height: 100 }}
+              />
+            );
+          }
+
+          return (
+            <View style={styles.bookrow}>
+              <Link to="./bookDetails">
+                <TouchableOpacity
+                  onPress={() =>
+                    // oprocz pathname mozna podac dane i w child componencie odniesc sie do nich -> props.location.state
+                    props.history.push({
+                      pathname: "/bookDetails",
+                      state: {
+                        title: el.volumeInfo.title,
+                      },
+                    })
+                  }
+                >
+                  {image}
+                </TouchableOpacity>
+              </Link>
+              <View style={styles.bookrowTextContainer}>
+                <Text key={el.volumeInfo.id} style={styles.title}>
+                  {el.volumeInfo.title}
+                </Text>
+                <Text style={styles.author}>{el.volumeInfo.authors[0]}</Text>
+                <Text style={styles.addToLibrary}>Add to My Library</Text>
+              </View>
             </View>
-          </View>
-        );
-      })}
+          );
+        })}
     </ScrollView>
   );
 };

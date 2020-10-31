@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import { NativeRouter, Route, Switch } from "react-router-native";
+import { NativeRouter, Route, Switch, MemoryRouter } from "react-router-native"; //dzieki memoryrouter mozna uzywać historii w Child componentach, na normalnym routerze historia dziala jedynie w parent componentach
 
 import Home from "./Home";
 import BookDetails from "./BookDetails";
 import WelcomePage from "./WelcomePage";
 import LoginPage from "./LoginPage";
 //import createHistory from "history/createMemoryHistory";
-//import history from "./history";
 
 //const history = createHistory();
 
@@ -17,7 +16,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <NativeRouter>
+      <MemoryRouter>
         <Switch>
           <Route exact path="/">
             <WelcomePage />
@@ -28,7 +27,7 @@ export default class App extends Component {
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/bookDetails" component={BookDetails} />
         </Switch>
-      </NativeRouter>
+      </MemoryRouter>
     );
   }
 }
