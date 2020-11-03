@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -14,7 +14,27 @@ const SearchResult = (props) => {
   const data = props.data.items;
   var img_key = 0;
   var image;
-  var cover;
+
+  const checkThumbnailsExist = (el) => {
+    if (!el.volumeInfo.hasOwnProperty("imageLinks")) {
+      //sprawdzamy czy obiekt volumeinfo ma imageLinks
+      image = (
+        <Image
+          key={img_key++}
+          source={require("./img/no_cover_book.jpg")}
+          style={{ width: 75, height: 100 }}
+        />
+      );
+    } else {
+      image = (
+        <Image
+          key={img_key++}
+          source={{ uri: el.volumeInfo.imageLinks.thumbnail }}
+          style={{ width: 75, height: 100 }}
+        />
+      );
+    }
+  };
 
   /*if (data.length == 0) {
     text_no_results = <Text>No results found </Text>;
@@ -24,51 +44,37 @@ const SearchResult = (props) => {
     <ScrollView class={{ marginBottom: 200 }}>
       {data
         .filter((el) => {
+          //console.log(el.volumeInfo.imageLinks.thumbnail);
           if (!el.volumeInfo.hasOwnProperty("authors")) return false;
+
+          if (!el.volumeInfo.hasOwnProperty("description")) {
+            el.volumeInfo.description = "No description";
+          }
 
           return true;
         })
         .map((el) => {
-          if (!el.volumeInfo.hasOwnProperty("imageLinks")) {
-            //sprawdzamy czy obiekt volumeinfo ma imageLinks
-            image = (
-              <Image
-                key={img_key++}
-                source={require("./img/no_cover_book.jpg")}
-                style={{ width: 75, height: 100 }}
-              />
-            );
-          } else {
-            image = (
-              <Image
-                key={img_key++}
-                source={{ uri: el.volumeInfo.imageLinks.thumbnail }}
-                style={{ width: 75, height: 100 }}
-              />
-            );
-          }
+          checkThumbnailsExist(el);
 
           return (
-            <View style={styles.bookrow}>
-              <Link to="./bookDetails">
-                <TouchableOpacity
-                  onPress={() =>
-                    // oprocz pathname mozna podac dane i w child componencie odniesc sie do nich -> props.location.state
-                    props.history.push({
-                      pathname: "/bookDetails",
-                      state: {
-                        title: el.volumeInfo.title,
-                      },
-                    })
-                  }
-                >
-                  {image}
-                </TouchableOpacity>
-              </Link>
+            <View style={styles.bookrow} key={el.id}>
+              <TouchableOpacity
+                onPress={() =>
+                  // oprocz pathname mozna podac dane i w child componencie odniesc sie do nich -> props.location.state
+                  props.history.push({
+                    pathname: "/bookDetails",
+                    state: {
+                      title: el.volumeInfo.title,
+                      cover: el.volumeInfo.imageLinks.thumbnail,
+                      description: el.volumeInfo.description,
+                    },
+                  })
+                }
+              >
+                {image}
+              </TouchableOpacity>
               <View style={styles.bookrowTextContainer}>
-                <Text key={el.volumeInfo.id} style={styles.title}>
-                  {el.volumeInfo.title}
-                </Text>
+                <Text style={styles.title}>{el.volumeInfo.title}</Text>
                 <Text style={styles.author}>{el.volumeInfo.authors[0]}</Text>
                 <Text style={styles.addToLibrary}>Add to My Library</Text>
               </View>

@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, Button, TextInput } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Button,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import Constants from "expo-constants";
 import SearchResult from "./SearchResult";
 import Library from "./Library";
@@ -28,9 +35,10 @@ export default function Home(props) {
   return (
     <View style={styles.container}>
       <Library myLibrary={props.library} />
-      <Link to="./bookDetails">
-        <Text>Go detals</Text>
+      <Link to="./bookScanner">
+        <Text>Scan Book</Text>
       </Link>
+
       <TextInput
         style={styles.searchInput}
         placeholder="Search for a book..."

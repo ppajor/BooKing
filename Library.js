@@ -11,31 +11,39 @@ import {
 } from "react-native";
 
 export default function Library(props) {
+  // wrap scrollview in view! inaczej sie style pierdola nie wiem czemu
   return (
     <>
       <Text>YOUR Bookshelf</Text>
-
-      <ImageBackground
-        source={require("./img/wood_texture.jpg")}
-        style={styles.bookshelfContainer}
-      >
-        <View style={styles.bookshelf}></View>
-        {props.myLibrary.map((book) => {
-          return (
-            <TouchableHighlight key={book.bookID}>
-              <Image
-                style={styles.bookMockup}
-                source={{ uri: book.bookImg }}
-              ></Image>
-            </TouchableHighlight>
-          );
-        })}
-      </ImageBackground>
+      <View>
+        <ScrollView style={styles.container} horizontal>
+          <ImageBackground
+            source={require("./img/wood_texture.jpg")}
+            style={styles.bookshelfContainer}
+          >
+            <View style={styles.bookshelf}></View>
+            {props.myLibrary.map((book) => {
+              return (
+                <TouchableHighlight key={book.bookID}>
+                  <Image
+                    style={styles.bookMockup}
+                    source={{ uri: book.bookImg }}
+                  ></Image>
+                </TouchableHighlight>
+              );
+            })}
+          </ImageBackground>
+        </ScrollView>
+      </View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    height: 150,
+    borderWidth: 2,
+  },
   bookshelfContainer: {
     display: "flex",
     flexDirection: "row",
@@ -55,5 +63,7 @@ const styles = StyleSheet.create({
   bookMockup: {
     width: 75,
     height: 100,
+    marginLeft: 10,
+    marginRight: 10,
   },
 });
