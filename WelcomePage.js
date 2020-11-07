@@ -8,16 +8,31 @@ import {
   TextInput,
   TouchableHighlight,
   TouchableOpacity,
+  ImagePropTypes,
 } from "react-native";
 import { Redirect, Link } from "react-router-native";
+import firebase from "firebase";
 
-export default function WelcomePage() {
+export default function WelcomePage(props) {
   emailOnPress = () => {
     console.log("PRESSED");
   };
 
-  skipOnPress = () => {
-    setRedirect(true);
+  handleAnonymousSignIn = () => {
+    firebase
+      .auth()
+      .signInAnonymously()
+      .then(() => {
+        console.log("User signed in anonymously");
+        props.history.push("/home");
+      })
+      .catch((error) => {
+        if (error.code === "auth/operation-not-allowed") {
+          console.log("Enable anonymous in your firebase console.");
+        }
+
+        console.error(error);
+      });
   };
 
   return (
@@ -32,9 +47,9 @@ export default function WelcomePage() {
       <Link to="./login">
         <Text>Sign in with e-mail</Text>
       </Link>
-      <Link to="./home">
-        <Text style={styles.skipButtonText}>Skip for now</Text>
-      </Link>
+      <TouchableOpacity onPress={handleAnonymousSignIn}>
+        <Text style={styles.skipButtonText}>Sign in anonymously</Text>
+      </TouchableOpacity>
     </View>
   );
 }

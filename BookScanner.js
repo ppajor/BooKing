@@ -13,6 +13,8 @@ export default function BookScanner(props) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
+  const API_KEY = "AIzaSyACLJEKxGoXNM8qfeNKejGzzhESdRo6e00";
+
   useEffect(() => {
     const backAction = () => {
       props.history.push("/"); //wracamy do glownej
@@ -35,9 +37,18 @@ export default function BookScanner(props) {
     })();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = ({ data }) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${data}&key=${API_KEY}
+    `)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   if (hasPermission === null) {

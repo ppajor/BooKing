@@ -11,13 +11,29 @@ import Constants from "expo-constants";
 import SearchResult from "./SearchResult";
 import Library from "./Library";
 import { Link } from "react-router-native";
+import firebase from "firebase";
 
 export default function Home(props) {
   const [searchInput, setSearchInput] = useState("");
   const [apiData, setApiData] = useState({});
+  const [userLoggedIn, setUserLoggedIn] = useState({});
 
   const API_KEY = "AIzaSyACLJEKxGoXNM8qfeNKejGzzhESdRo6e00";
-
+  /*
+  useEffect(() => {
+    const ac = new AbortController();
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setUserLoggedIn(user);
+      } else {
+        console.log("No user logged in");
+      }
+    });
+    return () => {
+      ac.abort();
+    };
+  }, []);
+*/
   handleSearchButton = () => {
     let phrase = searchInput.trim().split(/\s+/).join("+");
 
@@ -32,9 +48,24 @@ export default function Home(props) {
       });
   };
 
+  handleSignOut = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        console.log("User signed out!");
+        props.history.push("/chooseLoginVariant");
+      });
+  };
+
   return (
     <View style={styles.container}>
-      <Library myLibrary={props.library} />
+      {userLoggedIn && (
+        <TouchableOpacity onPress={handleSignOut}>
+          <Text>Sign Out</Text>
+        </TouchableOpacity>
+      )}
+      <Library myLibrary={library} />
       <Link to="./bookScanner">
         <Text>Scan Book</Text>
       </Link>
@@ -69,3 +100,36 @@ const styles = StyleSheet.create({
     color: "#000",
   },
 });
+
+const library = [
+  {
+    bookID: "MKfYLfeyrfAAACAAJ",
+    bookImg:
+      "http://books.google.com/books/content?id=NHE7CQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+  },
+  {
+    bookID: "2zW3zQEAeyrCAAJ",
+    bookImg:
+      "http://books.google.com/books/content?id=vglvBgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+  },
+  {
+    bookID: "ydhcbc5eyrx7xch",
+    bookImg:
+      "http://books.google.com/books/content?id=NHE7CQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+  },
+  {
+    bookID: "NHE7CQAAyerQBAJ",
+    bookImg:
+      "http://books.google.com/books/content?id=M3evDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+  },
+  {
+    bookID: "MKfYLAAACeyrAdAJ",
+    bookImg:
+      "http://books.google.com/books/content?id=NHE7CQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+  },
+  {
+    bookID: "NHE7CQAAeryQBAJ",
+    bookImg:
+      "http://books.google.com/books/content?id=M3evDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+  },
+];
