@@ -17,23 +17,36 @@ export default function Home(props) {
   const [searchInput, setSearchInput] = useState("");
   const [apiData, setApiData] = useState({});
   const [userLoggedIn, setUserLoggedIn] = useState({});
+  const [username, setUsername] = useState(null);
 
   const API_KEY = "AIzaSyACLJEKxGoXNM8qfeNKejGzzhESdRo6e00";
+
   /*
-  useEffect(() => {
-    const ac = new AbortController();
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        setUserLoggedIn(user);
-      } else {
-        console.log("No user logged in");
-      }
-    });
-    return () => {
-      ac.abort();
-    };
-  }, []);
+  useEffect(()=>{
+    firebase.database()
+  .ref('/users/123')
+  .once('value')
+  .then(snapshot => {
+    console.log('User data: ', snapshot.val());
+  });
+  })
 */
+
+  const onAuthStateChanged = (user) => {
+    if (user) {
+      setUserLoggedIn(user);
+      console.log(user);
+    } else {
+      console.log("No user logged in");
+    }
+  };
+
+  useEffect(() => {
+    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
+
+    return subscriber;
+  }, []);
+
   handleSearchButton = () => {
     let phrase = searchInput.trim().split(/\s+/).join("+");
 

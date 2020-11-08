@@ -47,6 +47,9 @@ export default function WelcomePage(props) {
       <Link to="./login">
         <Text>Sign in with e-mail</Text>
       </Link>
+      <Link to="./signupEmail">
+        <Text>Sign up with e-mail</Text>
+      </Link>
       <TouchableOpacity onPress={handleAnonymousSignIn}>
         <Text style={styles.skipButtonText}>Sign in anonymously</Text>
       </TouchableOpacity>

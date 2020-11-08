@@ -11,8 +11,9 @@ import {
 import firebase from "firebase";
 
 export default function LoginPage(props) {
-  const [inputUsername, setInputUsername] = useState("");
+  const [inputEmail, setInputEmail] = useState("");
   const [inputPassword, setInputPassword] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const backAction = () => {
@@ -29,14 +30,32 @@ export default function LoginPage(props) {
     return () => backHandler.remove(); // przy odmontowywaniu
   }, []);
 
-  const handleLogin = () => {
+  const handleSignUp = () => {
     firebase
       .auth()
-      .signInWithEmailAndPassword(inputUsername, inputPassword)
-      .then(() => {
-        console.log("User logged in");
+      .createUserWithEmailAndPassword(inputEmail, inputPassword)
+      .then((result) => {
+        console.log("User account created & signed in!");
+        firebase
+          .database()
+          .ref("/users/" + result.user.uid)
+          .set({
+            text: `hey ${result.user.uid}`,
+            name: inputEmail,
+          })
+          .then(() => console.log("Data set."));
       })
       .catch((error) => {
+        if (error.code === "auth/email-already-in-use") {
+          console.log("That email address is already in use!");
+          setError("That email address is already in use!");
+        }
+
+        if (error.code === "auth/invalid-email") {
+          console.log("That email address is invalid!");
+          setError("That email address is invalid!");
+        }
+
         console.error(error);
       });
   };
@@ -51,23 +70,24 @@ export default function LoginPage(props) {
 
       <TextInput
         style={[styles.input, styles.margin]}
-        placeholder="Username"
-        onChangeText={(text) => setInputUsername(text)}
-        value={inputUsername}
+        placeholder="E-mail"
+        value={inputEmail}
+        onChangeText={(text) => setInputEmail(text)}
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
-        onChangeText={(text) => setInputPassword(text)}
         value={inputPassword}
+        onChangeText={(text) => setInputPassword(text)}
       />
       <TouchableOpacity
+        onPress={handleSignUp}
         style={styles.loginButton}
         color="dodgerblue"
-        onPress={handleLogin}
       >
-        <Text style={styles.loginButtonText}>Log in</Text>
+        <Text style={styles.loginButtonText}>Sign Up</Text>
       </TouchableOpacity>
+      <Text>{error}</Text>
     </View>
   );
 }
