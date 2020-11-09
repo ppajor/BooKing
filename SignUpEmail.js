@@ -42,6 +42,7 @@ export default function LoginPage(props) {
           .set({
             text: `hey ${result.user.uid}`,
             name: inputEmail,
+            library: [],
           })
           .then(() => console.log("Data set."));
       })

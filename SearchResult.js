@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { withRouter, Link } from "react-router-native";
+import firebase from "firebase";
 
 const SearchResult = (props) => {
   const data = props.data.items;
@@ -34,6 +35,24 @@ const SearchResult = (props) => {
         />
       );
     }
+  };
+
+  const handleAddToLibrary = (el) => {
+    console.log("Jestem tu!");
+
+    firebase
+      .database()
+      .ref("/users/" + props.currentUserUID + "/library/")
+      .update({
+        [el.id]: {
+          title: el.volumeInfo.title,
+          thumbnail: el.volumeInfo.imageLinks.thumbnail,
+        },
+      })
+      .then(() => console.log("Data updated."))
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   /*if (data.length == 0) {
@@ -76,7 +95,12 @@ const SearchResult = (props) => {
               <View style={styles.bookrowTextContainer}>
                 <Text style={styles.title}>{el.volumeInfo.title}</Text>
                 <Text style={styles.author}>{el.volumeInfo.authors[0]}</Text>
-                <Text style={styles.addToLibrary}>Add to My Library</Text>
+                <TouchableOpacity
+                  style={styles.addToLibrary}
+                  onPress={() => handleAddToLibrary(el)}
+                >
+                  <Text>Add to My Library</Text>
+                </TouchableOpacity>
               </View>
             </View>
           );
@@ -100,6 +124,7 @@ const styles = StyleSheet.create({
   },
   bookrowTextContainer: {
     width: "100%",
+    backgroundColor: "gray",
   },
   title: {
     width: "100%",
@@ -107,6 +132,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     overflow: "hidden",
+    backgroundColor: "red",
   },
   author: {
     marginTop: 4,
@@ -115,11 +141,18 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#d2d2d2",
     overflow: "hidden",
+    backgroundColor: "green",
   },
   addToLibrary: {
     position: "absolute",
     right: 85,
     bottom: 4,
     fontSize: 12,
+    zIndex: 999,
+    backgroundColor: "orange",
   },
 });
+
+/* COMMENTS */
+
+// Touchable opacity powinien miec style najpierw, pozniej childy

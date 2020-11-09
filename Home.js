@@ -16,8 +16,7 @@ import firebase from "firebase";
 export default function Home(props) {
   const [searchInput, setSearchInput] = useState("");
   const [apiData, setApiData] = useState({});
-  const [userLoggedIn, setUserLoggedIn] = useState({});
-  const [username, setUsername] = useState(null);
+  const [userLoggedIn, setUserLoggedIn] = useState(false); // po zalogowaniu/utworzeniu konta automatycznie przekierowuje do home bo zmienia się state userloggedin (???)
 
   const API_KEY = "AIzaSyACLJEKxGoXNM8qfeNKejGzzhESdRo6e00";
 
@@ -35,7 +34,7 @@ export default function Home(props) {
   const onAuthStateChanged = (user) => {
     if (user) {
       setUserLoggedIn(user);
-      console.log(user);
+      //console.log(user);
     } else {
       console.log("No user logged in");
     }
@@ -75,6 +74,7 @@ export default function Home(props) {
     <View style={styles.container}>
       {userLoggedIn && (
         <TouchableOpacity onPress={handleSignOut}>
+          <Text>Hello {userLoggedIn.email}</Text>
           <Text>Sign Out</Text>
         </TouchableOpacity>
       )}
@@ -92,7 +92,9 @@ export default function Home(props) {
         value={searchInput}
       />
       <Button onPress={handleSearchButton} title="Search" color="dodgerblue" />
-      {apiData.items && <SearchResult data={apiData} />}
+      {apiData.items && (
+        <SearchResult data={apiData} currentUserUID={userLoggedIn.uid} />
+      )}
     </View>
   );
 }
