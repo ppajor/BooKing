@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -10,8 +10,24 @@ import {
   TouchableHighlight,
 } from "react-native";
 
-export default function Library(props) {
+import firebase from "firebase";
+const Library = (props) => {
+  const [dataLibrary, setDataLibrary] = useState([]);
+  const [loading, setLoading] = useState(true);
   // wrap scrollview in view! inaczej sie style pierdola nie wiem czemu
+  useEffect(() => {
+    firebase
+      .database()
+      .ref("/users/" + firebase.auth().currentUser.uid + "/library")
+      .once("value")
+      .then((snapshot) => {
+        let data = Object.values(snapshot.val());
+        setDataLibrary(data);
+        setLoading(false);
+        console.log(data);
+      });
+  }, []);
+
   return (
     <>
       <Text>YOUR Bookshelf</Text>
@@ -22,22 +38,25 @@ export default function Library(props) {
             style={styles.bookshelfContainer}
           >
             <View style={styles.bookshelf}></View>
-            {props.myLibrary.map((book) => {
-              return (
-                <TouchableHighlight key={book.bookID}>
-                  <Image
-                    style={styles.bookMockup}
-                    source={{ uri: book.bookImg }}
-                  ></Image>
-                </TouchableHighlight>
-              );
-            })}
+            {!loading &&
+              dataLibrary.map((book) => {
+                return (
+                  <TouchableHighlight key={book.bookID}>
+                    <Image
+                      style={styles.bookMockup}
+                      source={{ uri: book.thumbnail }}
+                    ></Image>
+                  </TouchableHighlight>
+                );
+              })}
           </ImageBackground>
         </ScrollView>
       </View>
     </>
   );
-}
+};
+
+export default Library;
 
 const styles = StyleSheet.create({
   container: {
@@ -62,8 +81,12 @@ const styles = StyleSheet.create({
   },
   bookMockup: {
     width: 75,
-    height: 100,
+    height: 112,
     marginLeft: 10,
     marginRight: 10,
   },
 });
+
+/* COMMENTS */
+
+// musimy ustawic loading (poczekac az wczytaja sie dane z API/bazy) bo inaczej render bedzie chcial wyswielić danych ktoeych nie ma, w tym przypadku przy dataLibrary.map

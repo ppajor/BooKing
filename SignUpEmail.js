@@ -35,16 +35,15 @@ export default function LoginPage(props) {
       .auth()
       .createUserWithEmailAndPassword(inputEmail, inputPassword)
       .then((result) => {
-        console.log("User account created & signed in!");
         firebase
           .database()
           .ref("/users/" + result.user.uid)
           .set({
             text: `hey ${result.user.uid}`,
             name: inputEmail,
-            library: [],
+            library: "",
           })
-          .then(() => console.log("Data set."));
+          .then(() => console.log("User account created & signed in!"));
       })
       .catch((error) => {
         if (error.code === "auth/email-already-in-use") {
