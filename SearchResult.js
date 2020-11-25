@@ -45,8 +45,10 @@ const SearchResult = (props) => {
       .ref("/users/" + props.currentUserUID + "/library/")
       .update({
         [el.id]: {
+          id: el.id,
           title: el.volumeInfo.title,
           thumbnail: el.volumeInfo.imageLinks.thumbnail,
+          pageCount: el.volumeInfo.pageCount,
         },
       })
       .then(() => console.log("Data updated."))
@@ -156,3 +158,5 @@ const styles = StyleSheet.create({
 /* COMMENTS */
 
 // Touchable opacity powinien miec style najpierw, pozniej childy
+
+// Musimy wyeksportowac komponent z withRouter bo inaczej props.history push nie zadziała

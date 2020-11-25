@@ -8,6 +8,7 @@ import LoadingScreen from "./LoadingScreen";
 import LoginPage from "./LoginPage";
 import SignUpEmail from "./SignUpEmail";
 import BookScanner from "./BookScanner";
+import LibraryBookDetails from "./LibraryBookDetails";
 import firebase from "firebase";
 import { firebaseConfig } from "./firebase-config";
 
@@ -30,6 +31,11 @@ export default class App extends Component {
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/signupEmail" component={SignUpEmail} />
           <Route exact path="/bookDetails" component={BookDetails} />
+          <Route
+            exact
+            path="/libraryBookDetails"
+            component={LibraryBookDetails}
+          />
           <Route exact path="/bookScanner" component={BookScanner} />
         </Switch>
       </MemoryRouter>

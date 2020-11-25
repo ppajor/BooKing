@@ -11,6 +11,8 @@ import {
 } from "react-native";
 
 import firebase from "firebase";
+import { withRouter } from "react-router-native";
+
 const Library = (props) => {
   const [dataLibrary, setDataLibrary] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,13 +26,36 @@ const Library = (props) => {
         let data = Object.values(snapshot.val());
         setDataLibrary(data);
         setLoading(false);
-        console.log(data);
+        //console.log(data);
       });
   }, []);
 
   return (
     <>
-      <Text>YOUR Bookshelf</Text>
+      {!loading && (
+        <ShelfRouter
+          dataLibrary={dataLibrary}
+          title="Do przeczytania:"
+          percentage={true}
+        />
+      )}
+      {!loading && (
+        <ShelfRouter
+          dataLibrary={dataLibrary}
+          title="Przeczytane:"
+          percentage={false}
+        />
+      )}
+    </>
+  );
+};
+
+export default withRouter(Library);
+
+const Shelf = (props) => {
+  return (
+    <>
+      <Text>{props.title}</Text>
       <View>
         <ScrollView style={styles.container} horizontal>
           <ImageBackground
@@ -38,17 +63,32 @@ const Library = (props) => {
             style={styles.bookshelfContainer}
           >
             <View style={styles.bookshelf}></View>
-            {!loading &&
-              dataLibrary.map((book) => {
-                return (
-                  <TouchableHighlight key={book.bookID}>
+            {props.dataLibrary.map((book) => {
+              return (
+                <View style={styles.bookContainer} key={book.id}>
+                  <TouchableHighlight
+                    onPress={() =>
+                      props.history.push({
+                        pathname: "/libraryBookDetails",
+                        state: {
+                          data: book,
+                        },
+                      })
+                    }
+                  >
                     <Image
                       style={styles.bookMockup}
                       source={{ uri: book.thumbnail }}
                     ></Image>
                   </TouchableHighlight>
-                );
-              })}
+                  {props.percentage && (
+                    <View style={styles.readPercentage}>
+                      <Text style={styles.readPercentageText}>0%</Text>
+                    </View>
+                  )}
+                </View>
+              );
+            })}
           </ImageBackground>
         </ScrollView>
       </View>
@@ -56,7 +96,7 @@ const Library = (props) => {
   );
 };
 
-export default Library;
+const ShelfRouter = withRouter(Shelf); //tworzymy komponent shelf ale z withRouterem zeby porzystac z props.push.history
 
 const styles = StyleSheet.create({
   container: {
@@ -85,8 +125,30 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
   },
+  bookContainer: {
+    position: "relative",
+  },
+  readPercentage: {
+    display: "flex",
+    justifyContent: "center",
+    position: "absolute",
+    backgroundColor: "#000",
+    zIndex: 2,
+    width: 75,
+    height: 112,
+    marginLeft: 10,
+    marginRight: 10,
+    opacity: 0.78,
+  },
+  readPercentageText: {
+    textAlign: "center",
+    fontSize: 25,
+    color: "#fff",
+  },
 });
 
 /* COMMENTS */
 
 // musimy ustawic loading (poczekac az wczytaja sie dane z API/bazy) bo inaczej render bedzie chcial wyswielić danych ktoeych nie ma, w tym przypadku przy dataLibrary.map
+
+// musimy wyeksportowac komponent z withRouter bo inaczej props.history push nie zadziała

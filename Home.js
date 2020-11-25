@@ -78,7 +78,7 @@ export default function Home(props) {
           <Text>Sign Out</Text>
         </TouchableOpacity>
       )}
-      <Library myLibrary={library} />
+      <Library />
       <Link to="./bookScanner">
         <Text>Scan Book</Text>
       </Link>
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     color: "#000",
   },
 });
-
+/*
 const library = [
   {
     bookID: "MKfYLfeyrfAAACAAJ",
@@ -148,3 +148,4 @@ const library = [
       "http://books.google.com/books/content?id=M3evDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
   },
 ];
+*/
