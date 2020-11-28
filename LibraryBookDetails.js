@@ -1,5 +1,12 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View, Text, BackHandler, Image } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  BackHandler,
+  Image,
+  TouchableHighlight,
+} from "react-native";
 
 export default function LibraryBookDetails(props) {
   var image;
@@ -37,10 +44,36 @@ export default function LibraryBookDetails(props) {
 
   return (
     <View style={{ marginTop: 50 }}>
-      <View style={{ display: "flex", flexDirection: "row" }}>
+      <View style={styles.container}>
         {image}
-        <Text>{props.location.state.data.title}</Text>
+        <View>
+          <Text>{props.location.state.data.title}</Text>
+          <TouchableHighlight style={styles.readBtn}>
+            <Text style={styles.readBtnText}>Czytaj </Text>
+          </TouchableHighlight>
+        </View>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  readBtn: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 75,
+    height: 34,
+    backgroundColor: "dodgerblue",
+  },
+  readBtnText: {
+    color: "#fff",
+  },
+});

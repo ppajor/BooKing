@@ -6,6 +6,7 @@ import {
   Button,
   TextInput,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import Constants from "expo-constants";
 import SearchResult from "./SearchResult";
@@ -71,7 +72,7 @@ export default function Home(props) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {userLoggedIn && (
         <TouchableOpacity onPress={handleSignOut}>
           <Text>Hello {userLoggedIn.email}</Text>
@@ -95,7 +96,7 @@ export default function Home(props) {
       {apiData.items && (
         <SearchResult data={apiData} currentUserUID={userLoggedIn.uid} />
       )}
-    </View>
+    </ScrollView>
   );
 }
 

@@ -20,7 +20,7 @@ const Library = (props) => {
   useEffect(() => {
     firebase
       .database()
-      .ref("/users/" + firebase.auth().currentUser.uid + "/library")
+      .ref("/users/" + firebase.auth().currentUser.uid + "/library/toRead")
       .once("value")
       .then((snapshot) => {
         let data = Object.values(snapshot.val());
@@ -36,6 +36,13 @@ const Library = (props) => {
         <ShelfRouter
           dataLibrary={dataLibrary}
           title="Do przeczytania:"
+          percentage={false}
+        />
+      )}
+      {!loading && (
+        <ShelfRouter
+          dataLibrary={dataLibrary}
+          title="Czytane:"
           percentage={true}
         />
       )}
@@ -96,7 +103,7 @@ const Shelf = (props) => {
   );
 };
 
-const ShelfRouter = withRouter(Shelf); //tworzymy komponent shelf ale z withRouterem zeby porzystac z props.push.history
+const ShelfRouter = withRouter(Shelf); //tworzymy ten sam komponent jak shelf ale z withRouterem zeby porzystac z props.push.history
 
 const styles = StyleSheet.create({
   container: {
