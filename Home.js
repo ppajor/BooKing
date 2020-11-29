@@ -10,9 +10,10 @@ import {
 } from "react-native";
 import Constants from "expo-constants";
 import SearchResult from "./SearchResult";
-import Library from "./Library";
 import { Link } from "react-router-native";
 import firebase from "firebase";
+import ToReadShelf from "./ToReadShelf";
+import ReadNowShelf from "./ReadNowShelf";
 
 export default function Home(props) {
   const [searchInput, setSearchInput] = useState("");
@@ -79,7 +80,8 @@ export default function Home(props) {
           <Text>Sign Out</Text>
         </TouchableOpacity>
       )}
-      <Library />
+      <ToReadShelf />
+      <ReadNowShelf />
       <Link to="./bookScanner">
         <Text>Scan Book</Text>
       </Link>

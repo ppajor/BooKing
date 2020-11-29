@@ -8,6 +8,8 @@ import {
   TouchableHighlight,
 } from "react-native";
 
+import firebase from "firebase";
+
 export default function LibraryBookDetails(props) {
   var image;
 
@@ -42,14 +44,37 @@ export default function LibraryBookDetails(props) {
     return () => backHandler.remove(); // przy odmontowywaniu trzeba posprzątac
   }, []);
 
+  const handleAddReadNow = (el) => {
+    console.log("Jestem w handleAddReadNow!");
+    console.log(el);
+    firebase
+      .database()
+      .ref("/users/" + firebase.auth().currentUser.uid + "/library/readNow/") //musimy zautoryzowac usera bo inaczej bedzie przypal i dane zapisze w undefined zamiast w ID usera tak jak chcemy
+      .update({
+        [el.id]: {
+          id: el.id,
+          title: el.title,
+          thumbnail: el.thumbnail,
+          pageCount: el.pageCount,
+        },
+      })
+      .then(() => console.log("Data updated."))
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <View style={{ marginTop: 50 }}>
       <View style={styles.container}>
         {image}
-        <View>
-          <Text>{props.location.state.data.title}</Text>
-          <TouchableHighlight style={styles.readBtn}>
-            <Text style={styles.readBtnText}>Czytaj </Text>
+        <View style={{ flex: 1 }}>
+          <Text>{props.location.state.data.title} </Text>
+          <TouchableHighlight
+            style={styles.readBtn}
+            onPress={() => handleAddReadNow(props.location.state.data)}
+          >
+            <Text style={styles.readBtnText}>Czytaj</Text>
           </TouchableHighlight>
         </View>
       </View>
@@ -65,7 +90,7 @@ const styles = StyleSheet.create({
   readBtn: {
     position: "absolute",
     bottom: 0,
-    right: 0,
+    right: "15%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -77,3 +102,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
 });
+
+//comments
+
+// trzeba w onpressach dawać {() => function} zamiast {function} inaczej odpala od razu

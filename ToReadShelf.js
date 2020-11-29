@@ -13,7 +13,7 @@ import {
 import firebase from "firebase";
 import { withRouter } from "react-router-native";
 
-const Library = (props) => {
+const ToReadShelf = (props) => {
   const [dataLibrary, setDataLibrary] = useState([]);
   const [loading, setLoading] = useState(true);
   // wrap scrollview in view! inaczej sie style pierdola nie wiem czemu
@@ -27,83 +27,55 @@ const Library = (props) => {
         setDataLibrary(data);
         setLoading(false);
         //console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
       });
   }, []);
 
   return (
     <>
       {!loading && (
-        <ShelfRouter
-          dataLibrary={dataLibrary}
-          title="Do przeczytania:"
-          percentage={false}
-        />
-      )}
-      {!loading && (
-        <ShelfRouter
-          dataLibrary={dataLibrary}
-          title="Czytane:"
-          percentage={true}
-        />
-      )}
-      {!loading && (
-        <ShelfRouter
-          dataLibrary={dataLibrary}
-          title="Przeczytane:"
-          percentage={false}
-        />
-      )}
-    </>
-  );
-};
-
-export default withRouter(Library);
-
-const Shelf = (props) => {
-  return (
-    <>
-      <Text>{props.title}</Text>
-      <View>
-        <ScrollView style={styles.container} horizontal>
-          <ImageBackground
-            source={require("./img/wood_texture.jpg")}
-            style={styles.bookshelfContainer}
-          >
-            <View style={styles.bookshelf}></View>
-            {props.dataLibrary.map((book) => {
-              return (
-                <View style={styles.bookContainer} key={book.id}>
-                  <TouchableHighlight
-                    onPress={() =>
-                      props.history.push({
-                        pathname: "/libraryBookDetails",
-                        state: {
-                          data: book,
-                        },
-                      })
-                    }
-                  >
-                    <Image
-                      style={styles.bookMockup}
-                      source={{ uri: book.thumbnail }}
-                    ></Image>
-                  </TouchableHighlight>
-                  {props.percentage && (
-                    <View style={styles.readPercentage}>
-                      <Text style={styles.readPercentageText}>0%</Text>
+        <>
+          <Text>Do przeczytania</Text>
+          <View>
+            <ScrollView style={styles.container} horizontal>
+              <ImageBackground
+                source={require("./img/wood_texture.jpg")}
+                style={styles.bookshelfContainer}
+              >
+                <View style={styles.bookshelf}></View>
+                {dataLibrary.map((book) => {
+                  return (
+                    <View style={styles.bookContainer} key={book.id}>
+                      <TouchableHighlight
+                        onPress={() =>
+                          props.history.push({
+                            pathname: "/libraryBookDetails",
+                            state: {
+                              data: book,
+                            },
+                          })
+                        }
+                      >
+                        <Image
+                          style={styles.bookMockup}
+                          source={{ uri: book.thumbnail }}
+                        ></Image>
+                      </TouchableHighlight>
                     </View>
-                  )}
-                </View>
-              );
-            })}
-          </ImageBackground>
-        </ScrollView>
-      </View>
+                  );
+                })}
+              </ImageBackground>
+            </ScrollView>
+          </View>
+        </>
+      )}
     </>
   );
 };
 
-const ShelfRouter = withRouter(Shelf); //tworzymy ten sam komponent jak shelf ale z withRouterem zeby porzystac z props.push.history
+export default withRouter(ToReadShelf);
 
 const styles = StyleSheet.create({
   container: {

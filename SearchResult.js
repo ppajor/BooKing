@@ -42,7 +42,7 @@ const SearchResult = (props) => {
 
     firebase
       .database()
-      .ref("/users/" + props.currentUserUID + "/library/toRead/")
+      .ref("/users/" + props.currentUserUID + "/library/lol/")
       .update({
         [el.id]: {
           id: el.id,
