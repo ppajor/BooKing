@@ -58,7 +58,20 @@ export default function LibraryBookDetails(props) {
           pageCount: el.pageCount,
         },
       })
-      .then(() => console.log("Data updated."))
+      .then(() => {
+        // nested promise ?????
+        console.log("Data updated.");
+
+        firebase
+          .database()
+          .ref(
+            "/users/" +
+              firebase.auth().currentUser.uid +
+              "/library/toRead/" +
+              el.id
+          )
+          .remove(); // promise??? handle then/catch ?????
+      })
       .catch((error) => {
         console.error(error);
       });
