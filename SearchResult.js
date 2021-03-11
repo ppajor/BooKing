@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -12,9 +12,15 @@ import { withRouter, Link } from "react-router-native";
 import firebase from "firebase";
 
 const SearchResult = (props) => {
+
+
   const data = props.data.items;
   var img_key = 0;
   var image;
+
+  useEffect(() => {
+    console.log("RENDER");
+  }, []);
 
   const checkThumbnailsExist = (el) => {
     if (!el.volumeInfo.hasOwnProperty("imageLinks")) {
@@ -39,6 +45,13 @@ const SearchResult = (props) => {
 
   const handleAddToLibrary = (el) => {
     console.log("Jestem tu!");
+    for (let key in el) {
+      console.log(key, el[key]);
+    }
+
+    if (typeof (el.volumeInfo.pageCount) == "undefined") {
+      el.volumeInfo.pageCount = 0;
+    }
 
     firebase
       .database()
@@ -51,7 +64,9 @@ const SearchResult = (props) => {
           pageCount: el.volumeInfo.pageCount,
         },
       })
-      .then(() => console.log("Data updated."))
+      .then(() => {
+        console.log("Data updated.")
+      })
       .catch((error) => {
         console.error(error);
       });

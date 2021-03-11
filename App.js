@@ -9,8 +9,12 @@ import LoginPage from "./LoginPage";
 import SignUpEmail from "./SignUpEmail";
 import BookScanner from "./BookScanner";
 import LibraryBookDetails from "./LibraryBookDetails";
+import CurrentReadBookDetails from "./CurrentReadBookDetails";
 import firebase from "firebase";
 import { firebaseConfig } from "./firebase-config";
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs(['Setting a timer']); //pozbywa sie niepotrzebnych warningow o jakims timerze
 
 //import createHistory from "history/createMemoryHistory";
 //const history = createHistory();
@@ -37,6 +41,7 @@ export default class App extends Component {
             component={LibraryBookDetails}
           />
           <Route exact path="/bookScanner" component={BookScanner} />
+          <Route exact path="/currentReadBookDetails" component={CurrentReadBookDetails} />
         </Switch>
       </MemoryRouter>
     );

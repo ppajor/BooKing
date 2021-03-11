@@ -23,7 +23,7 @@ const ToReadShelf = (props) => {
       .ref("/users/" + firebase.auth().currentUser.uid + "/library/toRead")
       .once("value")
       .then((snapshot) => {
-        let data = Object.values(snapshot.val());
+        let data = Object.values(snapshot.val()); // co zrobic gdy uzytkownik nie ma nic w czytanych i jest null??
         setDataLibrary(data);
         setLoading(false);
         //console.log(data);

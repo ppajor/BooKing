@@ -66,9 +66,9 @@ export default function LibraryBookDetails(props) {
           .database()
           .ref(
             "/users/" +
-              firebase.auth().currentUser.uid +
-              "/library/toRead/" +
-              el.id
+            firebase.auth().currentUser.uid +
+            "/library/toRead/" +
+            el.id
           )
           .remove(); // promise??? handle then/catch ?????
       })

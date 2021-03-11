@@ -16,14 +16,14 @@ import { withRouter } from "react-router-native";
 const ReadNowShelf = (props) => {
   const [dataLibrary, setDataLibrary] = useState([]);
   const [loading, setLoading] = useState(true);
-  // wrap scrollview in view! inaczej sie style pierdola nie wiem czemu
+  // wrap scrollview in view! inaczej sie style pierdola
   useEffect(() => {
     firebase
       .database()
       .ref("/users/" + firebase.auth().currentUser.uid + "/library/readNow")
       .once("value")
       .then((snapshot) => {
-        let data = Object.values(snapshot.val());
+        let data = Object.values(snapshot.val()); // co zrobic gdy uzytkownik nie ma nic w czytanych i jest null??
         setDataLibrary(data);
         setLoading(false);
         //console.log(data);
@@ -48,24 +48,26 @@ const ReadNowShelf = (props) => {
                 {dataLibrary.map((book) => {
                   return (
                     <View style={styles.bookContainer} key={book.id}>
-                      <TouchableHighlight
+
+                      <Image
+                        style={styles.bookMockup}
+                        source={{ uri: book.thumbnail }}
+                      ></Image>
+                      <TouchableHighlight style={styles.readPercentage}
                         onPress={() =>
                           props.history.push({
-                            pathname: "/libraryBookDetails",
+                            pathname: "/currentReadBookDetails",
                             state: {
                               data: book,
                             },
                           })
                         }
                       >
-                        <Image
-                          style={styles.bookMockup}
-                          source={{ uri: book.thumbnail }}
-                        ></Image>
+                        <View>
+                          <Text style={styles.readPercentageText}>0%</Text>
+                        </View>
                       </TouchableHighlight>
-                      <View style={styles.readPercentage}>
-                        <Text style={styles.readPercentageText}>0%</Text>
-                      </View>
+
                     </View>
                   );
                 })}
