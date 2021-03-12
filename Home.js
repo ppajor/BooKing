@@ -14,6 +14,7 @@ import { Link } from "react-router-native";
 import firebase from "firebase";
 import ToReadShelf from "./ToReadShelf";
 import ReadNowShelf from "./ReadNowShelf";
+import LastRead from "./LastRead";
 
 export default function Home(props) {
   const [searchInput, setSearchInput] = useState("");
@@ -80,6 +81,7 @@ export default function Home(props) {
           <Text>Sign Out</Text>
         </TouchableOpacity>
       )}
+      <LastRead />
       <ToReadShelf />
       <ReadNowShelf />
       <Link to="./bookScanner">

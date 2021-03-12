@@ -30,6 +30,20 @@ export default function LibraryBookDetails(props) {
 
     const handleReadNow = () => {
         setTimerOn(true);
+        console.log(props.location.state.data.id);
+        firebase
+            .database()
+            .ref("/users/" + firebase.auth().currentUser.uid + "/library")
+            .update({
+                lastRead: props.location.state.data.id,
+            })
+            .then(() => {
+                console.log("Data updated.")
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
     };
 
     return (
@@ -88,7 +102,7 @@ const Timer = () => {
             <TouchableHighlight onPress={() => setTime(0)}><Text>WYCZYSC</Text></TouchableHighlight>
             <TouchableHighlight onPress={() => setTimerOn(false)}><Text>STOP</Text></TouchableHighlight>
             <TouchableHighlight onPress={() => setTimerOn(true)}><Text>WZNOW</Text></TouchableHighlight>
-            <TouchableHighlight><Text>ZAKOŃCZ</Text></TouchableHighlight>
+            <TouchableHighlight ><Text>ZAKOŃCZ</Text></TouchableHighlight>
         </>
     );
 }
