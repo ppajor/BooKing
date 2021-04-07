@@ -56,6 +56,7 @@ export default function LibraryBookDetails(props) {
           title: el.title,
           thumbnail: el.thumbnail,
           pageCount: el.pageCount,
+          lastReadPageNumber: 1,
         },
       })
       .then(() => {

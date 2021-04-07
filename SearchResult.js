@@ -62,6 +62,7 @@ const SearchResult = (props) => {
           title: el.volumeInfo.title,
           thumbnail: el.volumeInfo.imageLinks.thumbnail,
           pageCount: el.volumeInfo.pageCount,
+          lastReadPageNumber: 1,
         },
       })
       .then(() => {
@@ -114,7 +115,10 @@ const SearchResult = (props) => {
                 <Text style={styles.author}>{el.volumeInfo.authors[0]}</Text>
                 <TouchableOpacity
                   style={styles.addToLibrary}
-                  onPress={() => handleAddToLibrary(el)}
+                  onPress={() => {
+                    handleAddToLibrary(el);
+                    props.addNew();
+                  }}
                 >
                   <Text>Add to My Library</Text>
                 </TouchableOpacity>

@@ -12,6 +12,7 @@ import {
 
 import firebase from "firebase";
 import { withRouter } from "react-router-native";
+import Shelf from "./Shelf.js";
 
 const ReadNowShelf = (props) => {
   const [dataLibrary, setDataLibrary] = useState([]);
@@ -39,40 +40,37 @@ const ReadNowShelf = (props) => {
         <>
           <Text>Czytane:</Text>
           <View>
-            <ScrollView style={styles.container} horizontal>
-              <ImageBackground
-                source={require("./img/wood_texture.jpg")}
-                style={styles.bookshelfContainer}
-              >
-                <View style={styles.bookshelf}></View>
-                {dataLibrary.map((book) => {
-                  return (
-                    <View style={styles.bookContainer} key={book.id}>
+            <Shelf>
+              <View style={styles.bookshelf}></View>
+              {dataLibrary.map((book) => {
+                let percent = Math.floor(book.lastReadPageNumber / book.pageCount * 100);
+                return (
+                  <View style={styles.bookContainer} key={book.id}>
 
-                      <Image
-                        style={styles.bookMockup}
-                        source={{ uri: book.thumbnail }}
-                      ></Image>
-                      <TouchableHighlight style={styles.readPercentage}
-                        onPress={() =>
-                          props.history.push({
-                            pathname: "/currentReadBookDetails",
-                            state: {
-                              data: book,
-                            },
-                          })
-                        }
-                      >
-                        <View>
-                          <Text style={styles.readPercentageText}>0%</Text>
-                        </View>
-                      </TouchableHighlight>
+                    <Image
+                      style={styles.bookMockup}
+                      source={{ uri: book.thumbnail }}
+                    ></Image>
+                    <TouchableHighlight style={styles.readPercentage}
+                      onPress={() =>
+                        props.history.push({
+                          pathname: "/currentReadBookDetails",
+                          state: {
+                            data: book,
+                            bookPercent: percent,
+                          },
+                        })
+                      }
+                    >
+                      <View>
+                        <Text style={styles.readPercentageText}>{percent}%</Text>
+                      </View>
+                    </TouchableHighlight>
 
-                    </View>
-                  );
-                })}
-              </ImageBackground>
-            </ScrollView>
+                  </View>
+                );
+              })}
+            </Shelf>
           </View>
         </>
       )}

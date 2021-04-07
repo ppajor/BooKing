@@ -9,13 +9,15 @@ import {
   ImageBackground,
   TouchableHighlight,
 } from "react-native";
-
+import { AntDesign } from '@expo/vector-icons';
 import firebase from "firebase";
 import { withRouter } from "react-router-native";
+import Shelf from "./Shelf.js";
 
 const ToReadShelf = (props) => {
   const [dataLibrary, setDataLibrary] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleteState, setDeleteState] = useState(false);
   // wrap scrollview in view! inaczej sie style pierdola nie wiem czemu
   useEffect(() => {
     firebase
@@ -31,7 +33,16 @@ const ToReadShelf = (props) => {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [props.refresh, deleteState]);   //aktualizuj pobierane dane po dodaniu ksiazki do polki badz po jej usunieciu
+
+  const deleteBook = (id) => {
+    firebase
+      .database()
+      .ref("/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + id)
+      .remove();
+
+    setDeleteState((oldState) => !oldState);
+  }
 
   return (
     <>
@@ -39,35 +50,35 @@ const ToReadShelf = (props) => {
         <>
           <Text>Do przeczytania</Text>
           <View>
-            <ScrollView style={styles.container} horizontal>
-              <ImageBackground
-                source={require("./img/wood_texture.jpg")}
-                style={styles.bookshelfContainer}
-              >
-                <View style={styles.bookshelf}></View>
-                {dataLibrary.map((book) => {
-                  return (
-                    <View style={styles.bookContainer} key={book.id}>
-                      <TouchableHighlight
-                        onPress={() =>
-                          props.history.push({
-                            pathname: "/libraryBookDetails",
-                            state: {
-                              data: book,
-                            },
-                          })
-                        }
-                      >
-                        <Image
-                          style={styles.bookMockup}
-                          source={{ uri: book.thumbnail }}
-                        ></Image>
-                      </TouchableHighlight>
-                    </View>
-                  );
-                })}
-              </ImageBackground>
-            </ScrollView>
+            <Shelf>
+              <View style={styles.bookshelf}></View>
+              {dataLibrary.map((book) => {
+                return (
+                  <View style={styles.bookContainer} key={book.id}>
+                    <TouchableHighlight
+                      onPress={() =>
+                        props.history.push({
+                          pathname: "/libraryBookDetails",
+                          state: {
+                            data: book,
+                          },
+                        })
+                      }
+                    >
+                      <Image
+                        style={styles.bookMockup}
+                        source={{ uri: book.thumbnail }}
+
+                      ></Image>
+
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={() => deleteBook(book.id)} style={styles.closeIcon}>
+                      <AntDesign name="close" size={24} color="black" />
+                    </TouchableHighlight>
+                  </View>
+                );
+              })}
+            </Shelf>
           </View>
         </>
       )}
@@ -98,14 +109,19 @@ const styles = StyleSheet.create({
     height: 10,
     backgroundColor: "#5b1b09",
   },
-  bookMockup: {
+
+  bookContainer: {
+    position: "relative",
     width: 75,
     height: 112,
     marginLeft: 10,
     marginRight: 10,
+
   },
-  bookContainer: {
-    position: "relative",
+  bookMockup: {
+    width: 75,
+    height: 112,
+
   },
   readPercentage: {
     display: "flex",
@@ -124,6 +140,10 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: "#fff",
   },
+  closeIcon: {
+    position: "absolute",
+    right: 0,
+  }
 });
 
 /* COMMENTS */

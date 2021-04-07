@@ -17,6 +17,7 @@ import ReadNowShelf from "./ReadNowShelf";
 import LastRead from "./LastRead";
 
 export default function Home(props) {
+  const [refresh, setRefresh] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [apiData, setApiData] = useState({});
   const [userLoggedIn, setUserLoggedIn] = useState(false); // po zalogowaniu/utworzeniu konta automatycznie przekierowuje do home bo zmienia się state userloggedin (???)
@@ -34,6 +35,12 @@ export default function Home(props) {
   })
 */
 
+  useEffect(() => {
+    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
+
+    return subscriber;
+  }, []);
+
   const onAuthStateChanged = (user) => {
     if (user) {
       setUserLoggedIn(user);
@@ -43,11 +50,7 @@ export default function Home(props) {
     }
   };
 
-  useEffect(() => {
-    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
 
-    return subscriber;
-  }, []);
 
   handleSearchButton = () => {
     let phrase = searchInput.trim().split(/\s+/).join("+");
@@ -73,6 +76,11 @@ export default function Home(props) {
       });
   };
 
+  const addNewHandler = () => {
+    console.log(refresh);
+    setRefresh(old => !old);
+  }
+
   return (
     <ScrollView style={styles.container}>
       {userLoggedIn && (
@@ -82,7 +90,7 @@ export default function Home(props) {
         </TouchableOpacity>
       )}
       <LastRead />
-      <ToReadShelf />
+      <ToReadShelf refresh={refresh} />
       <ReadNowShelf />
       <Link to="./bookScanner">
         <Text>Scan Book</Text>
@@ -98,7 +106,7 @@ export default function Home(props) {
       />
       <Button onPress={handleSearchButton} title="Search" color="dodgerblue" />
       {apiData.items && (
-        <SearchResult data={apiData} currentUserUID={userLoggedIn.uid} />
+        <SearchResult addNew={addNewHandler} data={apiData} currentUserUID={userLoggedIn.uid} />
       )}
     </ScrollView>
   );

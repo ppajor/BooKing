@@ -13,6 +13,7 @@ const LastRead = props => {
 
     const [loading, setLoading] = useState(true);
     const [lastReadBook, setLastReadBook] = useState({});
+    const [bookPercent, setBookPercent] = useState(0);
 
     useEffect(() => {
         firebase
@@ -21,7 +22,7 @@ const LastRead = props => {
             .once("value")
             .then((snapshot) => {
                 let data = snapshot.val(); // co zrobic gdy uzytkownik nie ma nic w czytanych i jest null??
-                console.log("Last read:" + data.lastRead);
+                // console.log("Last read:" + data.lastRead);
 
                 if (typeof (data.lastRead != "undefined")) {
                     firebase
@@ -32,6 +33,8 @@ const LastRead = props => {
                             let data = snapshot.val(); // co zrobic gdy uzytkownik nie ma nic w czytanych i jest null??
                             let lastread = data.lastRead;
                             let book = data.readNow[lastread];
+                            let bookPercentage = Math.floor(data.readNow[lastread].lastReadPageNumber / data.readNow[lastread].pageCount * 100);
+                            setBookPercent(bookPercentage);
                             setLastReadBook(book);
                             setLoading(false);
                         })
@@ -60,10 +63,13 @@ const LastRead = props => {
                         <TouchableHighlight style={styles.readPercentage}
                         >
                             <View>
-                                <Text style={styles.readPercentageText}>0%</Text>
+                                <Text style={styles.readPercentageText}>{bookPercent}%</Text>
                             </View>
                         </TouchableHighlight>
                         <Text>{lastReadBook.title}</Text>
+                        <TouchableHighlight style={styles.readBtn}>
+                            <Text style={{ color: "#fff" }}>Czytaj dalej</Text>
+                        </TouchableHighlight>
                     </View>
                 </>
             )}
@@ -100,6 +106,19 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontSize: 25,
         color: "#fff",
+    },
+    readBtn: {
+        position: "absolute",
+        bottom: 0,
+        right: "15%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: 95,
+        height: 34,
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: "dodgerblue",
     },
 });
 
