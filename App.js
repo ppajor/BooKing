@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { NativeRouter, Route, Switch, MemoryRouter } from "react-router-native"; //dzieki memoryrouter mozna uzywać historii w Child componentach, na normalnym routerze historia dziala jedynie w parent componentach
 
-import Home from "./Home";
+import Home from "./screens/Home/Home";
 import BookDetails from "./BookDetails";
 import WelcomePage from "./WelcomePage";
 import LoadingScreen from "./LoadingScreen";
@@ -12,9 +12,9 @@ import LibraryBookDetails from "./LibraryBookDetails";
 import CurrentReadBookDetails from "./CurrentReadBookDetails";
 import firebase from "firebase";
 import { firebaseConfig } from "./firebase-config";
-import { LogBox } from 'react-native';
+import { LogBox } from "react-native";
 
-LogBox.ignoreLogs(['Setting a timer']); //pozbywa sie niepotrzebnych warningow o jakims timerze
+LogBox.ignoreLogs(["Setting a timer"]); //pozbywa sie niepotrzebnych warningow o jakims timerze
 
 //import createHistory from "history/createMemoryHistory";
 //const history = createHistory();
@@ -41,7 +41,11 @@ export default class App extends Component {
             component={LibraryBookDetails}
           />
           <Route exact path="/bookScanner" component={BookScanner} />
-          <Route exact path="/currentReadBookDetails" component={CurrentReadBookDetails} />
+          <Route
+            exact
+            path="/currentReadBookDetails"
+            component={CurrentReadBookDetails}
+          />
         </Switch>
       </MemoryRouter>
     );

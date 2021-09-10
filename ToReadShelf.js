@@ -9,7 +9,7 @@ import {
   ImageBackground,
   TouchableHighlight,
 } from "react-native";
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign } from "@expo/vector-icons";
 import firebase from "firebase";
 import { withRouter } from "react-router-native";
 import Shelf from "./Shelf.js";
@@ -33,16 +33,27 @@ const ToReadShelf = (props) => {
       .catch((error) => {
         console.error(error);
       });
-  }, [props.refresh, deleteState]);   //aktualizuj pobierane dane po dodaniu ksiazki do polki badz po jej usunieciu
+  }, [props.refresh, deleteState]); //aktualizuj pobierane dane po dodaniu ksiazki do polki badz po jej usunieciu
 
   const deleteBook = (id) => {
     firebase
       .database()
-      .ref("/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + id)
+      .ref(
+        "/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + id
+      )
       .remove();
 
     setDeleteState((oldState) => !oldState);
-  }
+  };
+
+  const handleBookPress = (book) => {
+    props.history.push({
+      pathname: "/libraryBookDetails",
+      state: {
+        data: book,
+      },
+    });
+  };
 
   return (
     <>
@@ -55,25 +66,17 @@ const ToReadShelf = (props) => {
               {dataLibrary.map((book) => {
                 return (
                   <View style={styles.bookContainer} key={book.id}>
-                    <TouchableHighlight
-                      onPress={() =>
-                        props.history.push({
-                          pathname: "/libraryBookDetails",
-                          state: {
-                            data: book,
-                          },
-                        })
-                      }
-                    >
+                    <TouchableHighlight onPress={() => handleBookPress(book)}>
                       <Image
                         style={styles.bookMockup}
                         source={{ uri: book.thumbnail }}
-
                       ></Image>
-
                     </TouchableHighlight>
-                    <TouchableHighlight onPress={() => deleteBook(book.id)} style={styles.closeIcon}>
-                      <AntDesign name="close" size={24} color="black" />
+                    <TouchableHighlight
+                      onPress={() => deleteBook(book.id)}
+                      style={styles.closeIcon}
+                    >
+                      <AntDesign name="close" size={16} color="white" />
                     </TouchableHighlight>
                   </View>
                 );
@@ -116,12 +119,10 @@ const styles = StyleSheet.create({
     height: 112,
     marginLeft: 10,
     marginRight: 10,
-
   },
   bookMockup: {
     width: 75,
     height: 112,
-
   },
   readPercentage: {
     display: "flex",
@@ -142,8 +143,9 @@ const styles = StyleSheet.create({
   },
   closeIcon: {
     position: "absolute",
-    right: 0,
-  }
+    right: 4,
+    top: 4,
+  },
 });
 
 /* COMMENTS */

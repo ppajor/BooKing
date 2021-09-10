@@ -11,7 +11,7 @@ import {
     Alert,
     Button,
 } from "react-native";
-
+import global from "./styles.js";
 import firebase from "firebase";
 
 export default function LibraryBookDetails(props) {
@@ -66,7 +66,7 @@ export default function LibraryBookDetails(props) {
                 <View style={{ flex: 1 }}>
                     <Text>{props.location.state.data.title} </Text>
                     <TouchableHighlight
-                        style={styles.readBtn}
+                        style={global.primaryBtn}
                         onPress={() => handleReadNow()}
                     >
                         <Text style={styles.readBtnText}>Czytaj teraz!</Text>

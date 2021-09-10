@@ -43,15 +43,17 @@ const ReadNowShelf = (props) => {
             <Shelf>
               <View style={styles.bookshelf}></View>
               {dataLibrary.map((book) => {
-                let percent = Math.floor(book.lastReadPageNumber / book.pageCount * 100);
+                let percent = Math.floor(
+                  (book.lastReadPageNumber / book.pageCount) * 100
+                );
                 return (
                   <View style={styles.bookContainer} key={book.id}>
-
                     <Image
                       style={styles.bookMockup}
                       source={{ uri: book.thumbnail }}
                     ></Image>
-                    <TouchableHighlight style={styles.readPercentage}
+                    <TouchableHighlight
+                      style={styles.readPercentage}
                       onPress={() =>
                         props.history.push({
                           pathname: "/currentReadBookDetails",
@@ -63,10 +65,11 @@ const ReadNowShelf = (props) => {
                       }
                     >
                       <View>
-                        <Text style={styles.readPercentageText}>{percent}%</Text>
+                        <Text style={styles.readPercentageText}>
+                          {percent}%
+                        </Text>
                       </View>
                     </TouchableHighlight>
-
                   </View>
                 );
               })}

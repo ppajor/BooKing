@@ -12,8 +12,6 @@ import { withRouter, Link } from "react-router-native";
 import firebase from "firebase";
 
 const SearchResult = (props) => {
-
-
   const data = props.data.items;
   var img_key = 0;
   var image;
@@ -49,7 +47,7 @@ const SearchResult = (props) => {
       console.log(key, el[key]);
     }
 
-    if (typeof (el.volumeInfo.pageCount) == "undefined") {
+    if (typeof el.volumeInfo.pageCount == "undefined") {
       el.volumeInfo.pageCount = 0;
     }
 
@@ -66,7 +64,7 @@ const SearchResult = (props) => {
         },
       })
       .then(() => {
-        console.log("Data updated.")
+        console.log("Data updated.");
       })
       .catch((error) => {
         console.error(error);
@@ -137,23 +135,20 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     flex: 1,
-    marginTop: 20,
     padding: 10,
     borderWidth: 1,
     borderColor: "#e8e8e8",
-    borderRadius: 5,
   },
   bookrowTextContainer: {
     width: "100%",
-    backgroundColor: "gray",
   },
   title: {
     width: "100%",
     marginLeft: 16,
+    marginTop: 8,
     fontSize: 16,
     fontWeight: "700",
     overflow: "hidden",
-    backgroundColor: "red",
   },
   author: {
     marginTop: 4,
@@ -162,7 +157,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#d2d2d2",
     overflow: "hidden",
-    backgroundColor: "green",
   },
   addToLibrary: {
     position: "absolute",
@@ -170,7 +164,6 @@ const styles = StyleSheet.create({
     bottom: 4,
     fontSize: 12,
     zIndex: 999,
-    backgroundColor: "orange",
   },
 });
 

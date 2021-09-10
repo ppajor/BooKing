@@ -9,12 +9,13 @@ import {
   ScrollView,
 } from "react-native";
 import Constants from "expo-constants";
-import SearchResult from "./SearchResult";
+import SearchResult from "../../SearchResult";
 import { Link } from "react-router-native";
 import firebase from "firebase";
-import ToReadShelf from "./ToReadShelf";
-import ReadNowShelf from "./ReadNowShelf";
-import LastRead from "./LastRead";
+import ToReadShelf from "../../ToReadShelf";
+import ReadNowShelf from "../../ReadNowShelf";
+import LastRead from "../../LastRead";
+import { getData } from "../../api/GoogleBooksCalls";
 
 export default function Home(props) {
   const [refresh, setRefresh] = useState(false);
@@ -24,46 +25,29 @@ export default function Home(props) {
 
   const API_KEY = "AIzaSyACLJEKxGoXNM8qfeNKejGzzhESdRo6e00";
 
-  /*
-  useEffect(()=>{
-    firebase.database()
-  .ref('/users/123')
-  .once('value')
-  .then(snapshot => {
-    console.log('User data: ', snapshot.val());
-  });
-  })
-*/
-
   useEffect(() => {
     const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
-
     return subscriber;
   }, []);
 
   const onAuthStateChanged = (user) => {
     if (user) {
       setUserLoggedIn(user);
-      //console.log(user);
     } else {
       console.log("No user logged in");
     }
   };
 
+  const apiCall = async (path) => {
+    let data = await getData(path);
+    setApiData(data);
+  };
 
-
-  handleSearchButton = () => {
+  const handleSearchButton = async () => {
     let phrase = searchInput.trim().split(/\s+/).join("+");
-
-    fetch(`https://www.googleapis.com/books/v1/volumes?q=${phrase}&key=${API_KEY}
-    `)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        setApiData(responseJson);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    apiCall(
+      `https://www.googleapis.com/books/v1/volumes?q=${phrase}&key=${API_KEY}`
+    );
   };
 
   handleSignOut = () => {
@@ -78,8 +62,8 @@ export default function Home(props) {
 
   const addNewHandler = () => {
     console.log(refresh);
-    setRefresh(old => !old);
-  }
+    setRefresh((old) => !old);
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -106,7 +90,11 @@ export default function Home(props) {
       />
       <Button onPress={handleSearchButton} title="Search" color="dodgerblue" />
       {apiData.items && (
-        <SearchResult addNew={addNewHandler} data={apiData} currentUserUID={userLoggedIn.uid} />
+        <SearchResult
+          addNew={addNewHandler}
+          data={apiData}
+          currentUserUID={userLoggedIn.uid}
+        />
       )}
     </ScrollView>
   );
