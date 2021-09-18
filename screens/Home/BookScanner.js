@@ -38,6 +38,7 @@ export default function BookScanner(props) {
   }, []);
 
   const handleBarCodeScanned = ({ data }) => {
+    console.log("HANDLE BARCODE");
     setScanned(true);
 
     fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${data}&key=${API_KEY}
@@ -74,7 +75,6 @@ export default function BookScanner(props) {
       {scanned && (
         <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
       )}
-
       <TouchableOpacity
         style={styles.exit}
         onPress={() => props.history.push("/home")}

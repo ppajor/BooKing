@@ -65,7 +65,7 @@ export default function LoginPage(props) {
       <Image
         width="50"
         style={styles.logo}
-        source={require("./img/logo.png")}
+        source={require("../../img/logo.png")}
       ></Image>
 
       <TextInput

@@ -14,7 +14,7 @@ export default function BookDetails(props) {
   } else {
     image = (
       <Image
-        source={require("./img/no_cover_book.jpg")}
+        source={require("../../img/no_cover_book.jpg")}
         style={{ width: 75, height: 100 }}
       />
     );

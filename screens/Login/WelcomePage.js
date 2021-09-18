@@ -30,14 +30,13 @@ export default function WelcomePage(props) {
         if (error.code === "auth/operation-not-allowed") {
           console.log("Enable anonymous in your firebase console.");
         }
-
         console.error(error);
       });
   };
 
   return (
     <View style={styles.container}>
-      <Image source={require("./img/logo.png")}></Image>
+      <Image source={require("../../img/logo.png")}></Image>
       <Text style={styles.logoHeader}>
         Czytaj, zapisuj i dziel się z innymi!
       </Text>

@@ -26,7 +26,7 @@ const SearchResult = (props) => {
       image = (
         <Image
           key={img_key++}
-          source={require("./img/no_cover_book.jpg")}
+          source={require("../img/no_cover_book.jpg")}
           style={{ width: 75, height: 100 }}
         />
       );

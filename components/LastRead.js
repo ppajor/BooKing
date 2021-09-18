@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import firebase from "firebase";
 import { Redirect } from "react-router-native";
-import global from "./styles.js";
+import global from "../styles";
 
 const LastRead = (props) => {
   const [loading, setLoading] = useState(true);

@@ -9,13 +9,14 @@ import {
   ScrollView,
 } from "react-native";
 import Constants from "expo-constants";
-import SearchResult from "../../SearchResult";
+import SearchResult from "../../components/SearchResult";
 import { Link } from "react-router-native";
 import firebase from "firebase";
-import ToReadShelf from "../../ToReadShelf";
-import ReadNowShelf from "../../ReadNowShelf";
-import LastRead from "../../LastRead";
+import ToReadShelf from "../../components/ToReadShelf";
+import ReadNowShelf from "../../components/ReadNowShelf";
+import LastRead from "../../components/LastRead";
 import { getData } from "../../api/GoogleBooksCalls";
+import { logOut } from "../../api/FirebaseCalls";
 
 export default function Home(props) {
   const [refresh, setRefresh] = useState(false);
@@ -51,6 +52,8 @@ export default function Home(props) {
   };
 
   handleSignOut = () => {
+    logOut();
+    /*
     firebase
       .auth()
       .signOut()
@@ -58,6 +61,7 @@ export default function Home(props) {
         console.log("User signed out!");
         props.history.push("/chooseLoginVariant");
       });
+      */
   };
 
   const addNewHandler = () => {

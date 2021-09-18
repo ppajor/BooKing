@@ -23,7 +23,7 @@ export default function LibraryBookDetails(props) {
   } else {
     image = (
       <Image
-        source={require("./img/no_cover_book.jpg")}
+        source={require("../../img/no_cover_book.jpg")}
         style={{ width: 75, height: 100 }}
       />
     );
@@ -67,9 +67,9 @@ export default function LibraryBookDetails(props) {
           .database()
           .ref(
             "/users/" +
-            firebase.auth().currentUser.uid +
-            "/library/toRead/" +
-            el.id
+              firebase.auth().currentUser.uid +
+              "/library/toRead/" +
+              el.id
           )
           .remove(); // promise??? handle then/catch ?????
       })

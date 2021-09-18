@@ -2,14 +2,14 @@ import React, { Component } from "react";
 import { NativeRouter, Route, Switch, MemoryRouter } from "react-router-native"; //dzieki memoryrouter mozna uzywać historii w Child componentach, na normalnym routerze historia dziala jedynie w parent componentach
 
 import Home from "./screens/Home/Home";
-import BookDetails from "./BookDetails";
-import WelcomePage from "./WelcomePage";
-import LoadingScreen from "./LoadingScreen";
-import LoginPage from "./LoginPage";
-import SignUpEmail from "./SignUpEmail";
-import BookScanner from "./BookScanner";
-import LibraryBookDetails from "./LibraryBookDetails";
-import CurrentReadBookDetails from "./CurrentReadBookDetails";
+import BookDetails from "./screens/Home/BookDetails";
+import WelcomePage from "./screens/Login/WelcomePage";
+import LoadingScreen from "./screens/Login/LoadingScreen";
+import LoginPage from "./screens/Login/LoginPage";
+import SignUpEmail from "./screens/Login/SignUpEmail";
+import BookScanner from "./screens/Home/BookScanner";
+import LibraryBookDetails from "./screens/Home/LibraryBookDetails";
+import CurrentReadBookDetails from "./screens/Home/CurrentReadBookDetails";
 import firebase from "firebase";
 import { firebaseConfig } from "./firebase-config";
 import { LogBox } from "react-native";
