@@ -24,7 +24,7 @@ export default function WelcomePage(props) {
       .signInAnonymously()
       .then(() => {
         console.log("User signed in anonymously");
-        props.history.push("/home");
+        // props.history.push("/home");
       })
       .catch((error) => {
         if (error.code === "auth/operation-not-allowed") {
@@ -44,7 +44,7 @@ export default function WelcomePage(props) {
         <Text style={styles.googleButtonText}>Sign in with Google</Text>
       </TouchableOpacity>
       <Link to="./login">
-        <Text>Sign in with e-mail</Text>
+        <Text>Log in with e-mail</Text>
       </Link>
       <Link to="./signupEmail">
         <Text>Sign up with e-mail</Text>

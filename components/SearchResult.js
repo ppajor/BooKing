@@ -8,10 +8,12 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { withRouter, Link } from "react-router-native";
+import { useNavigation } from "@react-navigation/native";
 import firebase from "firebase";
 
 const SearchResult = (props) => {
+  const navigation = useNavigation();
+
   const data = props.data.items;
   var img_key = 0;
   var image;
@@ -94,8 +96,15 @@ const SearchResult = (props) => {
           return (
             <View style={styles.bookrow} key={el.id}>
               <TouchableOpacity
-                onPress={() =>
+                onPress={
+                  () =>
+                    navigation.push("BookDetails", {
+                      title: el.volumeInfo.title,
+                      cover: el.volumeInfo.imageLinks.thumbnail,
+                      description: el.volumeInfo.description,
+                    })
                   // oprocz pathname mozna podac dane i w child componencie odniesc sie do nich -> props.location.state
+                  /*
                   props.history.push({
                     pathname: "/bookDetails",
                     state: {
@@ -104,6 +113,7 @@ const SearchResult = (props) => {
                       description: el.volumeInfo.description,
                     },
                   })
+                  */
                 }
               >
                 {image}
@@ -128,7 +138,7 @@ const SearchResult = (props) => {
   );
 };
 
-export default withRouter(SearchResult);
+export default SearchResult;
 
 const styles = StyleSheet.create({
   bookrow: {

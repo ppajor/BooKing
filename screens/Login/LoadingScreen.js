@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Text } from "react-native";
 import firebase from "firebase";
 
-const LoadingScreen = (props) => {
+const LoadingScreen = ({ navigation }) => {
   const [userLogged, setUserLogged] = useState(true);
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        props.history.push("/home");
+        navigation.navigate("Home");
       } else {
-        props.history.push("/chooseLoginVariant");
+        navigation.navigate("WelcomePage");
       }
     });
   });

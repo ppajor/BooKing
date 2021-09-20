@@ -17,8 +17,9 @@ import ReadNowShelf from "../../components/ReadNowShelf";
 import LastRead from "../../components/LastRead";
 import { getData } from "../../api/GoogleBooksCalls";
 import { logOut } from "../../api/FirebaseCalls";
+import DefText from "../../components/DefText";
 
-export default function Home(props) {
+export default function Home({ navigation }) {
   const [refresh, setRefresh] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [apiData, setApiData] = useState({});
@@ -53,15 +54,6 @@ export default function Home(props) {
 
   handleSignOut = () => {
     logOut();
-    /*
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        console.log("User signed out!");
-        props.history.push("/chooseLoginVariant");
-      });
-      */
   };
 
   const addNewHandler = () => {
@@ -73,16 +65,19 @@ export default function Home(props) {
     <ScrollView style={styles.container}>
       {userLoggedIn && (
         <TouchableOpacity onPress={handleSignOut}>
-          <Text>Hello {userLoggedIn.email}</Text>
-          <Text>Sign Out</Text>
+          <DefText>Hello {userLoggedIn.email}</DefText>
+          <DefText size={32} family="Rubik-Regular">
+            Welcome back!
+          </DefText>
+          <DefText>Sign Out</DefText>
         </TouchableOpacity>
       )}
       <LastRead />
       <ToReadShelf refresh={refresh} />
       <ReadNowShelf />
-      <Link to="./bookScanner">
-        <Text>Scan Book</Text>
-      </Link>
+      <TouchableOpacity onPress={() => navigation.navigate("BookScanner")}>
+        <DefText>Scan Book</DefText>
+      </TouchableOpacity>
 
       <TextInput
         style={styles.searchInput}

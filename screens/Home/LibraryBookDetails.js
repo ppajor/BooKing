@@ -10,13 +10,13 @@ import {
 
 import firebase from "firebase";
 
-export default function LibraryBookDetails(props) {
+export default function LibraryBookDetails({ navigation, route }) {
   var image;
 
-  if (props.location.state.data.thumbnail) {
+  if (route.params.data.thumbnail) {
     image = (
       <Image
-        source={{ uri: props.location.state.data.thumbnail }}
+        source={{ uri: route.params.data.thumbnail }}
         style={{ width: 100, height: 150 }}
       />
     );
@@ -31,7 +31,7 @@ export default function LibraryBookDetails(props) {
 
   useEffect(() => {
     const backAction = () => {
-      props.history.push("/Home"); //wracamy do glownej
+      navigation.push("Home"); //wracamy do glownej
       return true; //musimy zreturnowac true -> patrz dokumentacja
     };
 
@@ -83,10 +83,10 @@ export default function LibraryBookDetails(props) {
       <View style={styles.container}>
         {image}
         <View style={{ flex: 1 }}>
-          <Text>{props.location.state.data.title} </Text>
+          <Text>{route.params.data.title} </Text>
           <TouchableHighlight
             style={styles.readBtn}
-            onPress={() => handleAddReadNow(props.location.state.data)}
+            onPress={() => handleAddReadNow(route.params.data)}
           >
             <Text style={styles.readBtnText}>Czytaj</Text>
           </TouchableHighlight>

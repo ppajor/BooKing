@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { StyleSheet, View, Text, BackHandler, Image } from "react-native";
 
-export default function BookDetails(props) {
+export default function BookDetails({ navigation, route }) {
   var image;
 
-  if (props.location.state.cover) {
+  if (route.params.cover) {
     image = (
       <Image
-        source={{ uri: props.location.state.cover }}
+        source={{ uri: route.params.cover }}
         style={{ width: 120, height: 160 }}
       />
     );
@@ -22,7 +22,7 @@ export default function BookDetails(props) {
 
   useEffect(() => {
     const backAction = () => {
-      props.history.push("/Home"); //wracamy do glownej
+      navigation.navigate("Home");
       return true; //musimy zreturnowac true -> patrz dokumentacja
     };
 
@@ -39,9 +39,9 @@ export default function BookDetails(props) {
     <View style={{ marginTop: 50 }}>
       <View style={{ display: "flex", flexDirection: "row" }}>
         {image}
-        <Text>{props.location.state.title}</Text>
+        <Text>{route.params.title}</Text>
       </View>
-      <Text>{props.location.state.description}</Text>
+      <Text>{route.params.description}</Text>
     </View>
   );
 }

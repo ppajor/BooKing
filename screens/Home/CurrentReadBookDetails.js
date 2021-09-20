@@ -14,12 +14,12 @@ import {
 import global from "../../styles";
 import firebase from "firebase";
 
-export default function LibraryBookDetails(props) {
+export default function LibraryBookDetails({ navigation, route }) {
   const [timerOn, setTimerOn] = useState(false);
 
   useEffect(() => {
     const backAction = () => {
-      props.history.push("/Home"); //wracamy do glownej
+      navigation.push("Home"); //wracamy do glownej
       return true; //musimy zreturnowac true -> patrz dokumentacja
     };
 
@@ -34,12 +34,12 @@ export default function LibraryBookDetails(props) {
 
   const handleReadNow = () => {
     setTimerOn(true);
-    console.log(props.location.state.data.id);
+    console.log(route.params.data.id);
     firebase
       .database()
       .ref("/users/" + firebase.auth().currentUser.uid + "/library")
       .update({
-        lastRead: props.location.state.data.id,
+        lastRead: route.params.data.id,
       })
       .then(() => {
         console.log("Data updated.");
@@ -53,18 +53,18 @@ export default function LibraryBookDetails(props) {
     <View style={{ marginTop: 50 }}>
       <View style={styles.bookContainer}>
         <Image
-          source={{ uri: props.location.state.data.thumbnail }}
+          source={{ uri: route.params.data.thumbnail }}
           style={{ width: 100, height: 150 }}
         />
         <TouchableHighlight style={styles.readPercentage}>
           <View>
             <Text style={styles.readPercentageText}>
-              {props.location.state.bookPercent}%
+              {route.params.bookPercent}%
             </Text>
           </View>
         </TouchableHighlight>
         <View style={{ flex: 1 }}>
-          <Text>{props.location.state.data.title} </Text>
+          <Text>{route.params.data.title} </Text>
           <TouchableHighlight
             style={global.primaryBtn}
             onPress={() => handleReadNow()}
@@ -74,7 +74,7 @@ export default function LibraryBookDetails(props) {
         </View>
       </View>
 
-      {timerOn && <Timer bookID={props.location.state.data.id} />}
+      {timerOn && <Timer bookID={route.params.data.id} />}
     </View>
   );
 }

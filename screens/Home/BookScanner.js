@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 
-export default function BookScanner(props) {
+export default function BookScanner({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
@@ -17,7 +17,7 @@ export default function BookScanner(props) {
 
   useEffect(() => {
     const backAction = () => {
-      props.history.push("/"); //wracamy do glownej
+      navigation.navigate("Home"); //wracamy do glownej
       return true; //musimy zreturnowac true -> patrz dokumentacja
     };
 
@@ -77,7 +77,7 @@ export default function BookScanner(props) {
       )}
       <TouchableOpacity
         style={styles.exit}
-        onPress={() => props.history.push("/home")}
+        onPress={() => navigation.navigate("Home")}
       >
         <Text style={styles.x}>X</Text>
       </TouchableOpacity>

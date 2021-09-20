@@ -4,19 +4,18 @@ import {
   View,
   Text,
   Image,
-  FlatList,
-  ScrollView,
-  ImageBackground,
   TouchableHighlight,
 } from "react-native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 
 import firebase from "firebase";
-import { withRouter } from "react-router-native";
 import Shelf from "./Shelf.js";
 
 const ReadNowShelf = (props) => {
   const [dataLibrary, setDataLibrary] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const navigation = useNavigation();
   // wrap scrollview in view! inaczej sie style pierdola
   useEffect(() => {
     firebase
@@ -54,7 +53,13 @@ const ReadNowShelf = (props) => {
                     ></Image>
                     <TouchableHighlight
                       style={styles.readPercentage}
-                      onPress={() =>
+                      onPress={
+                        () =>
+                          navigation.navigate("CurrentReadBookDetails", {
+                            data: book,
+                            bookPercent: percent,
+                          })
+                        /*
                         props.history.push({
                           pathname: "/currentReadBookDetails",
                           state: {
@@ -62,6 +67,7 @@ const ReadNowShelf = (props) => {
                             bookPercent: percent,
                           },
                         })
+                        */
                       }
                     >
                       <View>
@@ -81,7 +87,7 @@ const ReadNowShelf = (props) => {
   );
 };
 
-export default withRouter(ReadNowShelf);
+export default ReadNowShelf;
 
 const styles = StyleSheet.create({
   container: {

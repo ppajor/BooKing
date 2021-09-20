@@ -11,14 +11,16 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import firebase from "firebase";
-import { withRouter } from "react-router-native";
+import { useNavigation } from "@react-navigation/native";
 import Shelf from "./Shelf.js";
 
 const ToReadShelf = (props) => {
   const [dataLibrary, setDataLibrary] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteState, setDeleteState] = useState(false);
-  // wrap scrollview in view! inaczej sie style pierdola nie wiem czemu
+
+  const navigation = useNavigation();
+  // wrap scrollview in view! inaczej sie style pierdola
   useEffect(() => {
     firebase
       .database()
@@ -47,12 +49,15 @@ const ToReadShelf = (props) => {
   };
 
   const handleBookPress = (book) => {
+    navigation.navigate("LibraryBookDetails", { data: book });
+    /*
     props.history.push({
       pathname: "/libraryBookDetails",
       state: {
         data: book,
       },
     });
+    */
   };
 
   return (
@@ -89,7 +94,7 @@ const ToReadShelf = (props) => {
   );
 };
 
-export default withRouter(ToReadShelf);
+export default ToReadShelf;
 
 const styles = StyleSheet.create({
   container: {

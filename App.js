@@ -1,68 +1,46 @@
-import React, { Component } from "react";
-import { NativeRouter, Route, Switch, MemoryRouter } from "react-router-native"; //dzieki memoryrouter mozna uzywać historii w Child componentach, na normalnym routerze historia dziala jedynie w parent componentach
+// In App.js in a new project
 
-import Home from "./screens/Home/Home";
-import BookDetails from "./screens/Home/BookDetails";
-import WelcomePage from "./screens/Login/WelcomePage";
-import LoadingScreen from "./screens/Login/LoadingScreen";
-import LoginPage from "./screens/Login/LoginPage";
-import SignUpEmail from "./screens/Login/SignUpEmail";
-import BookScanner from "./screens/Home/BookScanner";
-import LibraryBookDetails from "./screens/Home/LibraryBookDetails";
-import CurrentReadBookDetails from "./screens/Home/CurrentReadBookDetails";
+import * as React from "react";
+import { View, Text } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import firebase from "firebase";
 import { firebaseConfig } from "./firebase-config";
-import { LogBox } from "react-native";
+import LoadingScreen from "./screens/Login/LoadingScreen";
+import WelcomePage from "./screens/Login/WelcomePage";
+import LoginPage from "./screens/Login/LoginPage";
+import SignUpEmail from "./screens/Login/SignUpEmail";
+import Home from "./screens/Home/Home";
+import CurrentReadBookDetails from "./screens/Home/CurrentReadBookDetails";
+import LibraryBookDetails from "./screens/Home/LibraryBookDetails";
+import BookScanner from "./screens/Home/BookScanner";
+import BookDetails from "./screens/Home/BookDetails";
 
-LogBox.ignoreLogs(["Setting a timer"]); //pozbywa sie niepotrzebnych warningow o jakims timerze
-
-//import createHistory from "history/createMemoryHistory";
-//const history = createHistory();
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig); //musimy sprawdzic czy aplikacja zostala juz zainicjowana czy nie, zeby za kazdym razem nie inicjowac apki
+const Stack = createNativeStackNavigator();
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <MemoryRouter>
-        <Switch>
-          <Route exact path="/" component={LoadingScreen} />
-          <Route exact path="/chooseLoginVariant" component={WelcomePage} />
-          <Route exact path="/home" component={Home} />
-          <Route exact path="/login" component={LoginPage} />
-          <Route exact path="/signupEmail" component={SignUpEmail} />
-          <Route exact path="/bookDetails" component={BookDetails} />
-          <Route
-            exact
-            path="/libraryBookDetails"
-            component={LibraryBookDetails}
-          />
-          <Route exact path="/bookScanner" component={BookScanner} />
-          <Route
-            exact
-            path="/currentReadBookDetails"
-            component={CurrentReadBookDetails}
-          />
-        </Switch>
-      </MemoryRouter>
-    );
-  }
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
+        <Stack.Screen name="WelcomePage" component={WelcomePage} />
+        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="LoginPage" component={LoginPage} />
+        <Stack.Screen name="SignUpEmail" component={SignUpEmail} />
+        <Stack.Screen name="BookScanner" component={BookScanner} />
+        <Stack.Screen name="BookDetails" component={BookDetails} />
+        <Stack.Screen
+          name="LibraryBookDetails"
+          component={LibraryBookDetails}
+        />
+        <Stack.Screen
+          name="CurrentReadBookDetails"
+          component={CurrentReadBookDetails}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }
 
-//COMMENTS
-
-//dzialajace props.history.push w komponencie:
-/*
-<Route path="/path" component={MyComponent}>
-</Route>
-*/
-
-//niedzialajace props.history.push w komponnecie:
-/*
-<Route path="/path">
- <MyComponent/>
-</Route>
-*/
+export default App;
