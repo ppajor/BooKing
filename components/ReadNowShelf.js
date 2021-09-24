@@ -6,10 +6,11 @@ import {
   Image,
   TouchableHighlight,
 } from "react-native";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import firebase from "firebase";
 import Shelf from "./Shelf.js";
+import DefText from "./DefText.js";
 
 const ReadNowShelf = (props) => {
   const [dataLibrary, setDataLibrary] = useState([]);
@@ -37,7 +38,9 @@ const ReadNowShelf = (props) => {
     <>
       {!loading && (
         <>
-          <Text>Czytane:</Text>
+          <View style={{ marginBottom: 8 }}>
+            <DefText>Czytane:</DefText>
+          </View>
           <View>
             <Shelf>
               <View style={styles.bookshelf}></View>

@@ -1,21 +1,42 @@
-import React, { useEffect, useState } from "react";
-import { Text } from "react-native";
+import React, { useEffect } from "react";
+import { View } from "react-native";
+import LottieView from "lottie-react-native";
 import firebase from "firebase";
+import Screen from "../../components/Screen";
 
 const LoadingScreen = ({ navigation }) => {
-  const [userLogged, setUserLogged] = useState(true);
-
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        navigation.navigate("Home");
+        navigation.push("Home");
       } else {
-        navigation.navigate("WelcomePage");
+        navigation.push("WelcomePage");
       }
     });
   });
 
-  return <Text>Loading screen</Text>;
+  return (
+    <Screen>
+      <View
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <LottieView
+          style={{
+            width: 250,
+            height: 250,
+          }}
+          source={require("../../assets/LottieFiles/stack-of-books.json")} //conditionale robimy poza sourcem bo inaczej nie działa
+          loop
+          autoPlay
+        />
+      </View>
+    </Screen>
+  );
 };
 
 export default LoadingScreen;

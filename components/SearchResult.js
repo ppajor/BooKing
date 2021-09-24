@@ -96,24 +96,12 @@ const SearchResult = (props) => {
           return (
             <View style={styles.bookrow} key={el.id}>
               <TouchableOpacity
-                onPress={
-                  () =>
-                    navigation.push("BookDetails", {
-                      title: el.volumeInfo.title,
-                      cover: el.volumeInfo.imageLinks.thumbnail,
-                      description: el.volumeInfo.description,
-                    })
-                  // oprocz pathname mozna podac dane i w child componencie odniesc sie do nich -> props.location.state
-                  /*
-                  props.history.push({
-                    pathname: "/bookDetails",
-                    state: {
-                      title: el.volumeInfo.title,
-                      cover: el.volumeInfo.imageLinks.thumbnail,
-                      description: el.volumeInfo.description,
-                    },
+                onPress={() =>
+                  navigation.push("BookDetails", {
+                    title: el.volumeInfo.title,
+                    cover: el.volumeInfo.imageLinks.thumbnail,
+                    description: el.volumeInfo.description,
                   })
-                  */
                 }
               >
                 {image}

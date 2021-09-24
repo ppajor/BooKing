@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, ScrollView, ImageBackground } from "react-native";
+import { StyleSheet, ScrollView, ImageBackground, View } from "react-native";
 
 const Shelf = (props) => {
   return (
@@ -7,9 +7,8 @@ const Shelf = (props) => {
       <ImageBackground
         source={require("../img/wood_texture.jpg")}
         style={styles.bookshelfContainer}
-      >
-        {props.children}
-      </ImageBackground>
+      ></ImageBackground>
+      <View style={styles.booksContainer}>{props.children}</View>
     </ScrollView>
   );
 };
@@ -22,12 +21,17 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   bookshelfContainer: {
+    position: "absolute",
+    width: "100%",
+    height: 150,
+    paddingBottom: 10,
+    //backgroundCOlor: "#d2d2d2",
+  },
+  booksContainer: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    height: 150,
     paddingBottom: 10,
-    //backgroundCOlor: "#d2d2d2",
   },
 });

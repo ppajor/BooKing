@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
-  StyleSheet,
   View,
-  Text,
+  StyleSheet,
   Button,
   TextInput,
   TouchableOpacity,
@@ -10,33 +9,41 @@ import {
 } from "react-native";
 import Constants from "expo-constants";
 import SearchResult from "../../components/SearchResult";
-import { Link } from "react-router-native";
 import firebase from "firebase";
 import ToReadShelf from "../../components/ToReadShelf";
 import ReadNowShelf from "../../components/ReadNowShelf";
 import LastRead from "../../components/LastRead";
 import { getData } from "../../api/GoogleBooksCalls";
-import { logOut } from "../../api/FirebaseCalls";
+import { logOut, getFirebase } from "../../api/firebaseCalls";
 import DefText from "../../components/DefText";
 
 export default function Home({ navigation }) {
   const [refresh, setRefresh] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [apiData, setApiData] = useState({});
+  const [userData, setUserData] = useState(null);
   const [userLoggedIn, setUserLoggedIn] = useState(false); // po zalogowaniu/utworzeniu konta automatycznie przekierowuje do home bo zmienia się state userloggedin (???)
 
   const API_KEY = "AIzaSyACLJEKxGoXNM8qfeNKejGzzhESdRo6e00";
 
   useEffect(() => {
-    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
+    const subscriber = firebase.auth().onAuthStateChanged((user) => {
+      user ? setUserLoggedIn(user) : console.log("No user logged in");
+    });
     return subscriber;
   }, []);
 
-  const onAuthStateChanged = (user) => {
-    if (user) {
-      setUserLoggedIn(user);
-    } else {
-      console.log("No user logged in");
+  useEffect(() => {
+    getUserData();
+  }, []);
+
+  const getUserData = async () => {
+    const result = await getFirebase(
+      "/users/" + firebase.auth().currentUser.uid + "/library"
+    );
+    if (result) {
+      console.log(result);
+      setUserData(result);
     }
   };
 
@@ -54,6 +61,7 @@ export default function Home({ navigation }) {
 
   handleSignOut = () => {
     logOut();
+    navigation.push("WelcomePage");
   };
 
   const addNewHandler = () => {
@@ -64,36 +72,48 @@ export default function Home({ navigation }) {
   return (
     <ScrollView style={styles.container}>
       {userLoggedIn && (
-        <TouchableOpacity onPress={handleSignOut}>
-          <DefText>Hello {userLoggedIn.email}</DefText>
-          <DefText size={32} family="Rubik-Regular">
-            Welcome back!
-          </DefText>
-          <DefText>Sign Out</DefText>
-        </TouchableOpacity>
-      )}
-      <LastRead />
-      <ToReadShelf refresh={refresh} />
-      <ReadNowShelf />
-      <TouchableOpacity onPress={() => navigation.navigate("BookScanner")}>
-        <DefText>Scan Book</DefText>
-      </TouchableOpacity>
+        <>
+          <View style={styles.userLoggedInNavbar}>
+            <DefText>Hello {userLoggedIn.email}</DefText>
+            <TouchableOpacity onPress={handleSignOut}>
+              <DefText>Sign Out</DefText>
+            </TouchableOpacity>
+          </View>
+          <View style={{ marginBottom: 8 }}>
+            <DefText size={32} family="Rubik-Regular">
+              Welcome back!
+            </DefText>
+          </View>
 
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search for a book..."
-        onChangeText={(search_input_text) => {
-          setSearchInput(search_input_text);
-        }}
-        value={searchInput}
-      />
-      <Button onPress={handleSearchButton} title="Search" color="dodgerblue" />
-      {apiData.items && (
-        <SearchResult
-          addNew={addNewHandler}
-          data={apiData}
-          currentUserUID={userLoggedIn.uid}
-        />
+          <LastRead />
+          <ToReadShelf refresh={refresh} />
+          <ReadNowShelf />
+          <TouchableOpacity onPress={() => navigation.navigate("BookScanner")}>
+            <DefText>Scan Book</DefText>
+          </TouchableOpacity>
+
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search for a book..."
+            onChangeText={(search_input_text) => {
+              setSearchInput(search_input_text);
+            }}
+            value={searchInput}
+          />
+          <Button
+            onPress={handleSearchButton}
+            title="Search"
+            color="dodgerblue"
+          />
+
+          {apiData.items && (
+            <SearchResult
+              addNew={addNewHandler}
+              data={apiData}
+              currentUserUID={userLoggedIn.uid}
+            />
+          )}
+        </>
       )}
     </ScrollView>
   );
@@ -102,8 +122,8 @@ export default function Home({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 8,
     backgroundColor: "#fff",
-    marginTop: Constants.statusBarHeight,
   },
 
   searchInput: {
@@ -113,6 +133,12 @@ const styles = StyleSheet.create({
     borderColor: "#e2e2e2",
     borderRadius: 5,
     color: "#000",
+  },
+  userLoggedInNavbar: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
   },
 });
 /*

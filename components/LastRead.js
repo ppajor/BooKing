@@ -7,73 +7,61 @@ import {
   TouchableHighlight,
 } from "react-native";
 import firebase from "firebase";
-import { Redirect } from "react-router-native";
 import global from "../styles";
+import DefText from "./DefText";
+import { getFirebase } from "../api/firebaseCalls";
 
 const LastRead = (props) => {
-  const [loading, setLoading] = useState(true);
-  const [lastReadBook, setLastReadBook] = useState({});
+  const [lastReadBook, setLastReadBook] = useState(null);
   const [bookPercent, setBookPercent] = useState(0);
 
-  useEffect(() => {
-    firebase
-      .database()
-      .ref("/users/" + firebase.auth().currentUser.uid + "/library")
-      .once("value")
-      .then((snapshot) => {
-        let data = snapshot.val(); // co zrobic gdy uzytkownik nie ma nic w czytanych i jest null??
-        // console.log("Last read:" + data.lastRead);
+  const getLastRead = async () => {
+    const data = await getFirebase(
+      "/users/" + firebase.auth().currentUser.uid + "/library"
+    );
 
-        if (typeof (data.lastRead != "undefined")) {
-          firebase
-            .database()
-            .ref("/users/" + firebase.auth().currentUser.uid + "/library")
-            .once("value")
-            .then((snapshot) => {
-              if (snapshot.exists) {
-                let data = snapshot.val(); // co zrobic gdy uzytkownik nie ma nic w czytanych i jest null??
-                let lastread = data.lastRead;
-                let book = data.readNow[lastread];
-                let bookPercentage = Math.floor(
-                  (data.readNow[lastread].lastReadPageNumber /
-                    data.readNow[lastread].pageCount) *
-                    100
-                );
-                setBookPercent(bookPercentage);
-                setLastReadBook(book);
-                setLoading(false);
-              }
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    if (data.lastRead) {
+      let lastread = data.lastRead;
+      let book = data.readNow[lastread];
+      let bookPercentage = Math.floor(
+        (data.readNow[lastread].lastReadPageNumber /
+          data.readNow[lastread].pageCount) *
+          100
+      );
+      setBookPercent(bookPercentage);
+      setLastReadBook(book);
+    }
+  };
+
+  useEffect(() => {
+    getLastRead();
   }, []);
 
   return (
     <>
-      {Object.keys(lastReadBook).length > 0 && <Text>Ostatnio czytana</Text>}
-      {!loading && (
+      {lastReadBook && (
         <>
-          <View style={styles.container}>
-            <Image
-              style={styles.bookMockup}
-              source={{ uri: lastReadBook.thumbnail }}
-            ></Image>
-            <TouchableHighlight style={styles.readPercentage}>
-              <View>
-                <Text style={styles.readPercentageText}>{bookPercent}%</Text>
-              </View>
-            </TouchableHighlight>
-            <Text>{lastReadBook.title}</Text>
-            <TouchableHighlight style={global.primaryBtn}>
-              <Text style={{ color: "#fff" }}>Czytaj dalej</Text>
-            </TouchableHighlight>
+          <View style={{ marginBottom: 8 }}>
+            <DefText>Ostatnio czytana</DefText>
           </View>
+          <>
+            <View style={styles.container}>
+              <Image
+                style={styles.bookMockup}
+                source={{ uri: lastReadBook.thumbnail }}
+              ></Image>
+              <TouchableHighlight style={styles.readPercentage}>
+                <View>
+                  <Text style={styles.readPercentageText}>{bookPercent}%</Text>
+                </View>
+              </TouchableHighlight>
+              <Text>{lastReadBook.title}</Text>
+              <TouchableHighlight style={global.primaryBtn}>
+                <Text style={{ color: "#fff" }}>Czytaj dalej</Text>
+              </TouchableHighlight>
+            </View>
+          </>
+          )}
         </>
       )}
     </>
@@ -85,6 +73,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     flexDirection: "row",
+    marginBottom: 12,
     backgroundColor: "#f8f8f8",
   },
   bookMockup: {

@@ -13,6 +13,7 @@ import { AntDesign } from "@expo/vector-icons";
 import firebase from "firebase";
 import { useNavigation } from "@react-navigation/native";
 import Shelf from "./Shelf.js";
+import DefText from "./DefText.js";
 
 const ToReadShelf = (props) => {
   const [dataLibrary, setDataLibrary] = useState([]);
@@ -64,8 +65,10 @@ const ToReadShelf = (props) => {
     <>
       {!loading && (
         <>
-          <Text>Do przeczytania</Text>
-          <View>
+          <View style={{ marginBottom: 4 }}>
+            <DefText>Do przeczytania</DefText>
+          </View>
+          <View style={{ marginBottom: 12 }}>
             <Shelf>
               <View style={styles.bookshelf}></View>
               {dataLibrary.map((book) => {
