@@ -19,7 +19,8 @@ const LastRead = (props) => {
     const data = await getFirebase(
       "/users/" + firebase.auth().currentUser.uid + "/library"
     );
-
+    console.log("data last read");
+    console.log(data);
     if (data.lastRead) {
       let lastread = data.lastRead;
       let book = data.readNow[lastread];
@@ -39,12 +40,12 @@ const LastRead = (props) => {
 
   return (
     <>
-      {lastReadBook && (
+      {lastReadBook ? (
         <>
           <View style={{ marginBottom: 8 }}>
             <DefText>Ostatnio czytana</DefText>
           </View>
-          <>
+          <View>
             <View style={styles.container}>
               <Image
                 style={styles.bookMockup}
@@ -52,7 +53,9 @@ const LastRead = (props) => {
               ></Image>
               <TouchableHighlight style={styles.readPercentage}>
                 <View>
-                  <Text style={styles.readPercentageText}>{bookPercent}%</Text>
+                  <DefText size={24} color="#fff" align="center">
+                    {bookPercent}%
+                  </DefText>
                 </View>
               </TouchableHighlight>
               <Text>{lastReadBook.title}</Text>
@@ -60,10 +63,9 @@ const LastRead = (props) => {
                 <Text style={{ color: "#fff" }}>Czytaj dalej</Text>
               </TouchableHighlight>
             </View>
-          </>
-          )}
+          </View>
         </>
-      )}
+      ) : null}
     </>
   );
 };
@@ -74,7 +76,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     marginBottom: 12,
-    backgroundColor: "#f8f8f8",
+    paddingVertical: 12,
   },
   bookMockup: {
     width: 90,
@@ -90,15 +92,12 @@ const styles = StyleSheet.create({
     zIndex: 2,
     width: 90,
     height: 134,
+    marginTop: 12,
     marginLeft: 10,
     marginRight: 10,
     opacity: 0.78,
   },
-  readPercentageText: {
-    textAlign: "center",
-    fontSize: 25,
-    color: "#fff",
-  },
+
   readBtn: {
     position: "absolute",
     bottom: 0,

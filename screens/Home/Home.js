@@ -10,12 +10,12 @@ import {
 import Constants from "expo-constants";
 import SearchResult from "../../components/SearchResult";
 import firebase from "firebase";
-import ToReadShelf from "../../components/ToReadShelf";
-import ReadNowShelf from "../../components/ReadNowShelf";
 import LastRead from "../../components/LastRead";
 import { getData } from "../../api/GoogleBooksCalls";
 import { logOut, getFirebase } from "../../api/firebaseCalls";
 import DefText from "../../components/DefText";
+import Shelf from "../../components/Shelf";
+import Screen from "../../components/Screen";
 
 export default function Home({ navigation }) {
   const [refresh, setRefresh] = useState(false);
@@ -41,10 +41,7 @@ export default function Home({ navigation }) {
     const result = await getFirebase(
       "/users/" + firebase.auth().currentUser.uid + "/library"
     );
-    if (result) {
-      console.log(result);
-      setUserData(result);
-    }
+    if (result) setUserData(result);
   };
 
   const apiCall = async (path) => {
@@ -70,52 +67,60 @@ export default function Home({ navigation }) {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      {userLoggedIn && (
-        <>
-          <View style={styles.userLoggedInNavbar}>
-            <DefText>Hello {userLoggedIn.email}</DefText>
-            <TouchableOpacity onPress={handleSignOut}>
-              <DefText>Sign Out</DefText>
-            </TouchableOpacity>
-          </View>
-          <View style={{ marginBottom: 8 }}>
-            <DefText size={32} family="Rubik-Regular">
-              Welcome back!
-            </DefText>
-          </View>
-
-          <LastRead />
-          <ToReadShelf refresh={refresh} />
-          <ReadNowShelf />
-          <TouchableOpacity onPress={() => navigation.navigate("BookScanner")}>
-            <DefText>Scan Book</DefText>
-          </TouchableOpacity>
-
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search for a book..."
-            onChangeText={(search_input_text) => {
-              setSearchInput(search_input_text);
-            }}
-            value={searchInput}
-          />
-          <Button
-            onPress={handleSearchButton}
-            title="Search"
-            color="dodgerblue"
-          />
-
-          {apiData.items && (
-            <SearchResult
-              addNew={addNewHandler}
-              data={apiData}
-              currentUserUID={userLoggedIn.uid}
+    <Screen>
+      <ScrollView style={styles.container}>
+        {userLoggedIn && userData && (
+          <>
+            <View style={styles.userLoggedInNavbar}>
+              <DefText>Hello {userLoggedIn.email}</DefText>
+              <TouchableOpacity onPress={handleSignOut}>
+                <DefText>Sign Out</DefText>
+              </TouchableOpacity>
+            </View>
+            <View style={{ marginBottom: 8 }}>
+              <DefText size={32} family="Rubik-Regular">
+                Welcome back!
+              </DefText>
+            </View>
+            <LastRead />
+            <Shelf data={userData.toRead} name="Do przeczytania" />
+            <Shelf
+              data={userData.readNow}
+              name="Czytane teraz"
+              percentage={true}
             />
-          )}
-        </>
-      )}
-    </ScrollView>
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate("BookScanner")}
+            >
+              <DefText>Scan Book</DefText>
+            </TouchableOpacity>
+
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search for a book..."
+              onChangeText={(search_input_text) => {
+                setSearchInput(search_input_text);
+              }}
+              value={searchInput}
+            />
+            <Button
+              onPress={handleSearchButton}
+              title="Search"
+              color="dodgerblue"
+            />
+
+            {apiData.items && (
+              <SearchResult
+                addNew={addNewHandler}
+                data={apiData}
+                currentUserUID={userLoggedIn.uid}
+              />
+            )}
+          </>
+        )}
+      </ScrollView>
+    </Screen>
   );
 }
 

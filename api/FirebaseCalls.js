@@ -52,3 +52,7 @@ export const updateFirebase = async (path, data) => {
       console.error(error);
     });
 };
+
+export const removeFirebase = async (path) => {
+  firebase.database().ref(path).remove();
+};
