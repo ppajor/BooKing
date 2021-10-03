@@ -9,3 +9,17 @@ export const getData = async (path) => {
       return null;
     });
 };
+
+export const filterData = (data) => {
+  return data.filter((el) => {
+    if (!el.volumeInfo.hasOwnProperty("description"))
+      el.volumeInfo.description = "No description";
+
+    if (!el.volumeInfo.hasOwnProperty("imageLinks"))
+      el.volumeInfo.imageLinks = null;
+
+    if (!el.volumeInfo.hasOwnProperty("authors")) return false;
+
+    return true;
+  });
+};

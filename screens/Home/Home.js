@@ -16,6 +16,7 @@ import { logOut, getFirebase } from "../../api/firebaseCalls";
 import DefText from "../../components/DefText";
 import Shelf from "../../components/Shelf";
 import Screen from "../../components/Screen";
+import { global } from "../../styles";
 
 export default function Home({ navigation }) {
   const [refresh, setRefresh] = useState(false);
@@ -52,7 +53,7 @@ export default function Home({ navigation }) {
   const handleSearchButton = async () => {
     let phrase = searchInput.trim().split(/\s+/).join("+");
     apiCall(
-      `https://www.googleapis.com/books/v1/volumes?q=${phrase}&key=${API_KEY}`
+      `https://www.googleapis.com/books/v1/volumes?q=${phrase}&startIndex=11&key=${API_KEY}&maxResult=5`
     );
   };
 
@@ -77,9 +78,15 @@ export default function Home({ navigation }) {
                 <DefText>Sign Out</DefText>
               </TouchableOpacity>
             </View>
-            <View style={{ marginBottom: 8 }}>
+            <View
+              style={{
+                marginBottom: 8,
+                padding: global.padding,
+                paddingTop: 0,
+              }}
+            >
               <DefText size={32} family="Rubik-Regular">
-                Welcome back!
+                Witamy ponownie!
               </DefText>
             </View>
             <LastRead />
@@ -127,7 +134,6 @@ export default function Home({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 8,
     backgroundColor: "#fff",
   },
 
@@ -144,6 +150,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 12,
+    padding: global.padding,
+    paddingTop: 16,
+    paddingBottom: 0,
   },
 });
 /*

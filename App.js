@@ -2,6 +2,7 @@ import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { AntDesign } from "@expo/vector-icons";
 
 import firebase from "firebase";
 import { firebaseConfig } from "./firebase-config";
@@ -14,7 +15,7 @@ import CurrentReadBookDetails from "./screens/Home/CurrentReadBookDetails";
 import LibraryBookDetails from "./screens/Home/LibraryBookDetails";
 import BookScanner from "./screens/Home/BookScanner";
 import BookDetails from "./screens/Home/BookDetails";
-import SearchResult from "./screens/Search/SearchResult";
+import SearchScreen from "./screens/Search/SearchScreen";
 
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig); //musimy sprawdzic czy aplikacja zostala juz zainicjowana czy nie, zeby za kazdym razem nie inicjowac apki
 const Stack = createNativeStackNavigator();
@@ -22,8 +23,22 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => (
   <Tab.Navigator initialRouteName="HomeScreen">
-    <Tab.Screen name="HomeScreen" component={Home} />
-    <Tab.Screen name="Search" component={SearchResult} />
+    <Tab.Screen
+      name="HomeScreen"
+      component={Home}
+      options={{
+        headerShown: false,
+        tabBarIcon: () => <AntDesign name="home" size={24} color="#222" />,
+      }}
+    />
+    <Tab.Screen
+      name="Search"
+      component={SearchScreen}
+      options={{
+        headerShown: false,
+        tabBarIcon: () => <AntDesign name="search1" size={24} color="#222" />,
+      }}
+    />
   </Tab.Navigator>
 );
 
@@ -31,8 +46,16 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="LoadingScreen">
-        <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
-        <Stack.Screen name="WelcomePage" component={WelcomePage} />
+        <Stack.Screen
+          name="LoadingScreen"
+          component={LoadingScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="WelcomePage"
+          component={WelcomePage}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Home"
           component={TabNavigator}

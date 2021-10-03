@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import firebase from "firebase";
 import DefText from "./DefText";
 
-function Book({ item, percentage }) {
+function BookCover({ item, percentage }) {
   const [readPercent, setReadPercent] = useState(null);
   const navigation = useNavigation();
 
@@ -69,7 +69,7 @@ function Book({ item, percentage }) {
   );
 }
 
-export default Book;
+export default BookCover;
 
 const styles = StyleSheet.create({
   bookContainer: {

@@ -1,22 +1,19 @@
 import React from "react";
-import {
-  StyleSheet,
-  ScrollView,
-  ImageBackground,
-  View,
-  FlatList,
-  Image,
-  TouchableHighlight,
-} from "react-native";
+import { StyleSheet, ImageBackground, View, FlatList } from "react-native";
 import DefText from "./DefText";
-import Book from "./Book";
+import BookCover from "./BookCover";
 
-const Shelff = ({ data, name, percentage = null }) => {
+const Shelf = ({ data, name = null, percentage = null }) => {
   return (
     <>
-      <DefText>{name}</DefText>
-
       <View style={styles.container}>
+        {name && (
+          <View style={{ position: "absolute", top: 16, left: 16, zIndex: 4 }}>
+            <DefText family="Rubik-Medium" size={16} color="#e3e3e3">
+              {name}
+            </DefText>
+          </View>
+        )}
         <ImageBackground
           source={require("../img/wood_texture.jpg")}
           style={styles.bookshelfContainer}
@@ -28,7 +25,7 @@ const Shelff = ({ data, name, percentage = null }) => {
             horizontal
             data={Object.values(data)}
             renderItem={({ item }) => (
-              <Book item={item} percentage={percentage} />
+              <BookCover item={item} percentage={percentage} />
             )}
             keyExtractor={(item) => item.id}
           />
@@ -38,12 +35,12 @@ const Shelff = ({ data, name, percentage = null }) => {
   );
 };
 
-export default Shelff;
+export default Shelf;
 
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: 150,
+    height: 185,
     borderWidth: 2,
   },
   bookshelfContainer: {

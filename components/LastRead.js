@@ -7,7 +7,7 @@ import {
   TouchableHighlight,
 } from "react-native";
 import firebase from "firebase";
-import global from "../styles";
+import { globalSheet, global } from "../styles";
 import DefText from "./DefText";
 import { getFirebase } from "../api/firebaseCalls";
 
@@ -42,7 +42,7 @@ const LastRead = (props) => {
     <>
       {lastReadBook ? (
         <>
-          <View style={{ marginBottom: 8 }}>
+          <View style={{ marginBottom: 8, padding: global.padding }}>
             <DefText>Ostatnio czytana</DefText>
           </View>
           <View>
@@ -59,7 +59,7 @@ const LastRead = (props) => {
                 </View>
               </TouchableHighlight>
               <Text>{lastReadBook.title}</Text>
-              <TouchableHighlight style={global.primaryBtn}>
+              <TouchableHighlight style={globalSheet.primaryBtn}>
                 <Text style={{ color: "#fff" }}>Czytaj dalej</Text>
               </TouchableHighlight>
             </View>

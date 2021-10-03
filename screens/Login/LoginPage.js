@@ -10,13 +10,13 @@ import {
 } from "react-native";
 import firebase from "firebase";
 
-export default function LoginPage(props) {
+export default function LoginPage({ navigation }) {
   const [inputUsername, setInputUsername] = useState("");
   const [inputPassword, setInputPassword] = useState("");
 
   useEffect(() => {
     const backAction = () => {
-      props.history.push("/"); //wracamy do glownej
+      navigation.navigate("WelcomePage"); //wracamy do glownej
       return true; //musimy zreturnowac true -> patrz dokumentacja
     };
 
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: "75%",
     height: 35,
-    backgroundColor: "dodgerblue",
+    backgroundColor: "#B58B8B",
   },
   loginButtonText: {
     color: "#fff",
