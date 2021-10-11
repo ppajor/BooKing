@@ -8,7 +8,7 @@ const LoadingScreen = ({ navigation }) => {
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        navigation.navigate("Home", { screen: "HomeScreen" });
+        navigation.push("Home", { screen: "HomeScreen" });
       } else {
         navigation.push("WelcomePage");
       }

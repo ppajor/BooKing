@@ -16,7 +16,7 @@ import SearchBookDetails from "../../components/SearchBookDetails";
 
 const API_KEY = "AIzaSyACLJEKxGoXNM8qfeNKejGzzhESdRo6e00";
 
-function SearchResults(props) {
+function SearchBar(props) {
   const [apiData, setApiData] = useState(null);
   const [searchInput, setSearchInput] = useState("");
 
@@ -56,16 +56,12 @@ function SearchResults(props) {
               placeholder="Wpisz tytuł książki"
             />
             <TouchableOpacity
+              style={{ position: "relative", left: 16 }}
               onPress={() => {
                 handleSearchButton();
               }}
             >
-              <AntDesign
-                style={{ position: "relative", left: 16 }}
-                name="search1"
-                size={24}
-                color="black"
-              />
+              <AntDesign name="search1" size={24} color="black" />
             </TouchableOpacity>
           </View>
         </View>
@@ -82,15 +78,15 @@ function SearchResults(props) {
   );
 }
 
-export default SearchResults;
+export default SearchBar;
 
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    maxHeight: 340,
+    maxHeight: 350,
     padding: 24,
     paddingBottom: 48,
-    backgroundColor: "rgba(124, 96, 94, 0.04)",
+    backgroundColor: "rgba(181, 139, 139, 0.10)",
   },
   searchBar: {
     display: "flex",

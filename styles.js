@@ -17,5 +17,7 @@ export const globalSheet = StyleSheet.create({
 });
 
 export const global = {
-  padding: 8,
+  primaryColor: "#B58B8B",
+  primaryLight: "rgba(181, 139, 139, 0.1)",
+  padding: 16,
 };

@@ -15,6 +15,8 @@ export const filterData = (data) => {
     if (!el.volumeInfo.hasOwnProperty("description"))
       el.volumeInfo.description = "No description";
 
+    if (!el.volumeInfo.hasOwnProperty("pageCount")) el.volumeInfo.pageCount = 1;
+
     if (!el.volumeInfo.hasOwnProperty("imageLinks"))
       el.volumeInfo.imageLinks = null;
 

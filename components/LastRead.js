@@ -11,27 +11,17 @@ import { globalSheet, global } from "../styles";
 import DefText from "./DefText";
 import { getFirebase } from "../api/firebaseCalls";
 
-const LastRead = (props) => {
+const LastRead = ({ book, id }) => {
   const [lastReadBook, setLastReadBook] = useState(null);
   const [bookPercent, setBookPercent] = useState(0);
+  const [wikusia, setWikusia] = useState(false);
 
   const getLastRead = async () => {
-    const data = await getFirebase(
-      "/users/" + firebase.auth().currentUser.uid + "/library"
+    let bookPercentage = Math.floor(
+      (book.lastReadPageNumber / book.pageCount) * 100
     );
-    console.log("data last read");
-    console.log(data);
-    if (data.lastRead) {
-      let lastread = data.lastRead;
-      let book = data.readNow[lastread];
-      let bookPercentage = Math.floor(
-        (data.readNow[lastread].lastReadPageNumber /
-          data.readNow[lastread].pageCount) *
-          100
-      );
-      setBookPercent(bookPercentage);
-      setLastReadBook(book);
-    }
+    setBookPercent(bookPercentage);
+    setLastReadBook(book);
   };
 
   useEffect(() => {
@@ -41,9 +31,20 @@ const LastRead = (props) => {
   return (
     <>
       {lastReadBook ? (
-        <>
-          <View style={{ marginBottom: 8, padding: global.padding }}>
-            <DefText>Ostatnio czytana</DefText>
+        <View>
+          <View
+            style={{
+              marginBottom: 0,
+              paddingLeft: global.padding,
+            }}
+          >
+            <DefText
+              family="Rubik-Medium"
+              size={16}
+              color=" rgba(36, 36, 36, 0.9)"
+            >
+              Ostatnio czytana
+            </DefText>
           </View>
           <View>
             <View style={styles.container}>
@@ -58,13 +59,41 @@ const LastRead = (props) => {
                   </DefText>
                 </View>
               </TouchableHighlight>
-              <Text>{lastReadBook.title}</Text>
-              <TouchableHighlight style={globalSheet.primaryBtn}>
-                <Text style={{ color: "#fff" }}>Czytaj dalej</Text>
-              </TouchableHighlight>
+              <View
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View>
+                  <View
+                    style={{ marginBottom: 4, paddingRight: global.padding }}
+                  >
+                    <DefText family="Rubik-Regular" size={16}>
+                      {lastReadBook.title}
+                    </DefText>
+                  </View>
+
+                  <DefText family="OpenSans-LightItalic" size={14}>
+                    {lastReadBook.authors}
+                  </DefText>
+                </View>
+                {wikusia && (
+                  <TouchableHighlight style={styles.readBtn}>
+                    <DefText
+                      family="OpenSans-LightItalic"
+                      size={14}
+                      color="#fff"
+                    >
+                      Czytaj dalej
+                    </DefText>
+                  </TouchableHighlight>
+                )}
+              </View>
             </View>
           </View>
-        </>
+        </View>
       ) : null}
     </>
   );
@@ -75,41 +104,33 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     flexDirection: "row",
-    marginBottom: 12,
-    paddingVertical: 12,
+    marginBottom: 24,
+    marginTop: 24,
   },
   bookMockup: {
     width: 90,
     height: 134,
-    marginLeft: 10,
-    marginRight: 10,
+    marginHorizontal: 24,
   },
   readPercentage: {
     display: "flex",
     justifyContent: "center",
     position: "absolute",
-    backgroundColor: "#000",
-    zIndex: 2,
     width: 90,
     height: 134,
-    marginTop: 12,
-    marginLeft: 10,
-    marginRight: 10,
+    backgroundColor: "#000",
+    zIndex: 2,
+    marginHorizontal: 24,
     opacity: 0.78,
   },
 
   readBtn: {
-    position: "absolute",
-    bottom: 0,
-    right: "15%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    width: 95,
-    height: 34,
-    paddingLeft: 10,
-    paddingRight: 10,
-    backgroundColor: "dodgerblue",
+    width: "90%",
+    paddingVertical: 5,
+    backgroundColor: global.primaryColor,
   },
 });
 

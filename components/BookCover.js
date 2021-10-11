@@ -8,31 +8,66 @@ import {
 } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
-import { removeFirebase } from "../api/firebaseCalls";
+import { removeFirebase, getFirebase } from "../api/firebaseCalls";
 import { useNavigation } from "@react-navigation/native";
 import firebase from "firebase";
 import DefText from "./DefText";
 
-function BookCover({ item, percentage }) {
+function BookCover({ item, shelfName, percentage, ...props }) {
   const [readPercent, setReadPercent] = useState(null);
   const navigation = useNavigation();
 
   useEffect(() => {
+    //  console.log(shelfName);
     setReadPercent(
       Math.floor((item.lastReadPageNumber / item.pageCount) * 100)
     );
   }, []);
 
-  const handleRemove = (id) => {
-    removeFirebase(
-      "/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + id
-    );
+  const handleRemove = async (id, name) => {
+    if (name == "Do przeczytania") {
+      await removeFirebase(
+        "/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + id
+      );
+    }
+    if (name == "Czytane teraz") {
+      const lastread = await getFirebase(
+        "/users/" + firebase.auth().currentUser.uid + "/library/lastRead"
+      );
+      if (id == lastread)
+        await removeFirebase(
+          "/users/" + firebase.auth().currentUser.uid + "/library/lastRead"
+        );
+
+      await removeFirebase(
+        "/users/" + firebase.auth().currentUser.uid + "/library/readNow/" + id
+      );
+    }
+    props.removeRefresh();
   };
 
-  const handleBookPress = (book) => {
-    navigation.navigate("LibraryBookDetails", { data: book });
+  const handleBookPress = (book, name) => {
+    if (name == "Do przeczytania") {
+      navigation.push("LibraryBookDetails", {
+        data: book,
+        name: "Czytaj",
+      });
+    }
+    if (name == "Czytane teraz") {
+      navigation.push("LibraryBookDetails", {
+        data: book,
+        name: "Czytaj teraz!",
+        bookPercent: readPercent,
+      });
+    }
+    if (name == null) {
+      navigation.push("LibraryBookDetails", {
+        data: book,
+        name: "Dodaj do biblioteki",
+      });
+    }
   };
-
+  /*
   const handleReadNowBookPress = (book) => {
     console.log("PRESS");
     navigation.navigate("CurrentReadBookDetails", {
@@ -40,25 +75,30 @@ function BookCover({ item, percentage }) {
       bookPercent: readPercent,
     });
   };
-
+*/
   return (
     <View style={styles.bookContainer}>
-      <TouchableHighlight onPress={() => handleBookPress(item)}>
+      <TouchableHighlight onPress={() => handleBookPress(item, shelfName)}>
         <Image
           style={styles.bookMockup}
           source={{ uri: item.thumbnail }}
         ></Image>
       </TouchableHighlight>
-      <TouchableHighlight
-        style={styles.closeIcon}
-        onPress={() => handleRemove(item.id)}
-      >
-        <AntDesign name="close" size={16} color="white" />
-      </TouchableHighlight>
+      {shelfName != null && (
+        <TouchableHighlight
+          style={styles.closeIcon}
+          onPress={() => {
+            handleRemove(item.id, shelfName);
+          }}
+        >
+          <AntDesign name="close" size={16} color="white" />
+        </TouchableHighlight>
+      )}
+
       {percentage && (
         <TouchableOpacity
           style={styles.percentageOverlay}
-          onPress={() => handleReadNowBookPress(item)}
+          onPress={() => handleBookPress(item, shelfName)}
         >
           <DefText size={24} color="white">
             {readPercent}%

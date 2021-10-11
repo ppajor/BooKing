@@ -11,7 +11,7 @@ import {
   Alert,
   Button,
 } from "react-native";
-import global from "../../styles";
+import { globalSheet } from "../../styles";
 import firebase from "firebase";
 
 export default function LibraryBookDetails({ navigation, route }) {
@@ -66,7 +66,7 @@ export default function LibraryBookDetails({ navigation, route }) {
         <View style={{ flex: 1 }}>
           <Text>{route.params.data.title} </Text>
           <TouchableHighlight
-            style={global.primaryBtn}
+            style={globalSheet.primaryBtn}
             onPress={() => handleReadNow()}
           >
             <Text style={styles.readBtnText}>Czytaj teraz!</Text>

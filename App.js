@@ -1,4 +1,5 @@
 import * as React from "react";
+import { HeaderBackButton } from "@react-navigation/elements";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -16,19 +17,28 @@ import LibraryBookDetails from "./screens/Home/LibraryBookDetails";
 import BookScanner from "./screens/Home/BookScanner";
 import BookDetails from "./screens/Home/BookDetails";
 import SearchScreen from "./screens/Search/SearchScreen";
+import DefText from "./components/DefText";
 
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig); //musimy sprawdzic czy aplikacja zostala juz zainicjowana czy nie, zeby za kazdym razem nie inicjowac apki
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => (
-  <Tab.Navigator initialRouteName="HomeScreen">
+  <Tab.Navigator
+    initialRouteName="HomeScreen"
+    screenOptions={({ route }) => ({
+      tabBarActiveTintColor: "#B58B8B",
+      tabBarInactiveTintColor: "#999",
+    })}
+  >
     <Tab.Screen
       name="HomeScreen"
       component={Home}
       options={{
         headerShown: false,
-        tabBarIcon: () => <AntDesign name="home" size={24} color="#222" />,
+        tabBarIcon: ({ color }) => (
+          <AntDesign name="home" size={24} color={color} />
+        ),
       }}
     />
     <Tab.Screen
@@ -36,7 +46,9 @@ const TabNavigator = () => (
       component={SearchScreen}
       options={{
         headerShown: false,
-        tabBarIcon: () => <AntDesign name="search1" size={24} color="#222" />,
+        tabBarIcon: ({ color }) => (
+          <AntDesign name="search1" size={24} color={color} />
+        ),
       }}
     />
   </Tab.Navigator>
@@ -68,6 +80,13 @@ function App() {
         <Stack.Screen
           name="LibraryBookDetails"
           component={LibraryBookDetails}
+          options={{
+            headerTitle: (props) => (
+              <DefText family="OpenSans-SemiBold" size={20}>
+                Book Details
+              </DefText>
+            ),
+          }}
         />
         <Stack.Screen
           name="CurrentReadBookDetails"

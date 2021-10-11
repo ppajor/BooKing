@@ -25,7 +25,6 @@ export const logOut = () => {
 };
 
 export const getFirebase = async (path) => {
-  console.log("POJAWIAM SIĘ MÓWIĘ JESTEM");
   return await firebase
     .database()
     .ref(path)
@@ -40,7 +39,6 @@ export const getFirebase = async (path) => {
 };
 
 export const updateFirebase = async (path, data) => {
-  console.log("WYSUWA SIĘ NA CZYSTĄ POZYCJE");
   return await firebase
     .database()
     .ref(path)
@@ -55,4 +53,8 @@ export const updateFirebase = async (path, data) => {
 
 export const removeFirebase = async (path) => {
   firebase.database().ref(path).remove();
+};
+
+export const currentUserId = async () => {
+  return await firebase.auth().currentUser.uid;
 };

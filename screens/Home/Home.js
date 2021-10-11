@@ -23,10 +23,12 @@ export default function Home({ navigation }) {
   const [searchInput, setSearchInput] = useState("");
   const [apiData, setApiData] = useState({});
   const [userData, setUserData] = useState(null);
+  const [lastRead, setLastRead] = useState(null);
   const [userLoggedIn, setUserLoggedIn] = useState(false); // po zalogowaniu/utworzeniu konta automatycznie przekierowuje do home bo zmienia się state userloggedin (???)
+  const [wikusia, setWIkusia] = useState(false);
 
   const API_KEY = "AIzaSyACLJEKxGoXNM8qfeNKejGzzhESdRo6e00";
-
+  //console.log("USER ID LOGGED IN:" + firebase.auth().currentUser.uid);
   useEffect(() => {
     const subscriber = firebase.auth().onAuthStateChanged((user) => {
       user ? setUserLoggedIn(user) : console.log("No user logged in");
@@ -36,13 +38,19 @@ export default function Home({ navigation }) {
 
   useEffect(() => {
     getUserData();
-  }, []);
+    console.log("RERENDER");
+  }, [refresh]); //podczas resfreshu komponent rerender
 
   const getUserData = async () => {
     const result = await getFirebase(
       "/users/" + firebase.auth().currentUser.uid + "/library"
     );
-    if (result) setUserData(result);
+    result ? setUserData(result) : setUserData(null); //jesli nie ma danych z api to setuj null, bo inaczej nie chce usunac się ostatnia ksiazka
+
+    const lastread = await getFirebase(
+      "/users/" + firebase.auth().currentUser.uid + "/library/lastRead"
+    );
+    lastread ? setLastRead(lastread) : setLastRead(null);
   };
 
   const apiCall = async (path) => {
@@ -53,7 +61,7 @@ export default function Home({ navigation }) {
   const handleSearchButton = async () => {
     let phrase = searchInput.trim().split(/\s+/).join("+");
     apiCall(
-      `https://www.googleapis.com/books/v1/volumes?q=${phrase}&startIndex=11&key=${API_KEY}&maxResult=5`
+      `https://www.googleapis.com/books/v1/volumes?q=${phrase}&key=${API_KEY}`
     );
   };
 
@@ -62,18 +70,18 @@ export default function Home({ navigation }) {
     navigation.push("WelcomePage");
   };
 
-  const addNewHandler = () => {
+  const forceRefresh = () => {
     console.log(refresh);
-    setRefresh((old) => !old);
+    setRefresh(!refresh);
   };
 
   return (
     <Screen>
       <ScrollView style={styles.container}>
-        {userLoggedIn && userData && (
+        {userLoggedIn && (
           <>
             <View style={styles.userLoggedInNavbar}>
-              <DefText>Hello {userLoggedIn.email}</DefText>
+              <DefText color="#B58B8B">Hello {userLoggedIn.email}</DefText>
               <TouchableOpacity onPress={handleSignOut}>
                 <DefText>Sign Out</DefText>
               </TouchableOpacity>
@@ -85,44 +93,64 @@ export default function Home({ navigation }) {
                 paddingTop: 0,
               }}
             >
-              <DefText size={32} family="Rubik-Regular">
+              <DefText size={32} family="Rubik-Medium">
                 Witamy ponownie!
               </DefText>
             </View>
-            <LastRead />
-            <Shelf data={userData.toRead} name="Do przeczytania" />
-            <Shelf
-              data={userData.readNow}
-              name="Czytane teraz"
-              percentage={true}
-            />
+            {userData ? (
+              <>
+                {lastRead && (
+                  <LastRead id={lastRead} book={userData.readNow[lastRead]} />
+                )}
 
-            <TouchableOpacity
-              onPress={() => navigation.navigate("BookScanner")}
-            >
-              <DefText>Scan Book</DefText>
-            </TouchableOpacity>
+                <Shelf
+                  data={userData.toRead}
+                  name="Do przeczytania"
+                  refresh={forceRefresh}
+                />
+                <Shelf
+                  data={userData.readNow}
+                  name="Czytane teraz"
+                  refresh={forceRefresh}
+                  percentage={true}
+                />
+              </>
+            ) : (
+              <>
+                <Shelf name="Do przeczytania" refresh={forceRefresh} />
+                <Shelf name="Czytane teraz" percentage={true} />
+              </>
+            )}
+            {wikusia && (
+              <>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("BookScanner")}
+                >
+                  <DefText>Scan Book</DefText>
+                </TouchableOpacity>
 
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search for a book..."
-              onChangeText={(search_input_text) => {
-                setSearchInput(search_input_text);
-              }}
-              value={searchInput}
-            />
-            <Button
-              onPress={handleSearchButton}
-              title="Search"
-              color="dodgerblue"
-            />
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder="Search for a book..."
+                  onChangeText={(search_input_text) => {
+                    setSearchInput(search_input_text);
+                  }}
+                  value={searchInput}
+                />
+                <Button
+                  onPress={handleSearchButton}
+                  title="Search"
+                  color="dodgerblue"
+                />
 
-            {apiData.items && (
-              <SearchResult
-                addNew={addNewHandler}
-                data={apiData}
-                currentUserUID={userLoggedIn.uid}
-              />
+                {wikusia && (
+                  <SearchResult
+                    addNew={forceRefresh}
+                    data={apiData}
+                    currentUserUID={userLoggedIn.uid}
+                  />
+                )}
+              </>
             )}
           </>
         )}
