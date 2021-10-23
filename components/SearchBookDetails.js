@@ -10,7 +10,7 @@ function SearchBookDetails({ item }) {
 
   const handleAdd = (el) => {
     if (el.volumeInfo.pageCount == undefined) {
-      navigation.navigate("EditBook", {
+      navigation.push("EditBook", {
         alert:
           "Przed dodaniem książki do biblioteki, uzupełnij brakujące informacje",
         id: el.id,
@@ -23,7 +23,7 @@ function SearchBookDetails({ item }) {
     }
 
     if (el.volumeInfo.imageLinks == undefined) {
-      navigation.navigate("EditBook", {
+      navigation.push("EditBook", {
         alert:
           "Przed dodaniem książki do biblioteki, uzupełnij brakujące informacje",
         id: el.id,

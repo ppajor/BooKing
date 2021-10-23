@@ -13,12 +13,15 @@ import { AntDesign } from "@expo/vector-icons";
 import DefText from "../../components/DefText";
 import { getData, filterData } from "../../api/GoogleBooksCalls";
 import SearchBookDetails from "../../components/SearchBookDetails";
+import { useNavigation } from "@react-navigation/native";
 
 const API_KEY = "AIzaSyACLJEKxGoXNM8qfeNKejGzzhESdRo6e00";
 
 function SearchBar(props) {
   const [apiData, setApiData] = useState(null);
   const [searchInput, setSearchInput] = useState("");
+
+  const navigation = useNavigation();
 
   const apiCall = async (path) => {
     let data = await getData(path);
@@ -73,6 +76,9 @@ function SearchBar(props) {
             keyExtractor={(item) => item.id}
           />
         )}
+        <TouchableOpacity onPress={() => navigation.push("EditBook", {})}>
+          <DefText>Utwórz książkę</DefText>
+        </TouchableOpacity>
       </View>
     </>
   );

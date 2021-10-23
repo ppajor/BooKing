@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Entypo } from "@expo/vector-icons";
 import DefText from "../components/DefText";
 import { globalSheet } from "../styles";
 
@@ -58,8 +58,12 @@ export default function PickImage(props) {
             onPress={() => pickImage()}
             style={{ display: "flex", alignItems: "center", marginBottom: 32 }}
           >
-            <Ionicons name="cloud-upload-outline" size={48} color="black" />
-            <DefText color="#9D9D9D">Update photo.</DefText>
+            <>
+              <View style={{ marginBottom: 16 }}>
+                <Entypo name="images" size={64} color="#9D9D9D" />
+              </View>
+              <DefText color="#9D9D9D">Choose photo up to 1MB</DefText>
+            </>
           </TouchableOpacity>
         )}
       </View>

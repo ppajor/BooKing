@@ -59,18 +59,27 @@ export const currentUserId = async () => {
   return await firebase.auth().currentUser.uid;
 };
 
-export const addBookToDatabase = ({}) => {
+//functions
+export const addBookToDatabase = (
+  id,
+  bookTitle,
+  author,
+  bookDescription,
+  thumbnail,
+  pages
+) => {
   const dataToUpdate = {
-    [el.id]: {
-      id: el.id,
-      title: el.volumeInfo.title,
-      authors: el.volumeInfo.authors[0],
-      description: el.volumeInfo.description,
-      thumbnail: el.volumeInfo.imageLinks.thumbnail,
-      pageCount: el.volumeInfo.pageCount,
+    [id]: {
+      id: id,
+      title: bookTitle,
+      authors: author,
+      description: bookDescription,
+      thumbnail: thumbnail,
+      pageCount: parseInt(pages),
       lastReadPageNumber: 1,
     },
   };
+  //console.log(`THUMBNAIL FIREBASEFUNC ${thumbnail}`);
   updateFirebase(
     "/users/" + firebase.auth().currentUser.uid + "/library/toRead/",
     dataToUpdate

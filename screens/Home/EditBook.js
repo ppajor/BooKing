@@ -9,19 +9,19 @@ import {
 } from "react-native";
 import * as firebase from "firebase";
 import { global } from "../../styles";
-import { updateFirebase } from "../../api/firebaseCalls";
+import { updateFirebase, addBookToDatabase } from "../../api/firebaseCalls";
 import DefText from "../../components/DefText";
 import PickImage from "../../components/PickImage";
 
 function EditBook({ navigation, route }) {
-  const {
+  let {
     alert = null,
-    authors,
-    description,
-    id,
+    authors = null,
+    description = null,
+    id = null,
     pageCount = null,
     thumbnail = null,
-    title,
+    title = null,
   } = route.params;
 
   //state
@@ -32,45 +32,51 @@ function EditBook({ navigation, route }) {
     description ? description : ""
   );
   const [imagePath, setImagePath] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleSave = async () => {
-    updateImage(imagePath)
-      .then(() => {
-        var ref = firebase.storage().ref().child(id);
-
-        ref.getDownloadURL().then((url) => {
-          console.log(url);
-          updateUrl(url);
-        });
-      })
-      .catch(() => {
-        console.log("Error in photo upload");
-      });
+    id = getBookId();
+    console.log(id);
 
     if (
-      pages != "" &&
-      author != "" &&
-      bookTitle != "" &&
-      bookDescription != ""
+      author == "" ||
+      bookDescription == "" ||
+      pages == "" ||
+      (thumbnail == null && imagePath == null) ||
+      bookTitle == ""
     ) {
-      const dataToUpdate = {
-        [id]: {
-          id: id,
-          title: bookTitle,
-          authors: author,
-          description: bookDescription,
-          thumbnail: thumbnail,
-          pageCount: parseInt(pages),
-          lastReadPageNumber: 1,
-        },
-      };
-      await updateFirebase(
-        "/users/" + firebase.auth().currentUser.uid + "/library/toRead/",
-        dataToUpdate
+      setError("Wszystkie pola muszą być wypełnione");
+    } else {
+      console.log(`Thumbnail ${thumbnail}`);
+      addBookToDatabase(
+        id,
+        bookTitle,
+        author,
+        bookDescription,
+        thumbnail,
+        pages
       );
+      updateImage(imagePath)
+        .then(() => {
+          var ref = firebase.storage().ref().child(id);
 
-      //navigation.push("Home");
+          ref.getDownloadURL().then((url) => {
+            console.log(url);
+            updateUrl(url);
+            navigation.push("Home");
+          });
+        })
+        .catch(() => {
+          console.log("Error in photo upload");
+        });
     }
+  };
+
+  const getBookId = () => {
+    return (
+      Math.random().toString(36).substring(2) +
+      new Date().getTime().toString(36)
+    );
   };
 
   const updateUrl = async (url) => {
@@ -78,7 +84,6 @@ function EditBook({ navigation, route }) {
       "/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + id,
       { thumbnail: url }
     );
-    navigation.push("Home");
   };
 
   const updateImage = async (uri) => {
@@ -91,6 +96,13 @@ function EditBook({ navigation, route }) {
   return (
     <ScrollView>
       <View style={styles.container}>
+        {alert && (
+          <View style={{ marginBottom: 24 }}>
+            <DefText size={14} color="red">
+              {alert}
+            </DefText>
+          </View>
+        )}
         {thumbnail != null ? (
           <Image source={{ uri: thumbnail }} style={styles.image} />
         ) : (
@@ -151,12 +163,10 @@ function EditBook({ navigation, route }) {
             />
           )}
         </View>
-        {alert && (
-          <View style={{ marginBottom: 24 }}>
-            <DefText size={14} color="red">
-              {alert}
-            </DefText>
-          </View>
+        {error && (
+          <DefText size={14} color="red">
+            {error}
+          </DefText>
         )}
         <View style={{ flex: 1 }}>
           <TouchableOpacity onPress={() => handleSave()} style={styles.btn}>
@@ -193,10 +203,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     padding: 16,
     shadowColor: "black",
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     borderRadius: 8,
-    elevation: 3,
+    elevation: 2,
     backgroundColor: "white",
   },
   input: {
