@@ -18,6 +18,7 @@ function DefText(props) {
 
     "OpenSans-Regular": require("../assets/fonts/Open_Sans/OpenSans-Regular.ttf"),
     "OpenSans-SemiBold": require("../assets/fonts/Open_Sans/OpenSans-SemiBold.ttf"),
+    "OpenSans-Bold": require("../assets/fonts/Open_Sans/OpenSans-Bold.ttf"),
     "OpenSans-Light": require("../assets/fonts/Open_Sans/OpenSans-Light.ttf"),
     "OpenSans-LightItalic": require("../assets/fonts/Open_Sans/OpenSans-LightItalic.ttf"),
     "Rubik-Regular": require("../assets/fonts/Rubik/static/Rubik-Regular.ttf"),

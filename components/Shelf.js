@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  StyleSheet,
-  ImageBackground,
-  View,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, ImageBackground, View, FlatList, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import DefText from "./DefText";
 import BookCover from "./BookCover";
@@ -16,14 +10,10 @@ const Shelf = (props) => {
 
   return (
     <>
-      <View style={styles.container}>
+      <View style={[styles.container, !name && styles.noHeader]}>
         {name && (
           <View style={styles.refreshIcon}>
-            <DefText
-              family="Rubik-Medium"
-              size={16}
-              color="rgba(227, 227, 227, 0.9)"
-            >
+            <DefText family="Rubik-Medium" size={16} color="rgba(227, 227, 227, 0.9)">
               {name}
             </DefText>
             <TouchableOpacity onPress={() => props.refresh()}>
@@ -34,39 +24,22 @@ const Shelf = (props) => {
                   alignItems: "center",
                 }}
               >
-                <DefText
-                  family="OpenSans-Light"
-                  color="rgba(227, 227, 227, 0.75)"
-                >
+                <DefText family="OpenSans-Light" color="rgba(227, 227, 227, 0.75)">
                   refresh
                 </DefText>
-                <MaterialCommunityIcons
-                  name="reload"
-                  size={16}
-                  color="#e3e3e3"
-                />
+                <MaterialCommunityIcons name="reload" size={16} color="#e3e3e3" />
               </View>
             </TouchableOpacity>
           </View>
         )}
-        <ImageBackground
-          source={require("../img/wood_texture.jpg")}
-          style={styles.bookshelfContainer}
-        ></ImageBackground>
+        <ImageBackground source={require("../img/wood_texture.jpg")} style={styles.bookshelfContainer}></ImageBackground>
         <View style={styles.bookshelf}></View>
         {data && (
           <View style={styles.booksContainer}>
             <FlatList
               horizontal
               data={Object.values(data)}
-              renderItem={({ item }) => (
-                <BookCover
-                  item={item}
-                  shelfName={name}
-                  percentage={percentage}
-                  removeRefresh={props.refresh}
-                />
-              )}
+              renderItem={({ item }) => <BookCover item={item} shelfName={name} percentage={percentage} removeRefresh={props.refresh} />}
               keyExtractor={(item) => item.id}
             />
           </View>
@@ -83,6 +56,9 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 185,
     borderWidth: 2,
+  },
+  noHeader: {
+    height: 160,
   },
   bookshelfContainer: {
     position: "absolute",

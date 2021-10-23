@@ -11,8 +11,7 @@ function SearchBookDetails({ item }) {
   const handleAdd = (el) => {
     if (el.volumeInfo.pageCount == undefined) {
       navigation.push("EditBook", {
-        alert:
-          "Przed dodaniem książki do biblioteki, uzupełnij brakujące informacje",
+        alert: "Przed dodaniem książki do biblioteki, uzupełnij brakujące informacje",
         id: el.id,
         title: el.volumeInfo.title,
         authors: el.volumeInfo.authors[0],
@@ -24,8 +23,7 @@ function SearchBookDetails({ item }) {
 
     if (el.volumeInfo.imageLinks == undefined) {
       navigation.push("EditBook", {
-        alert:
-          "Przed dodaniem książki do biblioteki, uzupełnij brakujące informacje",
+        alert: "Przed dodaniem książki do biblioteki, uzupełnij brakujące informacje",
         id: el.id,
         title: el.volumeInfo.title,
         authors: el.volumeInfo.authors[0],
@@ -46,10 +44,7 @@ function SearchBookDetails({ item }) {
         lastReadPageNumber: 1,
       },
     };
-    updateFirebase(
-      "/users/" + firebase.auth().currentUser.uid + "/library/toRead/",
-      dataToUpdate
-    );
+    updateFirebase("/users/" + firebase.auth().currentUser.uid + "/library/toRead/", dataToUpdate);
   };
 
   const handlePress = (el) => {
@@ -69,20 +64,11 @@ function SearchBookDetails({ item }) {
   };
 
   return (
-    <TouchableOpacity
-      onPress={() => handlePress(item)}
-      style={styles.foundBookContainer}
-    >
+    <TouchableOpacity onPress={() => handlePress(item)} style={styles.foundBookContainer}>
       {item.volumeInfo.imageLinks ? (
-        <Image
-          style={styles.image}
-          source={{ uri: item.volumeInfo.imageLinks.thumbnail }}
-        />
+        <Image style={styles.image} source={{ uri: item.volumeInfo.imageLinks.thumbnail }} />
       ) : (
-        <Image
-          source={require("../img/no_cover_book.jpg")}
-          style={styles.image}
-        />
+        <Image source={require("../img/no_cover_book.jpg")} style={styles.image} />
       )}
 
       <View style={{ marginBottom: 4 }}>
@@ -93,10 +79,7 @@ function SearchBookDetails({ item }) {
       <DefText family="Rubik-LightItalic" size={11} align="center">
         {item.volumeInfo.authors[0]}
       </DefText>
-      <TouchableOpacity
-        style={{ marginTop: 8 }}
-        onPress={() => handleAdd(item)}
-      >
+      <TouchableOpacity style={{ marginTop: 8 }} onPress={() => handleAdd(item)}>
         <DefText family="OpenSans-SemiBold" size={11} color="#B58B8B">
           Add to library
         </DefText>
@@ -115,6 +98,7 @@ const styles = StyleSheet.create({
     padding: 8,
     margin: 4,
     marginTop: 32,
+    marginBottom: 16,
     backgroundColor: "#fff",
     borderWidth: 1,
     borderColor: "rgba(0, 0, 0, 0.06)",

@@ -5,20 +5,11 @@ import DefText from "./DefText";
 
 function HeaderBar({ image, iconName, name }) {
   return (
-    <View style={{ width: "100%", height: 65 }}>
-      <ImageBackground
-        style={styles.favImg}
-        source={image}
-        resizeMode="cover"
-      />
+    <View style={{ width: "100%", height: 65, marginTop: 32, marginBottom: 16 }}>
+      <ImageBackground style={styles.favImg} source={image} resizeMode="cover" />
       <View style={styles.overlay}></View>
       <View style={styles.favHeader}>
-        <AntDesign
-          style={{ marginRight: 8 }}
-          name={iconName}
-          size={24}
-          color="orange"
-        />
+        <AntDesign style={{ marginRight: 8 }} name={iconName} size={24} color="orange" />
         <DefText family="Rubik-Medium" size={16} color="#fff">
           {name}
         </DefText>
@@ -35,6 +26,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: 240,
+    marginTop: 32,
   },
   favImg: {
     width: "100%",

@@ -5,14 +5,10 @@ import DefText from "../../components/DefText";
 function Header() {
   return (
     <View style={styles.headerContainer}>
-      <ImageBackground
-        style={styles.eclipseImg}
-        source={require("../../img/headerEclipse.png")}
-      />
-      <ImageBackground
-        style={styles.imageBg}
-        source={require("../../img/searchBg.png")}
-      />
+      <ImageBackground style={styles.eclipseImg} source={require("../../img/headerEclipse.png")} />
+      <View style={styles.imageBgContainer}>
+        <ImageBackground style={styles.imageBg} source={require("../../img/searchBg.png")} />
+      </View>
       <View style={{ marginTop: 75 }}>
         <DefText family="Rubik-Medium" size={48} color="rgba(255,255,255,0.85)">
           Odkrywaj
@@ -24,12 +20,7 @@ function Header() {
         </DefText>
       </View>
       <View style={{ position: "relative", left: 50 }}>
-        <DefText
-          family="OpenSans-Light"
-          size={16}
-          color="rgba(255,255,255,0.5)"
-          align="center"
-        >
+        <DefText family="OpenSans-Light" size={16} color="rgba(255,255,255,0.5)" align="center">
           i dziel się z innymi...
         </DefText>
       </View>
@@ -45,7 +36,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: 240,
+    borderRadius: 16,
     overflow: "hidden",
+  },
+  imageBgContainer: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 16,
+    right: 16,
+    borderRadius: 16,
   },
   imageBg: {
     position: "absolute",
@@ -53,6 +53,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    borderRadius: 16,
+    overflow: "hidden",
   },
   eclipseImg: {
     position: "absolute",
