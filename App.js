@@ -12,12 +12,12 @@ import WelcomePage from "./screens/Login/WelcomePage";
 import LoginPage from "./screens/Login/LoginPage";
 import SignUpEmail from "./screens/Login/SignUpEmail";
 import Home from "./screens/Home/Home";
-import CurrentReadBookDetails from "./screens/Home/CurrentReadBookDetails";
 import LibraryBookDetails from "./screens/Home/LibraryBookDetails";
 import BookScanner from "./screens/Home/BookScanner";
-import BookDetails from "./screens/Home/BookDetails";
+
 import SearchScreen from "./screens/Search/SearchScreen";
 import DefText from "./components/DefText";
+import EditBook from "./screens/Home/EditBook";
 
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig); //musimy sprawdzic czy aplikacja zostala juz zainicjowana czy nie, zeby za kazdym razem nie inicjowac apki
 const Stack = createNativeStackNavigator();
@@ -73,10 +73,18 @@ function App() {
           component={TabNavigator}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="LoginPage" component={LoginPage} />
-        <Stack.Screen name="SignUpEmail" component={SignUpEmail} />
+        <Stack.Screen
+          name="LoginPage"
+          component={LoginPage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SignUpEmail"
+          component={SignUpEmail}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="BookScanner" component={BookScanner} />
-        <Stack.Screen name="BookDetails" component={BookDetails} />
+        <Stack.Screen name="EditBook" component={EditBook} />
         <Stack.Screen
           name="LibraryBookDetails"
           component={LibraryBookDetails}
@@ -87,10 +95,6 @@ function App() {
               </DefText>
             ),
           }}
-        />
-        <Stack.Screen
-          name="CurrentReadBookDetails"
-          component={CurrentReadBookDetails}
         />
       </Stack.Navigator>
     </NavigationContainer>

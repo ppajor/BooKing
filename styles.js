@@ -14,6 +14,14 @@ export const globalSheet = StyleSheet.create({
     paddingRight: 10,
     backgroundColor: "dodgerblue",
   },
+  shadowPrimary: {
+    shadowColor: "black",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    borderRadius: 8,
+    elevation: 3,
+    backgroundColor: "white",
+  },
 });
 
 export const global = {

@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: 240,
+    overflow: "hidden",
   },
   imageBg: {
     position: "absolute",

@@ -11,14 +11,18 @@ export const getData = async (path) => {
 };
 
 export const filterData = (data) => {
-  return data.filter((el) => {
+  const filtered = [...data];
+  return filtered.filter((el) => {
     if (!el.volumeInfo.hasOwnProperty("description"))
       el.volumeInfo.description = "No description";
 
-    if (!el.volumeInfo.hasOwnProperty("pageCount")) el.volumeInfo.pageCount = 1;
+    if (!el.volumeInfo.hasOwnProperty("pageCount"))
+      el.volumeInfo.pageCount = undefined;
 
-    if (!el.volumeInfo.hasOwnProperty("imageLinks"))
-      el.volumeInfo.imageLinks = null;
+    if (!el.volumeInfo.hasOwnProperty("imageLinks")) {
+      el.volumeInfo.imageLinks = undefined;
+      // el.volumeInfo.imageLinks.thumbnail = undefined;
+    }
 
     if (!el.volumeInfo.hasOwnProperty("authors")) return false;
 

@@ -28,15 +28,23 @@ export default function WelcomePage({ navigation }) {
             Czytaj, zapisuj i dziel się z innymi!
           </DefText>
         </View>
-        <TouchableOpacity style={styles.googleButton} color="dodgerblue">
-          <Text style={styles.googleButtonText}>Sign in with Google</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("LoginPage")}>
-          <DefText size={14}>Log in with e-mail</DefText>
+
+        <TouchableOpacity
+          style={styles.signUpBtn}
+          onPress={() => navigation.navigate("LoginPage")}
+        >
+          <DefText size={14} color="#fff">
+            Log in with e-mail
+          </DefText>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate("SignUpEmail")}>
-          <DefText size={14}>Sign up with e-mail</DefText>
+        <TouchableOpacity
+          style={styles.loginBtn}
+          onPress={() => navigation.navigate("SignUpEmail")}
+        >
+          <DefText size={14} color="#B58B8B">
+            Sign up with e-mail
+          </DefText>
         </TouchableOpacity>
         <TouchableOpacity
           style={{ marginTop: 48 }}
@@ -66,17 +74,24 @@ const styles = StyleSheet.create({
     height: 400,
     backgroundColor: "#fff",
   },
-  googleButton: {
+  signUpBtn: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 100,
-    marginBottom: 20,
+    marginBottom: 8,
     width: "75%",
-    height: 35,
+    paddingVertical: 10,
     backgroundColor: "#B58B8B",
   },
-  googleButtonText: {
-    color: "#fff",
+  loginBtn: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+
+    width: "75%",
+    paddingVertical: 10,
+    borderWidth: 2,
+    borderColor: "#B58B8B",
   },
 });

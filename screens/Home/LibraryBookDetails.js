@@ -2,19 +2,18 @@ import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
-  Text,
   Image,
   TouchableHighlight,
   ScrollView,
-  TextInput,
-  BackHandler,
 } from "react-native";
+import { Link } from "@react-navigation/native";
+
+import { AntDesign } from "@expo/vector-icons";
 import PropTypes from "prop-types";
 import firebase from "firebase";
 import DefText from "../../components/DefText";
 import Timer from "../../components/Timer";
 import { global } from "../../styles";
-import { useNavigation } from "@react-navigation/native";
 import { updateFirebase, removeFirebase } from "../../api/firebaseCalls";
 
 export default function LibraryBookDetails({ navigation, route }) {
@@ -81,9 +80,9 @@ export default function LibraryBookDetails({ navigation, route }) {
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={{ flex: 1 }}>
       <View style={styles.headerContainer}>
-        <View style={styles.headerBody}>
+        <View style={styles.header}>
           {route.params.data.thumbnail ? (
             <Image
               source={{ uri: route.params.data.thumbnail }}
@@ -126,8 +125,24 @@ export default function LibraryBookDetails({ navigation, route }) {
             </TouchableHighlight>
           </View>
         </View>
+        <Link
+          to={{ screen: "EditBook", params: route.params.data }}
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 8,
+          }}
+        >
+          <AntDesign name="edit" size={16} color={global.primaryColor} />
+          <View style={{ marginLeft: 4 }}>
+            <DefText size={14} color={global.primaryColor}>
+              edit book
+            </DefText>
+          </View>
+        </Link>
       </View>
-      <View style={styles.bodyContainer}>
+      <View style={styles.headerBody}>
         <DefText family="Rubik-Regular" size={16}>
           Opis książki
         </DefText>
@@ -175,7 +190,7 @@ const styles = StyleSheet.create({
     paddingLeft: 24,
     paddingVertical: 8,
   },
-  headerBody: {
+  header: {
     height: 150,
     display: "flex",
     flexDirection: "row",
@@ -189,9 +204,11 @@ const styles = StyleSheet.create({
     backgroundColor: global.primaryColor,
   },
 
-  bodyContainer: {
+  headerBody: {
+    flex: 1,
     paddingHorizontal: 24,
     paddingVertical: 32,
+    backgroundColor: "#fff",
   },
   separator: {
     width: 50,

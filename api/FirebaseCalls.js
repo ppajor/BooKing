@@ -58,3 +58,21 @@ export const removeFirebase = async (path) => {
 export const currentUserId = async () => {
   return await firebase.auth().currentUser.uid;
 };
+
+export const addBookToDatabase = ({}) => {
+  const dataToUpdate = {
+    [el.id]: {
+      id: el.id,
+      title: el.volumeInfo.title,
+      authors: el.volumeInfo.authors[0],
+      description: el.volumeInfo.description,
+      thumbnail: el.volumeInfo.imageLinks.thumbnail,
+      pageCount: el.volumeInfo.pageCount,
+      lastReadPageNumber: 1,
+    },
+  };
+  updateFirebase(
+    "/users/" + firebase.auth().currentUser.uid + "/library/toRead/",
+    dataToUpdate
+  );
+};

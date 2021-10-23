@@ -9,6 +9,7 @@ import {
   BackHandler,
 } from "react-native";
 import firebase from "firebase";
+import { registerWithEmail } from "../../api/firebaseCalls";
 
 export default function LoginPage({ navigation }) {
   const [inputEmail, setInputEmail] = useState("");
@@ -82,7 +83,7 @@ export default function LoginPage({ navigation }) {
       />
       <TouchableOpacity
         onPress={handleSignUp}
-        style={styles.loginButton}
+        style={styles.signUpBtn}
         color="dodgerblue"
       >
         <Text style={styles.loginButtonText}>Sign Up</Text>
@@ -114,14 +115,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     color: "#000",
   },
-  loginButton: {
+  signUpBtn: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 25,
-    marginBottom: 20,
+    marginTop: 32,
+    marginBottom: 8,
     width: "75%",
-    height: 35,
+    paddingVertical: 10,
     backgroundColor: "#B58B8B",
   },
   loginButtonText: {

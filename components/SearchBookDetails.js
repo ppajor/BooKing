@@ -9,6 +9,32 @@ function SearchBookDetails({ item }) {
   const navigation = useNavigation();
 
   const handleAdd = (el) => {
+    if (el.volumeInfo.pageCount == undefined) {
+      navigation.navigate("EditBook", {
+        alert:
+          "Przed dodaniem książki do biblioteki, uzupełnij brakujące informacje",
+        id: el.id,
+        title: el.volumeInfo.title,
+        authors: el.volumeInfo.authors[0],
+        description: el.volumeInfo.description,
+        thumbnail: el.volumeInfo.imageLinks.thumbnail,
+      });
+      return;
+    }
+
+    if (el.volumeInfo.imageLinks == undefined) {
+      navigation.navigate("EditBook", {
+        alert:
+          "Przed dodaniem książki do biblioteki, uzupełnij brakujące informacje",
+        id: el.id,
+        title: el.volumeInfo.title,
+        authors: el.volumeInfo.authors[0],
+        description: el.volumeInfo.description,
+        pageCount: el.volumeInfo.pageCount,
+      });
+      return;
+    }
+
     const dataToUpdate = {
       [el.id]: {
         id: el.id,

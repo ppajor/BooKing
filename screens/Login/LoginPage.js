@@ -9,10 +9,12 @@ import {
   BackHandler,
 } from "react-native";
 import firebase from "firebase";
+import DefText from "../../components/DefText";
 
 export default function LoginPage({ navigation }) {
   const [inputUsername, setInputUsername] = useState("");
   const [inputPassword, setInputPassword] = useState("");
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const backAction = () => {
@@ -37,7 +39,7 @@ export default function LoginPage({ navigation }) {
         console.log("User logged in");
       })
       .catch((error) => {
-        console.error(error);
+        setError("Invalid email or password.");
       });
   };
 
@@ -66,8 +68,15 @@ export default function LoginPage({ navigation }) {
         color="dodgerblue"
         onPress={handleLogin}
       >
-        <Text style={styles.loginButtonText}>Log in</Text>
+        <DefText size={14} color="#fff">
+          Log in
+        </DefText>
       </TouchableOpacity>
+      {error && (
+        <DefText size={14} color="red">
+          {error}
+        </DefText>
+      )}
     </View>
   );
 }
@@ -98,10 +107,10 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 25,
-    marginBottom: 20,
+    marginTop: 32,
+    marginBottom: 8,
     width: "75%",
-    height: 35,
+    paddingVertical: 10,
     backgroundColor: "#B58B8B",
   },
   loginButtonText: {
