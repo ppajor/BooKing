@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: 240,
+    marginTop: 16,
     borderRadius: 16,
     overflow: "hidden",
   },

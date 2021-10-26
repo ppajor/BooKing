@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableHighlight,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, View, Image, TouchableHighlight, ScrollView } from "react-native";
 import { Link } from "@react-navigation/native";
 
 import { AntDesign } from "@expo/vector-icons";
@@ -14,22 +8,29 @@ import firebase from "firebase";
 import DefText from "../../components/DefText";
 import Timer from "../../components/Timer";
 import { global } from "../../styles";
-import { updateFirebase, removeFirebase } from "../../api/firebaseCalls";
+import { updateFirebase, removeFirebase, addBookToDatabase } from "../../api/firebaseCalls";
+import { bookData, needEdit } from "../../api/GoogleBooksCalls";
 
 export default function LibraryBookDetails({ navigation, route }) {
   const [name, setName] = useState(route.params.name);
   const [timerOn, setTimerOn] = useState(false);
 
   const handleBtnClick = (buttonName) => {
-    if (buttonName == "Dodaj do biblioteki")
-      handleAddToLibrary(route.params.data);
-
+    if (buttonName == "Dodaj do biblioteki") handleAddToLibrary(route.params.data);
     if (buttonName == "Czytaj") handleAddReadNow(route.params.data);
-
     if (buttonName == "Czytaj teraz!") handleReadNow();
   };
 
-  const handleAddToLibrary = (el) => {
+  const handleAddToLibrary = (book) => {
+    if (needEdit(book)) {
+      book.alert = "Przed dodaniem książki do biblioteki, uzupełnij brakujące informacje";
+      console.log(book);
+      navigation.push("EditBook", book);
+    } else {
+      addBookToDatabase(book.id, book.title, book.authors, book.description, book.thumbnail, book.pageCount);
+      navigation.push("Home");
+    }
+    /*
     const dataToUpdate = {
       [el.id]: {
         id: el.id,
@@ -45,7 +46,7 @@ export default function LibraryBookDetails({ navigation, route }) {
       "/users/" + firebase.auth().currentUser.uid + "/library/toRead/",
       dataToUpdate
     );
-    navigation.push("Home");
+    */
   };
 
   const handleAddReadNow = (el) => {
@@ -60,23 +61,15 @@ export default function LibraryBookDetails({ navigation, route }) {
         lastReadPageNumber: 1,
       },
     };
-    updateFirebase(
-      "/users/" + firebase.auth().currentUser.uid + "/library/readNow/",
-      dataToUpdate
-    );
-    removeFirebase(
-      "/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + el.id
-    );
+    updateFirebase("/users/" + firebase.auth().currentUser.uid + "/library/readNow/", dataToUpdate);
+    removeFirebase("/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + el.id);
     navigation.push("Home");
   };
 
   const handleReadNow = () => {
     setTimerOn(true);
     const dataToUpdate = { lastRead: route.params.data.id };
-    updateFirebase(
-      "/users/" + firebase.auth().currentUser.uid + "/library",
-      dataToUpdate
-    );
+    updateFirebase("/users/" + firebase.auth().currentUser.uid + "/library", dataToUpdate);
   };
 
   return (
@@ -84,15 +77,9 @@ export default function LibraryBookDetails({ navigation, route }) {
       <View style={styles.headerContainer}>
         <View style={styles.header}>
           {route.params.data.thumbnail ? (
-            <Image
-              source={{ uri: route.params.data.thumbnail }}
-              style={{ width: 100, height: 150 }}
-            />
+            <Image source={{ uri: route.params.data.thumbnail }} style={{ width: 100, height: 150 }} />
           ) : (
-            <Image
-              source={require("../../img/no_cover_book.jpg")}
-              style={{ width: 100, height: 150 }}
-            />
+            <Image source={require("../../img/no_cover_book.jpg")} style={{ width: 100, height: 150 }} />
           )}
           {typeof route.params.bookPercent == "number" ? (
             <TouchableHighlight style={styles.readPercentage}>
@@ -115,10 +102,7 @@ export default function LibraryBookDetails({ navigation, route }) {
                 {route.params.data.authors}
               </DefText>
             </View>
-            <TouchableHighlight
-              style={styles.readBtn}
-              onPress={() => handleBtnClick(name)}
-            >
+            <TouchableHighlight style={styles.readBtn} onPress={() => handleBtnClick(name)}>
               <DefText family="OpenSans-LightItalic" size={14} color="#fff">
                 {name}
               </DefText>
@@ -147,11 +131,7 @@ export default function LibraryBookDetails({ navigation, route }) {
           Opis książki
         </DefText>
         <View style={styles.separator}></View>
-        <DefText
-          family="OpenSans-LightItalic"
-          size={14}
-          color="rgba(0, 0, 0, 0.5)"
-        >
+        <DefText family="OpenSans-LightItalic" size={14} color="rgba(0, 0, 0, 0.5)">
           {route.params.data.description}
         </DefText>
       </View>

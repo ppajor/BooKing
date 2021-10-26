@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Text,
-  BackHandler,
-} from "react-native";
+import { View, TextInput, StyleSheet, Image, TouchableOpacity, Text, BackHandler } from "react-native";
 import firebase from "firebase";
-import { registerWithEmail } from "../../api/firebaseCalls";
+import { registerWithEmail, setFirebase } from "../../api/firebaseCalls";
 
 export default function LoginPage({ navigation }) {
   const [inputEmail, setInputEmail] = useState("");
+  const [inputUsername, setInputUsername] = useState("");
   const [inputPassword, setInputPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -31,7 +24,15 @@ export default function LoginPage({ navigation }) {
     return () => backHandler.remove(); // przy odmontowywaniu
   }, []);
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
+    const result = await registerWithEmail(inputEmail, inputPassword);
+    console.log("RESULT");
+    console.log(result);
+    const dataToSet1 = { id: result.user.uid, name: inputEmail, username: inputUsername, library: "" };
+    await setFirebase("/users/" + result.user.uid, dataToSet1);
+    const dataToSet2 = { userID: result.user.uid };
+    await setFirebase("/usernames/" + inputUsername, dataToSet2);
+    /*
     firebase
       .auth()
       .createUserWithEmailAndPassword(inputEmail, inputPassword)
@@ -59,33 +60,18 @@ export default function LoginPage({ navigation }) {
 
         console.error(error);
       });
+      */
   };
 
   return (
     <View style={styles.container}>
-      <Image
-        width="50"
-        style={styles.logo}
-        source={require("../../img/logo.png")}
-      ></Image>
+      <Image width="50" style={styles.logo} source={require("../../img/logo.png")}></Image>
 
-      <TextInput
-        style={[styles.input, styles.margin]}
-        placeholder="E-mail"
-        value={inputEmail}
-        onChangeText={(text) => setInputEmail(text)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={inputPassword}
-        onChangeText={(text) => setInputPassword(text)}
-      />
-      <TouchableOpacity
-        onPress={handleSignUp}
-        style={styles.signUpBtn}
-        color="dodgerblue"
-      >
+      <TextInput style={[styles.input, styles.margin]} placeholder="E-mail" value={inputEmail} onChangeText={(text) => setInputEmail(text)} />
+      <TextInput style={styles.input} placeholder="Username" value={inputUsername} onChangeText={(text) => setInputUsername(text)} />
+      <TextInput style={styles.input} placeholder="Password" value={inputPassword} onChangeText={(text) => setInputPassword(text)} />
+
+      <TouchableOpacity onPress={handleSignUp} style={styles.signUpBtn} color="dodgerblue">
         <Text style={styles.loginButtonText}>Sign Up</Text>
       </TouchableOpacity>
       <Text>{error}</Text>

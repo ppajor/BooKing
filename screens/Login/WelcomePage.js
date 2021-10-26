@@ -29,27 +29,18 @@ export default function WelcomePage({ navigation }) {
           </DefText>
         </View>
 
-        <TouchableOpacity
-          style={styles.signUpBtn}
-          onPress={() => navigation.navigate("LoginPage")}
-        >
+        <TouchableOpacity style={styles.signUpBtn} onPress={() => navigation.push("LoginPage")}>
           <DefText size={14} color="#fff">
             Log in with e-mail
           </DefText>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.loginBtn}
-          onPress={() => navigation.navigate("SignUpEmail")}
-        >
+        <TouchableOpacity style={styles.loginBtn} onPress={() => navigation.push("SignUpEmail")}>
           <DefText size={14} color="#B58B8B">
             Sign up with e-mail
           </DefText>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={{ marginTop: 48 }}
-          onPress={() => handleAnonymousSignIn()}
-        >
+        <TouchableOpacity style={{ marginTop: 48 }} onPress={() => handleAnonymousSignIn()}>
           <DefText size={12} color="#ccc">
             Sign in anonymously
           </DefText>

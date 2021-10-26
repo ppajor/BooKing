@@ -42,20 +42,19 @@ function SearchBar(props) {
               <AntDesign name="search1" size={24} color="black" />
             </TouchableOpacity>
           </View>
-          {wikusia && (
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <MaterialCommunityIcons name="barcode-scan" size={24} color="black" style={{ marginLeft: 8, marginRight: 4 }} />
-              <DefText size={12} family="OpenSans-Light">
-                scan
-              </DefText>
-            </View>
-          )}
+          <TouchableOpacity
+            onPress={() => navigation.push("BookScanner")}
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <MaterialCommunityIcons name="barcode-scan" size={24} color="black" style={{ marginLeft: 24, marginRight: 8 }} />
+            <DefText size={12} family="OpenSans-Light">
+              scan
+            </DefText>
+          </TouchableOpacity>
         </View>
         {apiData && (
           <FlatList horizontal data={Object.values(apiData)} renderItem={({ item }) => <SearchBookDetails item={item} />} keyExtractor={(item) => item.id} />
@@ -108,6 +107,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 16,
+    marginTop: 24,
   },
 });

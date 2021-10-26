@@ -22,6 +22,16 @@ export const globalSheet = StyleSheet.create({
     elevation: 3,
     backgroundColor: "white",
   },
+  input: {
+    width: "100%",
+    height: 40,
+    paddingLeft: 16,
+    fontSize: 12,
+    borderWidth: 1,
+    borderColor: "#F1F1F1",
+    backgroundColor: "#fff",
+    borderRadius: 8,
+  },
 });
 
 export const global = {

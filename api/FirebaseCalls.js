@@ -1,7 +1,29 @@
 import firebase from "firebase";
 
-export const anonymousRegister = () => {
-  firebase
+export const registerWithEmail = async (inputEmail, inputPassword) => {
+  return await firebase
+    .auth()
+    .createUserWithEmailAndPassword(inputEmail, inputPassword)
+    .then((result) => {
+      return result;
+    })
+    .catch((error) => {
+      if (error.code === "auth/email-already-in-use") {
+        console.log("That email address is already in use!");
+        setError("That email address is already in use!");
+      }
+
+      if (error.code === "auth/invalid-email") {
+        console.log("That email address is invalid!");
+        setError("That email address is invalid!");
+      }
+
+      console.error(error);
+    });
+};
+
+export const anonymousRegister = async () => {
+  return await firebase
     .auth()
     .signInAnonymously()
     .then(() => {
@@ -31,11 +53,20 @@ export const getFirebase = async (path) => {
     .once("value")
     .then((snapshot) => {
       if (snapshot.exists()) return snapshot.val();
+      else return null;
     })
     .catch((error) => {
       console.log(error);
       return null;
     });
+};
+
+export const setFirebase = async (path, data) => {
+  firebase
+    .database()
+    .ref(path)
+    .set(data)
+    .then(() => console.log("set data correct!"));
 };
 
 export const updateFirebase = async (path, data) => {
@@ -44,7 +75,7 @@ export const updateFirebase = async (path, data) => {
     .ref(path)
     .update(data)
     .then(() => {
-      console.log("update data");
+      console.log("update data correct!");
     })
     .catch((error) => {
       console.error(error);
@@ -55,19 +86,12 @@ export const removeFirebase = async (path) => {
   firebase.database().ref(path).remove();
 };
 
+//functions
 export const currentUserId = async () => {
   return await firebase.auth().currentUser.uid;
 };
 
-//functions
-export const addBookToDatabase = (
-  id,
-  bookTitle,
-  author,
-  bookDescription,
-  thumbnail,
-  pages
-) => {
+export const addBookToDatabase = (id, bookTitle, author, bookDescription, thumbnail, pages) => {
   const dataToUpdate = {
     [id]: {
       id: id,
@@ -80,8 +104,9 @@ export const addBookToDatabase = (
     },
   };
   //console.log(`THUMBNAIL FIREBASEFUNC ${thumbnail}`);
-  updateFirebase(
-    "/users/" + firebase.auth().currentUser.uid + "/library/toRead/",
-    dataToUpdate
-  );
+  updateFirebase("/users/" + firebase.auth().currentUser.uid + "/library/toRead/", dataToUpdate);
+};
+
+export const searchUsername = async (username) => {
+  return await getFirebase("/users/");
 };

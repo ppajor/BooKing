@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Text,
-  BackHandler,
-} from "react-native";
+import { View, TextInput, StyleSheet, Image, TouchableOpacity, Text, BackHandler } from "react-native";
 import firebase from "firebase";
 import DefText from "../../components/DefText";
 
@@ -45,29 +37,11 @@ export default function LoginPage({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Image
-        width="50"
-        style={styles.logo}
-        source={require("../../img/logo.png")}
-      ></Image>
+      <Image width="50" style={styles.logo} source={require("../../img/logo.png")}></Image>
 
-      <TextInput
-        style={[styles.input, styles.margin]}
-        placeholder="Username"
-        onChangeText={(text) => setInputUsername(text)}
-        value={inputUsername}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        onChangeText={(text) => setInputPassword(text)}
-        value={inputPassword}
-      />
-      <TouchableOpacity
-        style={styles.loginButton}
-        color="dodgerblue"
-        onPress={handleLogin}
-      >
+      <TextInput style={[styles.input, styles.margin]} placeholder="Username" onChangeText={(text) => setInputUsername(text)} value={inputUsername} />
+      <TextInput style={styles.input} placeholder="Password" onChangeText={(text) => setInputPassword(text)} value={inputPassword} />
+      <TouchableOpacity style={styles.loginButton} color="dodgerblue" onPress={handleLogin}>
         <DefText size={14} color="#fff">
           Log in
         </DefText>

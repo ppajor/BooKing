@@ -11,6 +11,9 @@ const Shelf = (props) => {
   return (
     <>
       <View style={[styles.container, !name && styles.noHeader]}>
+        <ImageBackground source={require("../img/wood_texture.jpg")} style={styles.bookshelfContainer}></ImageBackground>
+        <View style={styles.bookshelf}></View>
+
         {name && (
           <View style={styles.refreshIcon}>
             <DefText family="Rubik-Medium" size={16} color="rgba(227, 227, 227, 0.9)">
@@ -32,8 +35,6 @@ const Shelf = (props) => {
             </TouchableOpacity>
           </View>
         )}
-        <ImageBackground source={require("../img/wood_texture.jpg")} style={styles.bookshelfContainer}></ImageBackground>
-        <View style={styles.bookshelf}></View>
         {data && (
           <View style={styles.booksContainer}>
             <FlatList

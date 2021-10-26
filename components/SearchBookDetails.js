@@ -1,14 +1,23 @@
 import React from "react";
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import DefText from "./DefText";
-import { updateFirebase } from "../api/firebaseCalls";
+import { updateFirebase, addBookToDatabase } from "../api/firebaseCalls";
 import firebase from "firebase";
 import { useNavigation } from "@react-navigation/native";
+import { needEdit, bookData } from "../api/GoogleBooksCalls";
 
 function SearchBookDetails({ item }) {
   const navigation = useNavigation();
 
   const handleAdd = (el) => {
+    let book = bookData(el);
+    if (needEdit(book)) {
+      book.alert = "Przed dodaniem książki do biblioteki, uzupełnij brakujące informacje";
+      navigation.push("EditBook", book);
+    } else {
+      addBookToDatabase(book.id, book.title, book.authors, book.description, book.thumbnail, book.pageCount);
+    }
+    /*
     if (el.volumeInfo.pageCount == undefined) {
       navigation.push("EditBook", {
         alert: "Przed dodaniem książki do biblioteki, uzupełnij brakujące informacje",
@@ -32,7 +41,8 @@ function SearchBookDetails({ item }) {
       });
       return;
     }
-
+    */
+    /*
     const dataToUpdate = {
       [el.id]: {
         id: el.id,
@@ -45,9 +55,11 @@ function SearchBookDetails({ item }) {
       },
     };
     updateFirebase("/users/" + firebase.auth().currentUser.uid + "/library/toRead/", dataToUpdate);
+    */
   };
 
   const handlePress = (el) => {
+    /*
     const obj = {
       id: el.id,
       title: el.volumeInfo.title,
@@ -59,6 +71,13 @@ function SearchBookDetails({ item }) {
     };
     navigation.push("LibraryBookDetails", {
       data: obj,
+      name: "Dodaj do biblioteki",
+    });
+    */
+    const book = bookData(el);
+    book.lastReadPageNumber = 1;
+    navigation.push("LibraryBookDetails", {
+      data: book,
       name: "Dodaj do biblioteki",
     });
   };

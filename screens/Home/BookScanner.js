@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Button,
-  TouchableOpacity,
-  BackHandler,
-} from "react-native";
+import { Text, View, StyleSheet, Button, TouchableOpacity, BackHandler } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
+import { getData, bookData } from "../../api/GoogleBooksCalls";
+import { addBookToDatabase } from "../../api/firebaseCalls";
 
 export default function BookScanner({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
@@ -37,19 +32,13 @@ export default function BookScanner({ navigation }) {
     })();
   }, []);
 
-  const handleBarCodeScanned = ({ data }) => {
+  const handleBarCodeScanned = async ({ data }) => {
     console.log("HANDLE BARCODE");
     setScanned(true);
+    const result = await getData(`https://www.googleapis.com/books/v1/volumes?q=isbn:${data}&key=${API_KEY}`);
+    const book = result.items[0];
 
-    fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${data}&key=${API_KEY}
-    `)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        console.log(responseJson);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    navigation.push("EditBook", bookData(book));
   };
 
   if (hasPermission === null) {
@@ -65,20 +54,13 @@ export default function BookScanner({ navigation }) {
         flex: 1,
         flexDirection: "column",
         justifyContent: "flex-end",
+        backgroundColor: "rgba(0,0,0,1)",
       }}
     >
-      <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={StyleSheet.absoluteFillObject}
-      />
+      <BarCodeScanner onBarCodeScanned={scanned ? undefined : handleBarCodeScanned} style={StyleSheet.absoluteFillObject} />
 
-      {scanned && (
-        <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
-      )}
-      <TouchableOpacity
-        style={styles.exit}
-        onPress={() => navigation.navigate("Home")}
-      >
+      {scanned && <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />}
+      <TouchableOpacity style={styles.exit} onPress={() => navigation.navigate("Home")}>
         <Text style={styles.x}>X</Text>
       </TouchableOpacity>
     </View>

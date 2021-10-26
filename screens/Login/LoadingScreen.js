@@ -27,8 +27,8 @@ const LoadingScreen = ({ navigation }) => {
       >
         <LottieView
           style={{
-            width: 250,
-            height: 250,
+            width: 360,
+            height: 360,
           }}
           source={require("../../assets/LottieFiles/stack-of-books.json")} //conditionale robimy poza sourcem bo inaczej nie działa
           loop

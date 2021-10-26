@@ -18,6 +18,7 @@ import BookScanner from "./screens/Home/BookScanner";
 import SearchScreen from "./screens/Search/SearchScreen";
 import DefText from "./components/DefText";
 import EditBook from "./screens/Home/EditBook";
+import ProfileScreen from "./screens/Profile/ProfileScreen";
 
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig); //musimy sprawdzic czy aplikacja zostala juz zainicjowana czy nie, zeby za kazdym razem nie inicjowac apki
 const Stack = createNativeStackNavigator();
@@ -27,8 +28,9 @@ const TabNavigator = () => (
   <Tab.Navigator
     initialRouteName="HomeScreen"
     screenOptions={({ route }) => ({
+      tabBarStyle: { backgroundColor: "#fff", paddingBottom: 2 },
       tabBarActiveTintColor: "#B58B8B",
-      tabBarInactiveTintColor: "#999",
+      tabBarInactiveTintColor: "#c9c9c9",
     })}
   >
     <Tab.Screen
@@ -36,9 +38,7 @@ const TabNavigator = () => (
       component={Home}
       options={{
         headerShown: false,
-        tabBarIcon: ({ color }) => (
-          <AntDesign name="home" size={24} color={color} />
-        ),
+        tabBarIcon: ({ color }) => <AntDesign name="home" size={24} color={color} />,
       }}
     />
     <Tab.Screen
@@ -46,9 +46,15 @@ const TabNavigator = () => (
       component={SearchScreen}
       options={{
         headerShown: false,
-        tabBarIcon: ({ color }) => (
-          <AntDesign name="search1" size={24} color={color} />
-        ),
+        tabBarIcon: ({ color }) => <AntDesign name="search1" size={24} color={color} />,
+      }}
+    />
+    <Tab.Screen
+      name="Profile"
+      component={ProfileScreen}
+      options={{
+        headerShown: false,
+        tabBarIcon: ({ color }) => <AntDesign name="user" size={24} color={color} />,
       }}
     />
   </Tab.Navigator>
@@ -58,32 +64,12 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="LoadingScreen">
-        <Stack.Screen
-          name="LoadingScreen"
-          component={LoadingScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="WelcomePage"
-          component={WelcomePage}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Home"
-          component={TabNavigator}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="LoginPage"
-          component={LoginPage}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="SignUpEmail"
-          component={SignUpEmail}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="BookScanner" component={BookScanner} />
+        <Stack.Screen name="LoadingScreen" component={LoadingScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="WelcomePage" component={WelcomePage} options={{ headerShown: false }} />
+        <Stack.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="LoginPage" component={LoginPage} options={{ headerShown: false }} />
+        <Stack.Screen name="SignUpEmail" component={SignUpEmail} options={{ headerShown: false }} />
+        <Stack.Screen name="BookScanner" component={BookScanner} options={{ headerShown: false }} />
         <Stack.Screen name="EditBook" component={EditBook} />
         <Stack.Screen
           name="LibraryBookDetails"

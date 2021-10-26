@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  TextInput,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { View, TextInput, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import * as firebase from "firebase";
 import { global } from "../../styles";
 import { updateFirebase, addBookToDatabase } from "../../api/firebaseCalls";
@@ -14,23 +7,13 @@ import DefText from "../../components/DefText";
 import PickImage from "../../components/PickImage";
 
 function EditBook({ navigation, route }) {
-  let {
-    alert = null,
-    authors = null,
-    description = null,
-    id = null,
-    pageCount = null,
-    thumbnail = null,
-    title = null,
-  } = route.params;
+  let { alert = null, authors = null, description = null, id = null, pageCount = null, thumbnail = null, title = null } = route.params;
 
   //state
   const [pages, setPages] = useState(pageCount ? pageCount : "");
   const [author, setAuthor] = useState(authors ? authors : "");
   const [bookTitle, setBookTitle] = useState(title ? title : "");
-  const [bookDescription, setBookDescription] = useState(
-    description ? description : ""
-  );
+  const [bookDescription, setBookDescription] = useState(description ? description : "");
   const [imagePath, setImagePath] = useState(null);
   const [error, setError] = useState(null);
 
@@ -38,52 +21,39 @@ function EditBook({ navigation, route }) {
     id = getBookId();
     console.log(id);
 
-    if (
-      author == "" ||
-      bookDescription == "" ||
-      pages == "" ||
-      (thumbnail == null && imagePath == null) ||
-      bookTitle == ""
-    ) {
+    if (author == "" || bookDescription == "" || pages == "" || (thumbnail == null && imagePath == null) || bookTitle == "") {
       setError("Wszystkie pola muszą być wypełnione");
     } else {
       console.log(`Thumbnail ${thumbnail}`);
-      addBookToDatabase(
-        id,
-        bookTitle,
-        author,
-        bookDescription,
-        thumbnail,
-        pages
-      );
-      updateImage(imagePath)
-        .then(() => {
-          var ref = firebase.storage().ref().child(id);
 
-          ref.getDownloadURL().then((url) => {
-            console.log(url);
-            updateUrl(url);
-            navigation.push("Home");
+      if (imagePath != "") {
+        await addBookToDatabase(id, bookTitle, author, bookDescription, thumbnail, pages);
+        await updateImage(imagePath)
+          .then(() => {
+            var ref = firebase.storage().ref().child(id);
+
+            ref.getDownloadURL().then((url) => {
+              console.log(url);
+              updateUrl(url);
+              navigation.push("Home");
+            });
+          })
+          .catch(() => {
+            console.log("Error in photo upload");
           });
-        })
-        .catch(() => {
-          console.log("Error in photo upload");
-        });
+      } else {
+        await addBookToDatabase(id, bookTitle, author, bookDescription, thumbnail, pages);
+        navigation.push("Home");
+      }
     }
   };
 
   const getBookId = () => {
-    return (
-      Math.random().toString(36).substring(2) +
-      new Date().getTime().toString(36)
-    );
+    return Math.random().toString(36).substring(2) + new Date().getTime().toString(36);
   };
 
   const updateUrl = async (url) => {
-    await updateFirebase(
-      "/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + id,
-      { thumbnail: url }
-    );
+    await updateFirebase("/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + id, { thumbnail: url });
   };
 
   const updateImage = async (uri) => {
@@ -103,31 +73,19 @@ function EditBook({ navigation, route }) {
             </DefText>
           </View>
         )}
-        {thumbnail != null ? (
-          <Image source={{ uri: thumbnail }} style={styles.image} />
-        ) : (
-          <PickImage setPath={(path) => setImagePath(path)} />
-        )}
+        {thumbnail != null ? <Image source={{ uri: thumbnail }} style={styles.image} /> : <PickImage setPath={(path) => setImagePath(path)} />}
 
         <View style={styles.property}>
           <View style={styles.headerDecorator}>
             <DefText family="Rubik-Medium">Title</DefText>
           </View>
-          <TextInput
-            style={styles.input}
-            value={bookTitle}
-            onChangeText={(el) => setBookTitle(el)}
-          />
+          <TextInput style={styles.input} value={bookTitle} onChangeText={(el) => setBookTitle(el)} />
         </View>
         <View style={styles.property}>
           <View style={styles.headerDecorator}>
             <DefText family="Rubik-Medium">Author</DefText>
           </View>
-          <TextInput
-            style={styles.input}
-            value={author}
-            onChangeText={(el) => setAuthor(el)}
-          />
+          <TextInput style={styles.input} value={author} onChangeText={(el) => setAuthor(el)} />
         </View>
         <View style={styles.property}>
           <View style={styles.headerDecorator}>
@@ -150,17 +108,9 @@ function EditBook({ navigation, route }) {
             <DefText family="Rubik-Medium">Pages</DefText>
           </View>
           {pageCount ? (
-            <TextInput
-              style={styles.input}
-              value={pageCount.toString()}
-              keyboardType="numeric"
-            />
+            <TextInput style={styles.input} value={pageCount.toString()} keyboardType="numeric" />
           ) : (
-            <TextInput
-              style={[styles.input, styles.fillInfo]}
-              value={pages}
-              onChangeText={(e) => setPages(e)}
-            />
+            <TextInput style={[styles.input, styles.fillInfo]} value={pages} onChangeText={(e) => setPages(e)} />
           )}
         </View>
         {error && (
