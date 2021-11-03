@@ -2,14 +2,10 @@ import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import DefText from "../../components/DefText";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import ModalShelf from "../../components/ModalShelf";
-import { getFirebase, getToRead } from "../../api/firebaseCalls";
-import { getData } from "../../api/GoogleBooksCalls";
+import { getToRead } from "../../api/firebaseCalls";
 
-function FriendProfile(props) {
+function FriendProfile({ navigation, ...props }) {
   const { id, username } = props.route.params;
-
-  const [modalVisible, setModalVisible] = useState(false);
   const [booksToRead, setBooksToRead] = useState(null);
 
   useEffect(() => {
@@ -18,17 +14,18 @@ function FriendProfile(props) {
 
   const getData = async () => {
     const booksToRead = await getToRead(id);
-    //console.log(booksToRead);
     setBooksToRead(booksToRead);
   };
 
   return (
     <View>
       <DefText>{username}</DefText>
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <DefText>Zobacz do przeczytania</DefText>
-      </TouchableOpacity>
-      {booksToRead && <ModalShelf books={booksToRead} modalVisible={modalVisible} setModalVisible={() => setModalVisible(!modalVisible)} />}
+      {booksToRead && (
+        <TouchableOpacity onPress={() => navigation.push("AllBooksShelf", { booksToRead })}>
+          <DefText>Zobacz do przeczytania</DefText>
+        </TouchableOpacity>
+      )}
+
       <TouchableOpacity>
         <DefText>Zobacz czytane</DefText>
       </TouchableOpacity>

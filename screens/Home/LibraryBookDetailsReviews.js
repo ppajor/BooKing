@@ -1,7 +1,8 @@
 import React from "react";
 import { View, StyleSheet, FlatList } from "react-native";
-import Comment from "../../components/Comment";
+import Review from "../../components/Review";
 import DefText from "../../components/DefText";
+import { global } from "../../styles";
 
 function LibraryBookDetailsReviews({ reviews }) {
   const data = [
@@ -28,7 +29,7 @@ function LibraryBookDetailsReviews({ reviews }) {
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View style={styles.review}>
-              <Comment data={item} separator={false} />
+              <Review data={item} separator={false} />
             </View>
           )}
         />
@@ -50,8 +51,8 @@ const styles = StyleSheet.create({
     width: 300,
     padding: 16,
     marginRight: 16,
-    borderWidth: 1,
-    borderColor: "#F1F1F1",
+    borderWidth: 2,
+    borderColor: "#f1f1f1",
     borderRadius: 12,
   },
 });

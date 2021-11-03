@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { View, StyleSheet, TextInput, Touchable, TouchableOpacity } from "react-native";
 import DefText from "../../components/DefText";
-import { Rating, AirbnbRating } from "react-native-ratings";
+import { AirbnbRating } from "react-native-ratings";
 import { global, globalSheet } from "../../styles";
 import { addReview } from "../../api/firebaseCalls";
 import { getUniqueID } from "../../utils";
+import { ScrollView } from "react-native-gesture-handler";
 
 function AddReview(props) {
   const { bookID, username } = props.route.params;
@@ -20,42 +21,44 @@ function AddReview(props) {
   };
 
   return (
-    <View style={styles.container}>
-      <View>
-        <DefText family="Rubik-Bold" size={20}>
-          Ocena:
-        </DefText>
-        <AirbnbRating
-          onFinishRating={(note) => setNote(note)}
-          count={10}
-          reviews={["Kompromitacja", "Bardzo słaba", "Słaba", "Pół biedy", "Przeciętna", "Spoko", "Fajna", "Bardzo Fajna", "Uwielbiam!", "Kocham!!!"]}
-          defaultRating={0}
-          size={20}
-        />
-        <TextInput
-          style={styles.titleInput}
-          value={title}
-          onChangeText={(text) => setTitle(text)}
-          placeholder="Wpisz tytuł recenzji..."
-          placeholderTextColor="rgba(0,0,0,0.35)"
-        />
-        <TextInput
-          multiline
-          numberOfLines={10}
-          textAlignVertical="top"
-          style={styles.descInput}
-          value={desc}
-          onChangeText={(text) => setDesc(text)}
-          placeholder="Tu pisz swoją recenzję..."
-          placeholderTextColor="rgba(0,0,0,0.35)"
-        />
+    <ScrollView>
+      <View style={styles.container}>
+        <View>
+          <DefText family="Rubik-Bold" size={20}>
+            Ocena:
+          </DefText>
+          <AirbnbRating
+            onFinishRating={(note) => setNote(note)}
+            count={10}
+            reviews={["Kompromitacja", "Bardzo słaba", "Słaba", "Pół biedy", "Przeciętna", "Spoko", "Fajna", "Bardzo Fajna", "Uwielbiam!", "Kocham!!!"]}
+            defaultRating={0}
+            size={20}
+          />
+          <TextInput
+            style={styles.titleInput}
+            value={title}
+            onChangeText={(text) => setTitle(text)}
+            placeholder="Wpisz tytuł recenzji..."
+            placeholderTextColor="rgba(0,0,0,0.35)"
+          />
+          <TextInput
+            multiline
+            numberOfLines={10}
+            textAlignVertical="top"
+            style={styles.descInput}
+            value={desc}
+            onChangeText={(text) => setDesc(text)}
+            placeholder="Tu pisz swoją recenzję..."
+            placeholderTextColor="rgba(0,0,0,0.35)"
+          />
+        </View>
+        <TouchableOpacity onPress={() => handlePress()} style={[globalSheet.btn, styles.btn]}>
+          <DefText family="Rubik-Regular" color="#fff">
+            Dodaj recenzję
+          </DefText>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={() => handlePress()} style={globalSheet.btn}>
-        <DefText family="Rubik-Regular" color="#fff">
-          Dodaj recenzję
-        </DefText>
-      </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -87,5 +90,8 @@ const styles = StyleSheet.create({
     borderColor: global.primaryColor,
     borderWidth: 2,
     borderRadius: 12,
+  },
+  btn: {
+    marginTop: 16,
   },
 });
