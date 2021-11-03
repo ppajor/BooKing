@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  TouchableHighlight,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, TouchableHighlight, Image, StyleSheet, TouchableOpacity } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
 import { removeFirebase, getFirebase } from "../api/firebaseCalls";
@@ -19,29 +13,18 @@ function BookCover({ item, shelfName, percentage, ...props }) {
 
   useEffect(() => {
     //  console.log(shelfName);
-    setReadPercent(
-      Math.floor((item.lastReadPageNumber / item.pageCount) * 100)
-    );
+    setReadPercent(Math.floor((item.lastReadPageNumber / item.pageCount) * 100));
   }, []);
 
   const handleRemove = async (id, name) => {
     if (name == "Do przeczytania") {
-      await removeFirebase(
-        "/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + id
-      );
+      await removeFirebase("/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + id);
     }
     if (name == "Czytane teraz") {
-      const lastread = await getFirebase(
-        "/users/" + firebase.auth().currentUser.uid + "/library/lastRead"
-      );
-      if (id == lastread)
-        await removeFirebase(
-          "/users/" + firebase.auth().currentUser.uid + "/library/lastRead"
-        );
+      const lastread = await getFirebase("/users/" + firebase.auth().currentUser.uid + "/library/lastRead");
+      if (id == lastread) await removeFirebase("/users/" + firebase.auth().currentUser.uid + "/library/lastRead");
 
-      await removeFirebase(
-        "/users/" + firebase.auth().currentUser.uid + "/library/readNow/" + id
-      );
+      await removeFirebase("/users/" + firebase.auth().currentUser.uid + "/library/readNow/" + id);
     }
     props.removeRefresh();
   };
@@ -79,10 +62,7 @@ function BookCover({ item, shelfName, percentage, ...props }) {
   return (
     <View style={styles.bookContainer}>
       <TouchableHighlight onPress={() => handleBookPress(item, shelfName)}>
-        <Image
-          style={styles.bookMockup}
-          source={{ uri: item.thumbnail }}
-        ></Image>
+        <Image style={styles.bookMockup} source={{ uri: item.thumbnail }}></Image>
       </TouchableHighlight>
       {shelfName != null && (
         <TouchableHighlight
@@ -96,10 +76,7 @@ function BookCover({ item, shelfName, percentage, ...props }) {
       )}
 
       {percentage && (
-        <TouchableOpacity
-          style={styles.percentageOverlay}
-          onPress={() => handleBookPress(item, shelfName)}
-        >
+        <TouchableOpacity style={styles.percentageOverlay} onPress={() => handleBookPress(item, shelfName)}>
           <DefText size={24} color="white">
             {readPercent}%
           </DefText>

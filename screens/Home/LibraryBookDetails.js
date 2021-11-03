@@ -1,19 +1,59 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Image, TouchableHighlight, ScrollView } from "react-native";
-import { Link } from "@react-navigation/native";
-
-import { AntDesign } from "@expo/vector-icons";
+import { StyleSheet, View, ScrollView, Touchable } from "react-native";
+import { FontAwesome5 } from "@expo/vector-icons";
 import PropTypes from "prop-types";
 import firebase from "firebase";
 import DefText from "../../components/DefText";
 import Timer from "../../components/Timer";
 import { global } from "../../styles";
-import { updateFirebase, removeFirebase, addBookToDatabase } from "../../api/firebaseCalls";
-import { bookData, needEdit } from "../../api/GoogleBooksCalls";
+import { updateFirebase, removeFirebase, addBookToDatabase, getFirebase, getUsername } from "../../api/firebaseCalls";
+import { needEdit } from "../../api/GoogleBooksCalls";
+import { getUniqueID } from "../../utils";
+import LibraryBookDetailsHeader from "./LibraryBookDetailsHeader";
+import LibraryBookDetailsComments from "./LibraryBookDetailsComments";
+import LibraryBookDetailsReviews from "./LibraryBookDetailsReviews";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function LibraryBookDetails({ navigation, route }) {
   const [name, setName] = useState(route.params.name);
   const [timerOn, setTimerOn] = useState(false);
+  const [comments, setComments] = useState(null);
+  const [reviews, setReviews] = useState(null);
+  const [writeComment, setWriteComment] = useState("");
+  const [newCommentFlag, setNewcommentFlag] = useState(false);
+  const [newReviewFlag, setNewReviewFlag] = useState(false);
+  const [username, setUsername] = useState(null);
+
+  useEffect(() => {
+    getReviews();
+  }, [newReviewFlag]);
+
+  useEffect(() => {
+    getComments();
+  }, [newCommentFlag]);
+
+  useEffect(() => {
+    getUsernameAsync();
+  }, []);
+
+  const getUsernameAsync = async () => {
+    const user = await getUsername();
+    setUsername(user);
+  };
+
+  const getComments = async () => {
+    const comments = await getFirebase("/books/" + route.params.data.id + "/comments");
+    if (comments) setComments(Object.values(comments));
+  };
+
+  const getReviews = async () => {
+    const reviews = await getFirebase("/books/" + route.params.data.id + "/reviews");
+    console.log(reviews);
+
+    if (reviews) {
+      setReviews(Object.values(reviews));
+    }
+  };
 
   const handleBtnClick = (buttonName) => {
     if (buttonName == "Dodaj do biblioteki") handleAddToLibrary(route.params.data);
@@ -30,23 +70,6 @@ export default function LibraryBookDetails({ navigation, route }) {
       addBookToDatabase(book.id, book.title, book.authors, book.description, book.thumbnail, book.pageCount);
       navigation.push("Home");
     }
-    /*
-    const dataToUpdate = {
-      [el.id]: {
-        id: el.id,
-        title: el.title,
-        authors: el.authors,
-        description: el.description,
-        thumbnail: el.thumbnail,
-        pageCount: el.pageCount,
-        lastReadPageNumber: 1,
-      },
-    };
-    updateFirebase(
-      "/users/" + firebase.auth().currentUser.uid + "/library/toRead/",
-      dataToUpdate
-    );
-    */
   };
 
   const handleAddReadNow = (el) => {
@@ -72,70 +95,74 @@ export default function LibraryBookDetails({ navigation, route }) {
     updateFirebase("/users/" + firebase.auth().currentUser.uid + "/library", dataToUpdate);
   };
 
+  const handleAddComment = async (book) => {
+    console.log(book);
+    console.log(writeComment);
+    const commentID = getUniqueID();
+    const dataToUpdate = { author: username, commentID: commentID, content: writeComment };
+    await updateFirebase("/books/" + book.id + "/comments/" + commentID, dataToUpdate);
+    setNewcommentFlag(!newCommentFlag);
+  };
+
   return (
     <ScrollView style={{ flex: 1 }}>
-      <View style={styles.headerContainer}>
-        <View style={styles.header}>
-          {route.params.data.thumbnail ? (
-            <Image source={{ uri: route.params.data.thumbnail }} style={{ width: 100, height: 150 }} />
-          ) : (
-            <Image source={require("../../img/no_cover_book.jpg")} style={{ width: 100, height: 150 }} />
-          )}
-          {typeof route.params.bookPercent == "number" ? (
-            <TouchableHighlight style={styles.readPercentage}>
-              <View style={styles.readPercentageText}>
-                <DefText size={32} color="#fff">
-                  {route.params.bookPercent}%
-                </DefText>
-              </View>
-            </TouchableHighlight>
-          ) : null}
-          <View style={styles.bookPrimaryInfo}>
-            <View>
-              <View style={{ marginBottom: 4 }}>
-                <DefText family="Rubik-Regular" size={16}>
-                  {route.params.data.title}
-                </DefText>
-              </View>
+      <LibraryBookDetailsHeader
+        thumbnail={route.params.data.thumbnail}
+        bookPercent={route.params.bookPercent}
+        title={route.params.data.title}
+        authors={route.params.data.authors}
+        data={route.params.data}
+        name={name}
+        handleBtnClick={handleBtnClick}
+      />
+      {timerOn && <Timer bookID={route.params.data.id} />}
 
-              <DefText family="OpenSans-LightItalic" size={14}>
-                {route.params.data.authors}
-              </DefText>
-            </View>
-            <TouchableHighlight style={styles.readBtn} onPress={() => handleBtnClick(name)}>
-              <DefText family="OpenSans-LightItalic" size={14} color="#fff">
-                {name}
-              </DefText>
-            </TouchableHighlight>
-          </View>
-        </View>
-        <Link
-          to={{ screen: "EditBook", params: route.params.data }}
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: 8,
-          }}
-        >
-          <AntDesign name="edit" size={16} color={global.primaryColor} />
-          <View style={{ marginLeft: 4 }}>
-            <DefText size={14} color={global.primaryColor}>
-              edit book
-            </DefText>
-          </View>
-        </Link>
-      </View>
       <View style={styles.headerBody}>
-        <DefText family="Rubik-Regular" size={16}>
-          Opis książki
-        </DefText>
+        <View style={styles.headers}>
+          <DefText family="Rubik-Regular" size={16}>
+            Opis książki
+          </DefText>
+        </View>
         <View style={styles.separator}></View>
         <DefText family="OpenSans-LightItalic" size={14} color="rgba(0, 0, 0, 0.5)">
           {route.params.data.description}
         </DefText>
+        <View style={styles.headers}>
+          <DefText family="Rubik-Regular" size={16}>
+            Recenzje
+          </DefText>
+        </View>
+        <View style={styles.separator}></View>
+        {reviews ? (
+          <LibraryBookDetailsReviews reviews={reviews} />
+        ) : (
+          <DefText size={11} color="rgba(0,0,0,0.35)">
+            Brak recenzji
+          </DefText>
+        )}
+        <TouchableOpacity
+          onPress={() => navigation.push("AddReview", { bookID: route.params.data.id, username: username })}
+          style={{ display: "flex", flexDirection: "row", marginTop: 32, marginBottom: 16, marginLeft: "auto", marginRight: 8 }}
+        >
+          <FontAwesome5 name="pen-nib" size={16} color="#383838" style={{ marginRight: 4 }} />
+          <DefText family="OpenSans-Bold" size={11} color="#383838">
+            Napisz swoją recenzję
+          </DefText>
+        </TouchableOpacity>
+        <View style={styles.headers}>
+          <DefText family="Rubik-Regular" size={16}>
+            Komentarze
+          </DefText>
+        </View>
+        <View style={styles.separator}></View>
+        <LibraryBookDetailsComments
+          comments={comments}
+          data={route.params.data}
+          writeComment={writeComment}
+          handleAddComment={handleAddComment}
+          setWriteComment={setWriteComment}
+        />
       </View>
-      {timerOn && <Timer bookID={route.params.data.id} />}
     </ScrollView>
   );
 }
@@ -187,14 +214,14 @@ const styles = StyleSheet.create({
   headerBody: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingVertical: 32,
+    paddingBottom: 32,
     backgroundColor: "#fff",
   },
   separator: {
     width: 50,
     height: 2,
     marginTop: 8,
-    marginBottom: 16,
+    marginBottom: 24,
     backgroundColor: global.primaryColor,
   },
 
@@ -224,6 +251,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     zIndex: 100,
+  },
+  headers: {
+    marginTop: 32,
+  },
+  link: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 8,
+  },
+  input: {
+    marginBottom: 12,
+    paddingTop: 8,
   },
 });
 

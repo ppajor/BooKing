@@ -13,7 +13,7 @@ export default function Home({ navigation }) {
   const [userData, setUserData] = useState(null);
   const [lastRead, setLastRead] = useState(null);
   const [userLoggedIn, setUserLoggedIn] = useState(false); // po zalogowaniu/utworzeniu konta automatycznie przekierowuje do home bo zmienia się state userloggedin (???)
-
+  //console.log(new Date().toISOString());
   const API_KEY = "AIzaSyACLJEKxGoXNM8qfeNKejGzzhESdRo6e00";
   //console.log("USER ID LOGGED IN:" + firebase.auth().currentUser.uid);
   useEffect(() => {
@@ -36,11 +36,6 @@ export default function Home({ navigation }) {
     lastread ? setLastRead(lastread) : setLastRead(null);
   };
 
-  const handleSignOut = () => {
-    logOut();
-    //navigation.push("WelcomePage");
-  };
-
   const forceRefresh = () => {
     console.log(refresh);
     setRefresh(!refresh);
@@ -52,22 +47,18 @@ export default function Home({ navigation }) {
         {userLoggedIn && (
           <>
             <View style={styles.userLoggedInNavbar}>
-              <DefText color="#B58B8B">Hello {userLoggedIn.email}</DefText>
-              <TouchableOpacity onPress={() => handleSignOut()}>
-                <DefText>Sign Out</DefText>
-              </TouchableOpacity>
+              <View>
+                <DefText family="OpenSans-Italic" color="#C9C9C9">
+                  Hello...
+                </DefText>
+                <View style={{ marginLeft: 38 }}>
+                  <DefText family="Rubik-Medium" size={24} color="rgba(181, 139, 139, 0.96)">
+                    {userLoggedIn.email}
+                  </DefText>
+                </View>
+              </View>
             </View>
-            <View
-              style={{
-                marginBottom: 8,
-                padding: global.padding,
-                paddingTop: 0,
-              }}
-            >
-              <DefText size={32} family="Rubik-Medium">
-                Witamy ponownie!
-              </DefText>
-            </View>
+
             {userData ? (
               <>
                 {lastRead && <LastRead id={lastRead} book={userData.readNow[lastRead]} />}
@@ -106,9 +97,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 12,
+    marginBottom: 32,
     padding: global.padding,
-    paddingTop: 16,
+    paddingTop: 32,
     paddingBottom: 0,
   },
 });

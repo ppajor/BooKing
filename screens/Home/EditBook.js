@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { View, TextInput, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import * as firebase from "firebase";
-import { global } from "../../styles";
+import { global, globalSheet } from "../../styles";
 import { updateFirebase, addBookToDatabase } from "../../api/firebaseCalls";
 import DefText from "../../components/DefText";
 import PickImage from "../../components/PickImage";
 
 function EditBook({ navigation, route }) {
   let { alert = null, authors = null, description = null, id = null, pageCount = null, thumbnail = null, title = null } = route.params;
-
   //state
   const [pages, setPages] = useState(pageCount ? pageCount : "");
   const [author, setAuthor] = useState(authors ? authors : "");
@@ -77,23 +76,29 @@ function EditBook({ navigation, route }) {
 
         <View style={styles.property}>
           <View style={styles.headerDecorator}>
-            <DefText family="Rubik-Medium">Title</DefText>
+            <DefText family="Rubik-Medium" color="rgba(0,0,0,0.35)">
+              Title
+            </DefText>
           </View>
-          <TextInput style={styles.input} value={bookTitle} onChangeText={(el) => setBookTitle(el)} />
+          <TextInput style={globalSheet.lineInput} value={bookTitle} onChangeText={(el) => setBookTitle(el)} />
         </View>
         <View style={styles.property}>
           <View style={styles.headerDecorator}>
-            <DefText family="Rubik-Medium">Author</DefText>
+            <DefText family="Rubik-Medium" color="rgba(0,0,0,0.35)">
+              Author
+            </DefText>
           </View>
-          <TextInput style={styles.input} value={author} onChangeText={(el) => setAuthor(el)} />
+          <TextInput style={globalSheet.lineInput} value={author} onChangeText={(el) => setAuthor(el)} />
         </View>
         <View style={styles.property}>
           <View style={styles.headerDecorator}>
-            <DefText family="Rubik-Medium">Description</DefText>
+            <DefText family="Rubik-Medium" color="rgba(0,0,0,0.35)">
+              Description
+            </DefText>
           </View>
 
           <TextInput
-            style={[styles.input, styles.textarea]}
+            style={[globalSheet.multilineInput, styles.textarea]}
             value={bookDescription}
             onChangeText={(el) => {
               setBookDescription(el);
@@ -105,12 +110,14 @@ function EditBook({ navigation, route }) {
         </View>
         <View style={styles.property}>
           <View style={styles.headerDecorator}>
-            <DefText family="Rubik-Medium">Pages</DefText>
+            <DefText family="Rubik-Medium" color="rgba(0,0,0,0.35)">
+              Pages
+            </DefText>
           </View>
           {pageCount ? (
-            <TextInput style={styles.input} value={pageCount.toString()} keyboardType="numeric" />
+            <TextInput style={globalSheet.lineInput} value={pageCount.toString()} keyboardType="numeric" />
           ) : (
-            <TextInput style={[styles.input, styles.fillInfo]} value={pages} onChangeText={(e) => setPages(e)} />
+            <TextInput style={[globalSheet.lineInput, styles.fillInfo]} value={pages} onChangeText={(e) => setPages(e)} />
           )}
         </View>
         {error && (
@@ -118,8 +125,8 @@ function EditBook({ navigation, route }) {
             {error}
           </DefText>
         )}
-        <View style={{ flex: 1 }}>
-          <TouchableOpacity onPress={() => handleSave()} style={styles.btn}>
+        <View style={{ flex: 1, marginTop: 48 }}>
+          <TouchableOpacity onPress={() => handleSave()} style={globalSheet.btn}>
             <DefText size={14} color="#fff">
               Zapisz i dodaj do biblioteki
             </DefText>
@@ -140,8 +147,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   image: {
-    width: 100,
-    height: 150,
+    width: 125,
+    height: 195,
     marginLeft: "auto",
     marginRight: "auto",
     marginBottom: 48,
@@ -149,14 +156,9 @@ const styles = StyleSheet.create({
   property: {
     width: "100%",
     display: "flex",
-    alignItems: "center",
     marginBottom: 16,
     padding: 16,
-    shadowColor: "black",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    borderRadius: 8,
-    elevation: 2,
+
     backgroundColor: "white",
   },
   input: {
@@ -173,7 +175,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   textarea: {
-    borderBottomWidth: 0,
+    marginTop: 16,
   },
   fillInfo: { borderColor: "red" },
   btn: {
@@ -185,11 +187,5 @@ const styles = StyleSheet.create({
     marginTop: 48,
     paddingVertical: 10,
     backgroundColor: "#B58B8B",
-  },
-  headerDecorator: {
-    borderBottomColor: global.primaryColor,
-    borderBottomWidth: 2,
-    paddingTop: 4,
-    paddingBottom: 4,
   },
 });

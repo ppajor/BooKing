@@ -108,5 +108,19 @@ export const addBookToDatabase = (id, bookTitle, author, bookDescription, thumbn
 };
 
 export const searchUsername = async (username) => {
-  return await getFirebase("/users/");
+  return await getFirebase("/usernames/" + username);
+};
+
+export const getUsername = async () => {
+  const data = await getFirebase("/users/" + firebase.auth().currentUser.uid);
+  return data.username;
+};
+
+export const getToRead = async (userID) => {
+  const toRead = await getFirebase("/users/" + userID + "/library");
+  return toRead.toRead;
+};
+
+export const addReview = async (bookID, data, reviewID) => {
+  await updateFirebase("/books/" + bookID + "/reviews/" + reviewID, data);
 };

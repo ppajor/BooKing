@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  Image,
-  View,
-  TouchableHighlight,
-} from "react-native";
+import { StyleSheet, Text, Image, View, TouchableHighlight } from "react-native";
 import firebase from "firebase";
 import { globalSheet, global } from "../styles";
 import DefText from "./DefText";
@@ -17,9 +11,7 @@ const LastRead = ({ book, id }) => {
   const [wikusia, setWikusia] = useState(false);
 
   const getLastRead = async () => {
-    let bookPercentage = Math.floor(
-      (book.lastReadPageNumber / book.pageCount) * 100
-    );
+    let bookPercentage = Math.floor((book.lastReadPageNumber / book.pageCount) * 100);
     setBookPercent(bookPercentage);
     setLastReadBook(book);
   };
@@ -34,27 +26,20 @@ const LastRead = ({ book, id }) => {
         <View>
           <View
             style={{
-              marginBottom: 0,
+              marginBottom: 8,
               paddingLeft: global.padding,
             }}
           >
-            <DefText
-              family="Rubik-Medium"
-              size={16}
-              color=" rgba(36, 36, 36, 0.9)"
-            >
+            <DefText family="Rubik-Medium" size={16} color=" rgba(36, 36, 36, 0.9)">
               Ostatnio czytana
             </DefText>
           </View>
           <View>
             <View style={styles.container}>
-              <Image
-                style={styles.bookMockup}
-                source={{ uri: lastReadBook.thumbnail }}
-              ></Image>
+              <Image style={styles.bookMockup} source={{ uri: lastReadBook.thumbnail }}></Image>
               <TouchableHighlight style={styles.readPercentage}>
                 <View>
-                  <DefText size={24} color="#fff" align="center">
+                  <DefText size={28} color="#fff" align="center">
                     {bookPercent}%
                   </DefText>
                 </View>
@@ -67,9 +52,7 @@ const LastRead = ({ book, id }) => {
                 }}
               >
                 <View>
-                  <View
-                    style={{ marginBottom: 4, paddingRight: global.padding }}
-                  >
+                  <View style={{ marginBottom: 4, paddingRight: global.padding }}>
                     <DefText family="Rubik-Regular" size={16}>
                       {lastReadBook.title}
                     </DefText>
@@ -81,11 +64,7 @@ const LastRead = ({ book, id }) => {
                 </View>
                 {wikusia && (
                   <TouchableHighlight style={styles.readBtn}>
-                    <DefText
-                      family="OpenSans-LightItalic"
-                      size={14}
-                      color="#fff"
-                    >
+                    <DefText family="OpenSans-LightItalic" size={14} color="#fff">
                       Czytaj dalej
                     </DefText>
                   </TouchableHighlight>
@@ -100,12 +79,16 @@ const LastRead = ({ book, id }) => {
 };
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    margin: 16,
+    borderRadius: 12,
+  },
   container: {
     width: "100%",
     display: "flex",
     flexDirection: "row",
     marginBottom: 24,
-    marginTop: 24,
+    marginTop: 12,
   },
   bookMockup: {
     width: 90,

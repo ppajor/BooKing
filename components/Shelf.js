@@ -65,11 +65,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
-    paddingBottom: 10,
     //backgroundCOlor: "#d2d2d2",
   },
   bookshelf: {
     position: "absolute",
+
     bottom: 0,
     width: "100%",
     height: 10,

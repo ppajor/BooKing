@@ -19,6 +19,8 @@ import SearchScreen from "./screens/Search/SearchScreen";
 import DefText from "./components/DefText";
 import EditBook from "./screens/Home/EditBook";
 import ProfileScreen from "./screens/Profile/ProfileScreen";
+import FriendProfile from "./screens/Profile/FriendProfile";
+import AddReview from "./screens/Home/AddReview";
 
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig); //musimy sprawdzic czy aplikacja zostala juz zainicjowana czy nie, zeby za kazdym razem nie inicjowac apki
 const Stack = createNativeStackNavigator();
@@ -71,6 +73,8 @@ function App() {
         <Stack.Screen name="SignUpEmail" component={SignUpEmail} options={{ headerShown: false }} />
         <Stack.Screen name="BookScanner" component={BookScanner} options={{ headerShown: false }} />
         <Stack.Screen name="EditBook" component={EditBook} />
+        <Stack.Screen name="FriendProfile" component={FriendProfile} />
+        <Stack.Screen name="AddReview" component={AddReview} />
         <Stack.Screen
           name="LibraryBookDetails"
           component={LibraryBookDetails}

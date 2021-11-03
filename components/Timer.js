@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableHighlight,
-  TextInput,
-} from "react-native";
+import { StyleSheet, View, Text, TouchableHighlight, TextInput } from "react-native";
 import PropTypes from "prop-types";
 import firebase from "firebase";
 import DefText from "./DefText";
@@ -35,13 +29,7 @@ const Timer = (props) => {
   }, [timerOn]);
 
   const showTime = () => {
-    return (
-      Math.floor(time / 3600) +
-      ":" +
-      Math.floor((time / 60) % 60) +
-      ":" +
-      (time % 60)
-    );
+    return Math.floor(time / 3600) + ":" + Math.floor((time / 60) % 60) + ":" + (time % 60);
   };
 
   const endReading = () => {
@@ -49,21 +37,18 @@ const Timer = (props) => {
     setModalVisible(true);
   };
 
-  const savePageNumber = (num) => {
+  const handleSave = (num) => {
     const dataToUpdate = { lastReadPageNumber: parseInt(num) };
-    updateFirebase(
-      "/users/" +
-        firebase.auth().currentUser.uid +
-        "/library/readNow/" +
-        props.bookID,
-      dataToUpdate
-    );
-
+    const data = Date.now();
+    const hour = Math.floor(time / 3600);
+    const minute = Math.floor((time / 60) % 60);
+    updateFirebase("/users/" + firebase.auth().currentUser.uid + "/library/readNow/" + props.bookID, dataToUpdate);
+    updateFirebase("/users/" + firebase.auth().currentUser.uid + "/readTime/" + props.bookID + data, { hours: hour, minutes: minute });
     navigation.push("Home");
   };
 
   return (
-    <View>
+    <View style={{ backgroundColor: "transparent" }}>
       <DefText align="center" size={32}>
         {showTime()}
       </DefText>
@@ -90,15 +75,9 @@ const Timer = (props) => {
       </View>
       {modalVisible && (
         <View style={styles.modalContainer}>
-          <Text style={styles.modalText}>
-            Na jakiej stronie skończyłeś czytać?
-          </Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setPageNumber}
-            value={pageNumber}
-          />
-          <TouchableHighlight onPress={() => savePageNumber(pageNumber)}>
+          <Text style={styles.modalText}>Na jakiej stronie skończyłeś czytać?</Text>
+          <TextInput style={styles.input} onChangeText={setPageNumber} value={pageNumber} />
+          <TouchableHighlight onPress={() => handleSave(pageNumber)}>
             <DefText>Zatwierdź</DefText>
           </TouchableHighlight>
         </View>
