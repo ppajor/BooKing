@@ -5,6 +5,7 @@ import { AirbnbRating } from "react-native-ratings";
 import { global, globalSheet } from "../../styles";
 import { addReview } from "../../api/firebaseCalls";
 import { getUniqueID } from "../../utils";
+import firebase from "firebase";
 import { ScrollView } from "react-native-gesture-handler";
 
 function AddReview(props) {
@@ -16,7 +17,7 @@ function AddReview(props) {
 
   const handlePress = () => {
     const id = getUniqueID();
-    const data = { title: title, content: desc, author: username, note: note, id: id };
+    const data = { title: title, content: desc, author: username, note: note, id: id, date: firebase.firestore.FieldValue.serverTimestamp() };
     addReview(bookID, data, id);
   };
 

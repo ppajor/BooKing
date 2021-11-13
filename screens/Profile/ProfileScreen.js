@@ -5,33 +5,32 @@ import DefText from "../../components/DefText";
 import { TextInput, StyleSheet, View, TouchableOpacity, FlatList } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { globalSheet } from "../../styles";
-import { getFirebase, searchUsername, updateFirebase, currentUserId, logOut } from "../../api/firebaseCalls";
+import { getFirebase, searchUsername, updateFirebase, currentUserId, logOut, getUserName } from "../../api/firebaseCalls";
+import FriendList from "../../components/FriendList";
 
 function ProfileScreen({ navigation }) {
   const [currentUsername, setCurrentUsername] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState(null);
-  const [friendsList, setFriendsList] = useState(null);
 
   useEffect(() => {
     getUserData();
   }, []);
 
   const getUserData = async () => {
-    const { username } = await getFirebase("/users/" + firebase.auth().currentUser.uid);
+    const username = await getUserName();
     setCurrentUsername(username);
-    const friendList = await getFirebase("/usernames/" + username + "/friends");
-    if (friendList) setFriendsList(Object.values(friendList));
   };
 
   const handleSearchButton = async (username) => {
     const result = await searchUsername(username);
+    console.log("result", result);
     setSearchResult(result);
   };
 
   const handleAddFriend = async () => {
     const dataToUpdate = { friendID: searchResult.userID, username: searchResult.name };
-    updateFirebase("/usernames/" + username + "/friends/" + dataToUpdate.friendID, dataToUpdate);
+    updateFirestore("/usernames/" + username + "/friends/", dataToUpdate.friendID, dataToUpdate);
   };
 
   return (
@@ -62,15 +61,7 @@ function ProfileScreen({ navigation }) {
             </TouchableOpacity>
           </>
         )}
-        <FlatList
-          data={friendsList}
-          keyExtractor={(item) => item.friendID}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate("FriendProfile", { id: item.friendID, username: item.username })}>
-              <DefText>{item.username}</DefText>
-            </TouchableOpacity>
-          )}
-        />
+        {currentUsername && <FriendList username={currentUsername} />}
         <TouchableOpacity onPress={() => logOut()}>
           <DefText>Sign Out</DefText>
         </TouchableOpacity>

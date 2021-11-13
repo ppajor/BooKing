@@ -1,58 +1,74 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, ScrollView, Touchable } from "react-native";
+import { StyleSheet, View, ScrollView, TouchableOpacity } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import PropTypes from "prop-types";
 import firebase from "firebase";
 import DefText from "../../components/DefText";
 import Timer from "../../components/Timer";
 import { global } from "../../styles";
-import { updateFirebase, removeFirebase, addBookToDatabase, getFirebase, getUsername } from "../../api/firebaseCalls";
+import { updateFirestore, addBookToDatabase, getUserName, removeToReadBook, addReadNowBook, addComment, updateLastReadBookID } from "../../api/firebaseCalls";
 import { needEdit } from "../../api/GoogleBooksCalls";
 import { getUniqueID } from "../../utils";
 import LibraryBookDetailsHeader from "./LibraryBookDetailsHeader";
 import LibraryBookDetailsComments from "./LibraryBookDetailsComments";
 import LibraryBookDetailsReviews from "./LibraryBookDetailsReviews";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function LibraryBookDetails({ navigation, route }) {
+  const { id } = route.params.data;
   const [name, setName] = useState(route.params.name);
   const [timerOn, setTimerOn] = useState(false);
   const [comments, setComments] = useState(null);
   const [reviews, setReviews] = useState(null);
   const [writeComment, setWriteComment] = useState("");
-  const [newCommentFlag, setNewcommentFlag] = useState(false);
-  const [newReviewFlag, setNewReviewFlag] = useState(false);
   const [username, setUsername] = useState(null);
 
   useEffect(() => {
-    getReviews();
-  }, [newReviewFlag]);
-
-  useEffect(() => {
-    getComments();
-  }, [newCommentFlag]);
-
-  useEffect(() => {
-    getUsernameAsync();
+    const unsub = getReviews();
+    const unsub2 = getComments();
+    return () => {
+      unsub();
+      unsub2();
+    };
   }, []);
 
-  const getUsernameAsync = async () => {
-    const user = await getUsername();
-    setUsername(user);
+  useEffect(() => {
+    getUsername();
+  }, []);
+
+  const getUsername = async () => {
+    const username = await getUserName(); //firebase call
+    username ? setUsername(username) : setUsername(null);
   };
 
-  const getComments = async () => {
-    const comments = await getFirebase("/books/" + route.params.data.id + "/comments");
-    if (comments) setComments(Object.values(comments));
+  const getComments = () => {
+    return firebase
+      .firestore()
+      .collection("books/" + id + "/comments")
+      .orderBy("date", "desc")
+      .onSnapshot((querySnapshot) => {
+        var snaps = [];
+        querySnapshot.forEach((doc) => {
+          snaps.push(doc.data());
+        });
+        //console.log("SNAPS ", snaps);
+        snaps.length > 0 ? setComments(snaps) : setComments(null);
+      });
   };
 
-  const getReviews = async () => {
-    const reviews = await getFirebase("/books/" + route.params.data.id + "/reviews");
-    console.log(reviews);
-
-    if (reviews) {
-      setReviews(Object.values(reviews));
-    }
+  const getReviews = () => {
+    console.log("BOOK ID", id);
+    return firebase
+      .firestore()
+      .collection("books/" + id + "/reviews")
+      .orderBy("date", "desc")
+      .onSnapshot((querySnapshot) => {
+        var snaps = [];
+        querySnapshot.forEach((doc) => {
+          snaps.push(doc.data());
+        });
+        // console.log("SNAPS ", snaps);
+        snaps.length > 0 ? setReviews(snaps) : setReviews(null);
+      });
   };
 
   const handleBtnClick = (buttonName) => {
@@ -66,42 +82,25 @@ export default function LibraryBookDetails({ navigation, route }) {
       book.alert = "Przed dodaniem książki do biblioteki, uzupełnij brakujące informacje";
       console.log(book);
       navigation.push("EditBook", book);
-    } else {
-      addBookToDatabase(book.id, book.title, book.authors, book.description, book.thumbnail, book.pageCount);
-      navigation.push("Home");
-    }
+    } else addBookToDatabase(book.id, book.title, book.authors, book.description, book.thumbnail, book.pageCount);
   };
 
   const handleAddReadNow = (el) => {
-    const dataToUpdate = {
-      [el.id]: {
-        id: el.id,
-        title: el.title,
-        authors: el.authors,
-        description: el.description,
-        thumbnail: el.thumbnail,
-        pageCount: el.pageCount,
-        lastReadPageNumber: 1,
-      },
-    };
-    updateFirebase("/users/" + firebase.auth().currentUser.uid + "/library/readNow/", dataToUpdate);
-    removeFirebase("/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + el.id);
-    navigation.push("Home");
+    addReadNowBook(el.id, el.title, el.authors, el.description, el.thumbnail, el.pageCount);
+    removeToReadBook(el.id);
   };
 
   const handleReadNow = () => {
     setTimerOn(true);
-    const dataToUpdate = { lastRead: route.params.data.id };
-    updateFirebase("/users/" + firebase.auth().currentUser.uid + "/library", dataToUpdate);
+    // const dataToUpdate = { lastRead: route.params.data.id };
+    //updateFirestore("/users/", firebase.auth().currentUser.uid, dataToUpdate);
+    updateLastReadBookID(route.params.data.id);
   };
 
   const handleAddComment = async (book) => {
-    console.log(book);
-    console.log(writeComment);
     const commentID = getUniqueID();
-    const dataToUpdate = { author: username, commentID: commentID, content: writeComment };
-    await updateFirebase("/books/" + book.id + "/comments/" + commentID, dataToUpdate);
-    setNewcommentFlag(!newCommentFlag);
+    const dataToUpdate = { author: username, commentID: commentID, content: writeComment, date: firebase.firestore.FieldValue.serverTimestamp() };
+    addComment(book.id, commentID, dataToUpdate);
   };
 
   return (
@@ -115,7 +114,7 @@ export default function LibraryBookDetails({ navigation, route }) {
         name={name}
         handleBtnClick={handleBtnClick}
       />
-      {timerOn && <Timer bookID={route.params.data.id} />}
+      {timerOn && <Timer bookID={route.params.data.id} numberOfPages={route.params.data.pageCount} />}
 
       <View style={styles.headerBody}>
         <View style={styles.headers}>

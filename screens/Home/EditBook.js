@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, TextInput, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import * as firebase from "firebase";
 import { global, globalSheet } from "../../styles";
-import { updateFirebase, addBookToDatabase } from "../../api/firebaseCalls";
+import { updateFirebase, addBookToDatabase, updateFirestore } from "../../api/firebaseCalls";
 import DefText from "../../components/DefText";
 import PickImage from "../../components/PickImage";
 
@@ -18,31 +18,31 @@ function EditBook({ navigation, route }) {
 
   const handleSave = async () => {
     id = getBookId();
-    console.log(id);
+    //console.log(id);
 
     if (author == "" || bookDescription == "" || pages == "" || (thumbnail == null && imagePath == null) || bookTitle == "") {
       setError("Wszystkie pola muszą być wypełnione");
     } else {
-      console.log(`Thumbnail ${thumbnail}`);
+      // console.log(`Thumbnail ${thumbnail}`);
 
       if (imagePath != "") {
-        await addBookToDatabase(id, bookTitle, author, bookDescription, thumbnail, pages);
+        addBookToDatabase(id, bookTitle, author, bookDescription, thumbnail, pages);
         await updateImage(imagePath)
           .then(() => {
             var ref = firebase.storage().ref().child(id);
 
             ref.getDownloadURL().then((url) => {
-              console.log(url);
+              //console.log(url);
               updateUrl(url);
-              navigation.push("Home");
+              // navigation.push("Home");
             });
           })
           .catch(() => {
             console.log("Error in photo upload");
           });
       } else {
-        await addBookToDatabase(id, bookTitle, author, bookDescription, thumbnail, pages);
-        navigation.push("Home");
+        addBookToDatabase(id, bookTitle, author, bookDescription, thumbnail, pages);
+        //navigation.push("Home");
       }
     }
   };
@@ -52,7 +52,9 @@ function EditBook({ navigation, route }) {
   };
 
   const updateUrl = async (url) => {
-    await updateFirebase("/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + id, { thumbnail: url });
+    //await updateFirebase("/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + id, { thumbnail: url });
+    //firebase.firestore().collection("users/"+ firebase.auth().currentUser.uid +"/booksToRead")
+    updateFirestore("users/" + firebase.auth().currentUser.uid + "/booksToRead", id, { thumbnail: url });
   };
 
   const updateImage = async (uri) => {
@@ -147,8 +149,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   image: {
-    width: 125,
-    height: 195,
+    width: 115,
+    height: 175,
     marginLeft: "auto",
     marginRight: "auto",
     marginBottom: 48,

@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, TouchableHighlight, TextInput } from "react-native";
+import { StyleSheet, View, Text, TouchableHighlight } from "react-native";
+import Slider from "@react-native-community/slider";
 import PropTypes from "prop-types";
 import firebase from "firebase";
 import DefText from "./DefText";
 import { useNavigation } from "@react-navigation/native";
-import { updateFirebase } from "../api/firebaseCalls";
+import { updateFirestore } from "../api/firebaseCalls";
+import { global } from "../styles";
 
-const Timer = (props) => {
+const Timer = ({ numberOfPages, ...props }) => {
   const [time, setTime] = React.useState(0);
   const [timerOn, setTimerOn] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [pageNumber, setPageNumber] = useState("1");
+  const [sliderValue, setSliderValue] = useState(1);
 
   const navigation = useNavigation();
 
@@ -42,8 +45,8 @@ const Timer = (props) => {
     const data = Date.now();
     const hour = Math.floor(time / 3600);
     const minute = Math.floor((time / 60) % 60);
-    updateFirebase("/users/" + firebase.auth().currentUser.uid + "/library/readNow/" + props.bookID, dataToUpdate);
-    updateFirebase("/users/" + firebase.auth().currentUser.uid + "/readTime/" + props.bookID + data, { hours: hour, minutes: minute });
+    updateFirestore("/users/" + firebase.auth().currentUser.uid + "/booksReadNow/", props.bookID, dataToUpdate);
+    //updateFirebase("/users/" + firebase.auth().currentUser.uid + "/readTime/" + props.bookID + data, { hours: hour, minutes: minute });
     navigation.push("Home");
   };
 
@@ -75,9 +78,21 @@ const Timer = (props) => {
       </View>
       {modalVisible && (
         <View style={styles.modalContainer}>
-          <Text style={styles.modalText}>Na jakiej stronie skończyłeś czytać?</Text>
-          <TextInput style={styles.input} onChangeText={setPageNumber} value={pageNumber} />
-          <TouchableHighlight onPress={() => handleSave(pageNumber)}>
+          <Text style={styles.modalText}>Na której stronie skończyłeś czytać?</Text>
+          <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+            <Slider
+              style={{ width: 200, height: 40 }}
+              minimumValue={1}
+              maximumValue={numberOfPages}
+              minimumTrackTintColor={global.primaryColor}
+              maximumTrackTintColor="#000000"
+              onValueChange={(val) => setSliderValue(Math.floor(val))}
+            />
+            <DefText>
+              {sliderValue}/{numberOfPages}
+            </DefText>
+          </View>
+          <TouchableHighlight onPress={() => handleSave(sliderValue)}>
             <DefText>Zatwierdź</DefText>
           </TouchableHighlight>
         </View>

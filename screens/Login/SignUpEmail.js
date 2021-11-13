@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, TextInput, StyleSheet, Image, TouchableOpacity, Text, BackHandler } from "react-native";
 import firebase from "firebase";
-import { registerWithEmail, setFirebase } from "../../api/firebaseCalls";
+import { registerWithEmail, setFirebase, setFirestore, addCreatedUserData, addCreatedUsername } from "../../api/firebaseCalls";
 
 export default function LoginPage({ navigation }) {
   const [inputEmail, setInputEmail] = useState("");
@@ -26,41 +26,11 @@ export default function LoginPage({ navigation }) {
 
   const handleSignUp = async () => {
     const result = await registerWithEmail(inputEmail, inputPassword);
-    console.log("RESULT");
-    console.log(result);
-    const dataToSet1 = { id: result.user.uid, name: inputEmail, username: inputUsername, library: "" };
-    await setFirebase("/users/" + result.user.uid, dataToSet1);
+    // console.log(result);
+    const dataToSet1 = { id: result.user.uid, name: inputEmail, username: inputUsername };
+    addCreatedUserData(result.user.uid, dataToSet1);
     const dataToSet2 = { userID: result.user.uid };
-    await setFirebase("/usernames/" + inputUsername, dataToSet2);
-    /*
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(inputEmail, inputPassword)
-      .then((result) => {
-        firebase
-          .database()
-          .ref("/users/" + result.user.uid)
-          .set({
-            text: `hey ${result.user.uid}`,
-            name: inputEmail,
-            library: "",
-          })
-          .then(() => console.log("User account created & signed in!"));
-      })
-      .catch((error) => {
-        if (error.code === "auth/email-already-in-use") {
-          console.log("That email address is already in use!");
-          setError("That email address is already in use!");
-        }
-
-        if (error.code === "auth/invalid-email") {
-          console.log("That email address is invalid!");
-          setError("That email address is invalid!");
-        }
-
-        console.error(error);
-      });
-      */
+    addCreatedUsername(inputUsername, dataToSet2);
   };
 
   return (

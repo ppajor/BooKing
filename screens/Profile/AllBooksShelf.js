@@ -4,17 +4,17 @@ import { Modal, Alert, FlatList } from "react-native";
 import Shelf from "../../components/Shelf";
 
 function AllBooksShelf(props) {
-  const { booksToRead } = props.route.params;
-  console.log(booksToRead);
+  const { books } = props.route.params;
+  //console.log(books);
   const [data, setData] = useState(null);
 
   useEffect(() => {
     var licznik = 1;
     var object = {};
     var array = [];
-    var items = Object.keys(booksToRead).length;
-    for (const property in booksToRead) {
-      object[property] = booksToRead[property];
+    var items = Object.keys(books).length;
+    for (const property in books) {
+      object[property] = books[property];
 
       if (licznik % 4 == 0 || licznik == items) {
         array.push(object);

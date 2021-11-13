@@ -19,20 +19,6 @@ const Shelf = (props) => {
             <DefText family="Rubik-Medium" size={16} color="rgba(227, 227, 227, 0.9)">
               {name}
             </DefText>
-            <TouchableOpacity onPress={() => props.refresh()}>
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <DefText family="OpenSans-Light" color="rgba(227, 227, 227, 0.75)">
-                  refresh
-                </DefText>
-                <MaterialCommunityIcons name="reload" size={16} color="#e3e3e3" />
-              </View>
-            </TouchableOpacity>
           </View>
         )}
         {data && (
@@ -40,7 +26,7 @@ const Shelf = (props) => {
             <FlatList
               horizontal
               data={Object.values(data)}
-              renderItem={({ item }) => <BookCover item={item} shelfName={name} percentage={percentage} removeRefresh={props.refresh} />}
+              renderItem={({ item }) => <BookCover item={item} shelfName={name} percentage={percentage} />}
               keyExtractor={(item) => item.id}
             />
           </View>

@@ -1,24 +1,11 @@
 import React, { useState } from "react";
 import DefText from "./DefText";
-import { View, StyleSheet, TouchableOpacity, Modal, Alert } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
-import ModalReview from "./ModalReview";
 
-function Review({ data }) {
-  const [modalVisible, setModalVisible] = useState(false);
-
+function ModalReview({ data }) {
   return (
-    <TouchableOpacity onPress={() => setModalVisible(true)}>
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <ModalReview data={data} />
-      </Modal>
+    <View style={{ padding: 24 }}>
       <View style={styles.reviewHeader}>
         <View style={styles.avatar}></View>
         <View>
@@ -34,7 +21,7 @@ function Review({ data }) {
           <AntDesign name="dislike1" size={16} color="#DB1A1A" style={{ marginLeft: 8 }} />
         </View>
       </View>
-      <View style={{ width: "100%", height: "60%", overflow: "hidden" }}>
+      <View style={styles.reviewContent}>
         <DefText family="OpenSans-Light" size={14} color="rgba(0,0,0,0.75)">
           {data.content}
         </DefText>
@@ -47,19 +34,20 @@ function Review({ data }) {
         <FontAwesome name="star" size={16} color="orange" style={{ marginLeft: 8, marginRight: 4 }} />
         <DefText size={14}>{data.note}</DefText>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 
-export default Review;
+export default ModalReview;
 
 const styles = StyleSheet.create({
-  reviewHeader: { display: "flex", flexDirection: "row", width: "100%", height: "25%" },
+  reviewHeader: { display: "flex", flexDirection: "row", width: "100%", marginBottom: 48 },
   avatar: { width: 40, height: 40, marginRight: 12, backgroundColor: "#A8A8A8", borderRadius: 4 },
   rateReview: {
     display: "flex",
     flexDirection: "row",
     marginLeft: "auto",
   },
-  bookNote: { display: "flex", flexDirection: "row", alignItems: "center", width: "100%", height: "15%" },
+  bookNote: { display: "flex", flexDirection: "row", alignItems: "center", width: "100%" },
+  reviewContent: { width: "100%", marginBottom: 24, overflow: "hidden" },
 });

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, TouchableHighlight, Image, StyleSheet, TouchableOpacity } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
-import { removeFirebase, getFirebase } from "../api/firebaseCalls";
+import { removeFirebase, getFirebase, removeReadNowBook, removeToReadBook, getLastReadID, removeLastReadID } from "../api/firebaseCalls";
 import { useNavigation } from "@react-navigation/native";
 import firebase from "firebase";
 import DefText from "./DefText";
@@ -12,21 +12,20 @@ function BookCover({ item, shelfName, percentage, ...props }) {
   const navigation = useNavigation();
 
   useEffect(() => {
-    //  console.log(shelfName);
     setReadPercent(Math.floor((item.lastReadPageNumber / item.pageCount) * 100));
   }, []);
 
   const handleRemove = async (id, name) => {
     if (name == "Do przeczytania") {
-      await removeFirebase("/users/" + firebase.auth().currentUser.uid + "/library/toRead/" + id);
+      await removeToReadBook(id);
     }
     if (name == "Czytane teraz") {
-      const lastread = await getFirebase("/users/" + firebase.auth().currentUser.uid + "/library/lastRead");
-      if (id == lastread) await removeFirebase("/users/" + firebase.auth().currentUser.uid + "/library/lastRead");
+      //const lastreadID = await getLastReadID();
+      removeLastReadID(id);
 
-      await removeFirebase("/users/" + firebase.auth().currentUser.uid + "/library/readNow/" + id);
+      //await removeFirebase("/users/" + firebase.auth().currentUser.uid + "/library/readNow/" + id);
+      removeReadNowBook(id);
     }
-    props.removeRefresh();
   };
 
   const handleBookPress = (book, name) => {
@@ -50,15 +49,7 @@ function BookCover({ item, shelfName, percentage, ...props }) {
       });
     }
   };
-  /*
-  const handleReadNowBookPress = (book) => {
-    console.log("PRESS");
-    navigation.navigate("CurrentReadBookDetails", {
-      data: book,
-      bookPercent: readPercent,
-    });
-  };
-*/
+
   return (
     <View style={styles.bookContainer}>
       <TouchableHighlight onPress={() => handleBookPress(item, shelfName)}>

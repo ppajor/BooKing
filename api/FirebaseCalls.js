@@ -1,4 +1,5 @@
 import firebase from "firebase";
+import { doc, getDoc, setDoc, get } from "firebase/firestore";
 
 export const registerWithEmail = async (inputEmail, inputPassword) => {
   return await firebase
@@ -45,7 +46,7 @@ export const logOut = () => {
       console.log("User signed out!");
     });
 };
-
+/*
 export const getFirebase = async (path) => {
   return await firebase
     .database()
@@ -91,22 +92,6 @@ export const currentUserId = async () => {
   return await firebase.auth().currentUser.uid;
 };
 
-export const addBookToDatabase = (id, bookTitle, author, bookDescription, thumbnail, pages) => {
-  const dataToUpdate = {
-    [id]: {
-      id: id,
-      title: bookTitle,
-      authors: author,
-      description: bookDescription,
-      thumbnail: thumbnail,
-      pageCount: parseInt(pages),
-      lastReadPageNumber: 1,
-    },
-  };
-  //console.log(`THUMBNAIL FIREBASEFUNC ${thumbnail}`);
-  updateFirebase("/users/" + firebase.auth().currentUser.uid + "/library/toRead/", dataToUpdate);
-};
-
 export const searchUsername = async (username) => {
   return await getFirebase("/usernames/" + username);
 };
@@ -123,4 +108,179 @@ export const getToRead = async (userID) => {
 
 export const addReview = async (bookID, data, reviewID) => {
   await updateFirebase("/books/" + bookID + "/reviews/" + reviewID, data);
+};
+*/
+//*************************************************FIRESTORE*********************************************************
+
+//****************************************get
+
+export const getUserName = async () => {
+  let usersRef = firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid);
+  let user = await usersRef.get();
+  return user.data().username;
+};
+
+export const getLastReadID = async () => {
+  let ref = firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid);
+  let result = await ref.get();
+  let array = result.data().lastRead;
+  let last = array[length - 1];
+  //console.log("lastread array:", last);
+  return last;
+};
+
+export const getLastReadBook = async (id) => {
+  let ref = firebase
+    .firestore()
+    .collection("users/" + firebase.auth().currentUser.uid + "/booksReadNow")
+    .doc(id);
+  let result = await ref.get();
+  return result.data();
+};
+
+export const searchUsername = async (username) => {
+  let usernamesRef = firebase.firestore().collection("usernames").doc(username);
+  let user = await usernamesRef.get();
+  if (user) return user.data();
+  else return null;
+};
+
+export const getFriendToRead = async (friendID) => {
+  let booksRef = firebase.firestore().collection("users/" + friendID + "/booksToRead");
+  let books = await booksRef.get();
+  const snaps = [];
+  for (const doc of books.docs) {
+    snaps.push(doc.data());
+  }
+  return snaps;
+};
+
+export const getFriendReadNow = async (friendID) => {
+  let booksRef = firebase.firestore().collection("users/" + friendID + "/booksReadNow");
+  let books = await booksRef.get();
+  const snaps = [];
+  for (const doc of books.docs) {
+    snaps.push(doc.data());
+  }
+  return snaps;
+};
+
+//**************************************************set
+
+export const setFirestore = async (path, id, data) => {
+  await firebase
+    .firestore()
+    .collection(path)
+    .doc(id)
+    .set(data)
+    .then(() => console.log("set firestore successful"))
+    .catch((error) => console.log("Error", error));
+};
+
+export const addReadNowBook = async (id, bookTitle, author, bookDescription, thumbnail, pages) => {
+  const dataToUpdate = {
+    id: id,
+    title: bookTitle,
+    authors: author,
+    description: bookDescription,
+    thumbnail: thumbnail,
+    pageCount: parseInt(pages),
+    lastReadPageNumber: 1,
+    date: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+
+  setFirestore("users/" + firebase.auth().currentUser.uid + "/booksReadNow", id, dataToUpdate);
+};
+
+export const addBookToDatabase = (id, bookTitle, author, bookDescription, thumbnail, pages) => {
+  const dataToUpdate = {
+    id: id,
+    title: bookTitle,
+    authors: author,
+    description: bookDescription,
+    thumbnail: thumbnail,
+    pageCount: parseInt(pages),
+    lastReadPageNumber: 1,
+    date: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+  //console.log(`THUMBNAIL FIREBASEFUNC ${thumbnail}`);
+  setFirestore("/users/" + firebase.auth().currentUser.uid + "/booksToRead", id, dataToUpdate);
+};
+
+export const addReview = (bookID, data, reviewID) => {
+  setFirestore("/books/" + bookID + "/reviews/", reviewID, data);
+};
+
+export const addComment = (bookID, commentID, data) => {
+  setFirestore("/books/" + bookID + "/comments/", commentID, data);
+};
+
+export const addCreatedUserData = (userID, data) => {
+  setFirestore("users/", userID, data);
+};
+
+export const addCreatedUsername = (username, data) => {
+  setFirestore("usernames/", username, data);
+};
+
+//**************************************************remove
+const removeFirestore = async (path, docID) => {
+  await firebase
+    .firestore()
+    .collection(path)
+    .doc(docID)
+    .delete()
+    .then(() => {
+      console.log("Document successfully deleted!");
+    })
+    .catch((error) => {
+      console.error("Error removing document: ", error);
+    });
+};
+
+export const removeReadNowBook = async (docID) => {
+  await removeFirestore("users/" + firebase.auth().currentUser.uid + "/booksReadNow", docID);
+};
+
+export const removeToReadBook = async (docID) => {
+  removeFirestore("users/" + firebase.auth().currentUser.uid + "/booksToRead", docID);
+};
+
+export const removeLastReadID = async (id) => {
+  /*
+  var ref = firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid);
+
+  var ID = ref.update({
+    lastRead: firebase.firestore.FieldValue.delete(),
+  });
+  */
+  // console.log("remove id:", id);
+  firebase
+    .firestore()
+    .collection("users")
+    .doc(firebase.auth().currentUser.uid)
+    .update({
+      lastRead: firebase.firestore.FieldValue.arrayRemove(id),
+    });
+};
+
+//******************************************************update
+export const updateFirestore = (path, id, data) => {
+  firebase
+    .firestore()
+    .collection(path)
+    .doc(id)
+    .update(data)
+    .then(() => console.log("Updating successful"))
+    .catch((error) => console.log("Updating error: ", error));
+};
+
+export const updateLastReadBookID = (id) => {
+  firebase
+    .firestore()
+    .collection("users")
+    .doc(firebase.auth().currentUser.uid)
+    .update({
+      lastRead: firebase.firestore.FieldValue.arrayUnion(id),
+    });
 };

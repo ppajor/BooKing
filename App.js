@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AntDesign } from "@expo/vector-icons";
 
-import firebase from "firebase";
+import firebase from "./firebase-config";
 import { firebaseConfig } from "./firebase-config";
 import LoadingScreen from "./screens/Login/LoadingScreen";
 import WelcomePage from "./screens/Login/WelcomePage";
@@ -22,8 +22,11 @@ import ProfileScreen from "./screens/Profile/ProfileScreen";
 import FriendProfile from "./screens/Profile/FriendProfile";
 import AddReview from "./screens/Home/AddReview";
 import AllBooksShelf from "./screens/Profile/AllBooksShelf";
+import { LogBox } from "react-native";
 
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig); //musimy sprawdzic czy aplikacja zostala juz zainicjowana czy nie, zeby za kazdym razem nie inicjowac apki
+//if  (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+//musimy sprawdzic czy aplikacja zostala juz zainicjowana czy nie, zeby za kazdym razem nie inicjowac apki
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -64,6 +67,10 @@ const TabNavigator = () => (
 );
 
 function App() {
+  React.useEffect(() => {
+    LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
+  }, []);
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="LoadingScreen">

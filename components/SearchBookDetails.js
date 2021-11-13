@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import DefText from "./DefText";
-import { updateFirebase, addBookToDatabase } from "../api/firebaseCalls";
+import { addReadNowBook, addBookToDatabase } from "../api/firebaseCalls";
 import firebase from "firebase";
 import { useNavigation } from "@react-navigation/native";
 import { needEdit, bookData } from "../api/GoogleBooksCalls";
@@ -15,65 +15,12 @@ function SearchBookDetails({ item }) {
       book.alert = "Przed dodaniem książki do biblioteki, uzupełnij brakujące informacje";
       navigation.push("EditBook", book);
     } else {
+      //addBookToDatabase(book.id, book.title, book.authors, book.description, book.thumbnail, book.pageCount);
       addBookToDatabase(book.id, book.title, book.authors, book.description, book.thumbnail, book.pageCount);
     }
-    /*
-    if (el.volumeInfo.pageCount == undefined) {
-      navigation.push("EditBook", {
-        alert: "Przed dodaniem książki do biblioteki, uzupełnij brakujące informacje",
-        id: el.id,
-        title: el.volumeInfo.title,
-        authors: el.volumeInfo.authors[0],
-        description: el.volumeInfo.description,
-        thumbnail: el.volumeInfo.imageLinks.thumbnail,
-      });
-      return;
-    }
-
-    if (el.volumeInfo.imageLinks == undefined) {
-      navigation.push("EditBook", {
-        alert: "Przed dodaniem książki do biblioteki, uzupełnij brakujące informacje",
-        id: el.id,
-        title: el.volumeInfo.title,
-        authors: el.volumeInfo.authors[0],
-        description: el.volumeInfo.description,
-        pageCount: el.volumeInfo.pageCount,
-      });
-      return;
-    }
-    */
-    /*
-    const dataToUpdate = {
-      [el.id]: {
-        id: el.id,
-        title: el.volumeInfo.title,
-        authors: el.volumeInfo.authors[0],
-        description: el.volumeInfo.description,
-        thumbnail: el.volumeInfo.imageLinks.thumbnail,
-        pageCount: el.volumeInfo.pageCount,
-        lastReadPageNumber: 1,
-      },
-    };
-    updateFirebase("/users/" + firebase.auth().currentUser.uid + "/library/toRead/", dataToUpdate);
-    */
   };
 
   const handlePress = (el) => {
-    /*
-    const obj = {
-      id: el.id,
-      title: el.volumeInfo.title,
-      authors: el.volumeInfo.authors[0],
-      description: el.volumeInfo.description,
-      thumbnail: el.volumeInfo.imageLinks.thumbnail,
-      pageCount: el.volumeInfo.pageCount,
-      lastReadPageNumber: 1,
-    };
-    navigation.push("LibraryBookDetails", {
-      data: obj,
-      name: "Dodaj do biblioteki",
-    });
-    */
     const book = bookData(el);
     book.lastReadPageNumber = 1;
     navigation.push("LibraryBookDetails", {

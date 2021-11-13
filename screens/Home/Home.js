@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import firebase from "firebase";
 import LastRead from "../../components/LastRead";
-import { logOut, getFirebase } from "../../api/firebaseCalls";
+import { getUserName, getLastReadID, getLastReadBook } from "../../api/firebaseCalls";
 import DefText from "../../components/DefText";
 import Shelf from "../../components/Shelf";
 import Screen from "../../components/Screen";
 import { global } from "../../styles";
 
 export default function Home({ navigation }) {
-  const [refresh, setRefresh] = useState(false);
-  const [userData, setUserData] = useState(null);
   const [lastRead, setLastRead] = useState(null);
   const [userLoggedIn, setUserLoggedIn] = useState(false); // po zalogowaniu/utworzeniu konta automatycznie przekierowuje do home bo zmienia się state userloggedin (???)
-  //console.log(new Date().toISOString());
+  const [username, setUsername] = useState(null);
+  const [booksReadNow, setBooksReadNow] = useState(null);
+  const [booksToRead, setBooksToRead] = useState(null);
+  const [wikusia, setWikusia] = useState(false);
+
   const API_KEY = "AIzaSyACLJEKxGoXNM8qfeNKejGzzhESdRo6e00";
   //console.log("USER ID LOGGED IN:" + firebase.auth().currentUser.uid);
   useEffect(() => {
@@ -24,27 +26,82 @@ export default function Home({ navigation }) {
   }, []);
 
   useEffect(() => {
-    getUserData();
+    getUserInfo();
     console.log("RERENDER");
-  }, [refresh]); //podczas resfreshu komponent rerender
+    const unsub = getReadNow();
+    const unsub2 = getToRead();
+    const unsub3 = getLastRead();
+    return () => {
+      unsub();
+      unsub2();
+      unsub3();
+    };
+  }, []); //podczas resfreshu komponent rerender
 
-  const getUserData = async () => {
-    const result = await getFirebase("/users/" + firebase.auth().currentUser.uid + "/library");
-    result ? setUserData(result) : setUserData(null); //jesli nie ma danych z api to setuj null, bo inaczej nie chce usunac się ostatnia ksiazka
-
-    const lastread = await getFirebase("/users/" + firebase.auth().currentUser.uid + "/library/lastRead");
-    lastread ? setLastRead(lastread) : setLastRead(null);
+  const getLastRead = () => {
+    //do komponentu LastRead muszę dodać key bo inaczej nie zupdatuje
+    return firebase
+      .firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .onSnapshot((doc) => {
+        const array = doc.data().lastRead;
+        const last = array[array.length - 1];
+        console.log("lastread array:", last);
+        last ? setLastRead(last) : setLastRead(null);
+      });
   };
 
-  const forceRefresh = () => {
-    console.log(refresh);
-    setRefresh(!refresh);
+  const getToRead = () => {
+    console.log("ELO");
+
+    return firebase
+      .firestore()
+      .collection("users/" + firebase.auth().currentUser.uid + "/booksToRead")
+      .orderBy("date", "desc")
+      .onSnapshot((querySnapshot) => {
+        var snaps = [];
+        querySnapshot.forEach((doc) => {
+          snaps.push(doc.data());
+        });
+        // console.log("SNAPS ", snaps);
+        console.log("TOREAD listener");
+        setBooksToRead(snaps);
+      });
+  };
+
+  const getReadNow = () => {
+    console.log("ELO");
+
+    return firebase
+      .firestore()
+      .collection("users/" + firebase.auth().currentUser.uid + "/booksReadNow")
+      .orderBy("date", "desc")
+      .onSnapshot((querySnapshot) => {
+        var snaps = [];
+        querySnapshot.forEach((doc) => {
+          snaps.push(doc.data());
+        });
+        // console.log("SNAPS ", snaps);
+        setBooksReadNow(snaps);
+      });
+  };
+
+  const getUserInfo = async () => {
+    const usernameResult = await getUserName();
+    usernameResult ? setUsername(usernameResult) : setUsername(null);
+
+    /*
+    const lastReadIDResult = await getLastReadID();
+    const lastReadBookResult = await getLastReadBook(lastReadIDResult);
+    setLastRead(lastReadBookResult);
+    */
   };
 
   return (
     <Screen>
       <ScrollView style={styles.container}>
-        {userLoggedIn && (
+        {username && (
           <>
             <View style={styles.userLoggedInNavbar}>
               <View>
@@ -52,26 +109,16 @@ export default function Home({ navigation }) {
                   Hello...
                 </DefText>
                 <View style={{ marginLeft: 38 }}>
-                  <DefText family="Rubik-Medium" size={24} color="rgba(181, 139, 139, 0.96)">
-                    {userLoggedIn.email}
+                  <DefText family="Rubik-Medium" size={24} color={global.primaryColor}>
+                    {username}
                   </DefText>
                 </View>
               </View>
             </View>
 
-            {userData ? (
-              <>
-                {lastRead && <LastRead id={lastRead} book={userData.readNow[lastRead]} />}
-
-                <Shelf data={userData.toRead} name="Do przeczytania" refresh={forceRefresh} />
-                <Shelf data={userData.readNow} name="Czytane teraz" refresh={forceRefresh} percentage={true} />
-              </>
-            ) : (
-              <>
-                <Shelf name="Do przeczytania" refresh={forceRefresh} />
-                <Shelf name="Czytane teraz" percentage={true} />
-              </>
-            )}
+            {lastRead && <LastRead id={lastRead} key={lastRead} />}
+            {booksToRead ? <Shelf data={booksToRead} name="Do przeczytania" /> : <Shelf name="Do przeczytania" />}
+            {booksReadNow ? <Shelf data={booksReadNow} name="Czytane teraz" percentage={true} /> : <Shelf name="Czytane teraz" percentage={true} />}
           </>
         )}
       </ScrollView>

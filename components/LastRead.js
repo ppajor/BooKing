@@ -3,7 +3,7 @@ import { StyleSheet, Text, Image, View, TouchableHighlight } from "react-native"
 import firebase from "firebase";
 import { globalSheet, global } from "../styles";
 import DefText from "./DefText";
-import { getFirebase } from "../api/firebaseCalls";
+import { getFirebase, getLastReadBook } from "../api/firebaseCalls";
 
 const LastRead = ({ book, id }) => {
   const [lastReadBook, setLastReadBook] = useState(null);
@@ -11,12 +11,17 @@ const LastRead = ({ book, id }) => {
   const [wikusia, setWikusia] = useState(false);
 
   const getLastRead = async () => {
+    console.log("id", id);
+    const book = await getLastReadBook(id);
+    setLastReadBook(book);
+    console.log("book", book);
     let bookPercentage = Math.floor((book.lastReadPageNumber / book.pageCount) * 100);
     setBookPercent(bookPercentage);
-    setLastReadBook(book);
+    // setLastReadBook(book);
   };
 
   useEffect(() => {
+    console.log("LAST READ RERENDER");
     getLastRead();
   }, []);
 
