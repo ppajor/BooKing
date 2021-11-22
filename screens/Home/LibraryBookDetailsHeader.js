@@ -1,11 +1,15 @@
-import React from "react";
-import { StyleSheet, View, Image, TouchableHighlight } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, Image, TouchableHighlight, Modal, TouchableOpacity } from "react-native";
+
 import { Link } from "@react-navigation/native";
 import { global } from "../../styles";
 import DefText from "../../components/DefText";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, SimpleLineIcons } from "@expo/vector-icons";
+import OptionsModal from "./OptionsModal";
+import Screen from "../../components/Screen";
 
 function LibraryBookDetailsHeader({ authors, bookPercent, data, name, thumbnail, title, ...props }) {
+  const [optionsModalVisible, setOptionsModalVisible] = useState(false);
   return (
     <View style={styles.headerContainer}>
       <View style={styles.header}>
@@ -40,6 +44,15 @@ function LibraryBookDetailsHeader({ authors, bookPercent, data, name, thumbnail,
               {name}
             </DefText>
           </TouchableHighlight>
+          <TouchableOpacity style={styles.optionsIcon} onPress={() => setOptionsModalVisible(true)}>
+            <SimpleLineIcons name="options-vertical" size={16} color="black" />
+          </TouchableOpacity>
+          <OptionsModal
+            visible={optionsModalVisible}
+            dismiss={() => {
+              setOptionsModalVisible(false);
+            }}
+          />
         </View>
       </View>
       <Link to={{ screen: "EditBook", params: data }} style={styles.link}>
@@ -67,7 +80,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flex: 1,
     paddingLeft: 24,
-    paddingVertical: 8,
   },
   header: {
     height: 150,
@@ -124,9 +136,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 100,
   },
-  headers: {
-    marginTop: 32,
-  },
+
   link: {
     display: "flex",
     flexDirection: "row",
@@ -137,4 +147,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingTop: 8,
   },
+  optionsIcon: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    zIndex: 12,
+  },
 });
+
+//jesli button ma position absolute powinniśny go dac na koniec parent containera

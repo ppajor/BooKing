@@ -31,6 +31,14 @@ export const globalSheet = StyleSheet.create({
     elevation: 3,
     backgroundColor: "white",
   },
+  shadowSecondary: {
+    shadowColor: "#a8a8a8",
+    shadowOpacity: 0.22,
+    shadowOffset: { width: 0, height: 0 },
+    borderRadius: 8,
+    elevation: 6,
+    backgroundColor: "white",
+  },
   input: {
     width: "100%",
     paddingLeft: 16,

@@ -63,7 +63,7 @@ function SearchBar(props) {
           <DefText size={11} family="OpenSans-Light">
             Nie znalazłeś swojej książki?
           </DefText>
-          <TouchableOpacity onPress={() => navigation.push("EditBook", {})}>
+          <TouchableOpacity onPress={() => navigation.push("EditBook", { screen: "HomeScreen" })}>
             <View style={{ display: "flex", flexDirection: "row" }}>
               <MaterialCommunityIcons name="book-plus" size={16} color="black" style={{ marginRight: 4 }} />
               <DefText size={11} family="OpenSans-Bold">

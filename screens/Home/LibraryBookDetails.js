@@ -114,7 +114,8 @@ export default function LibraryBookDetails({ navigation, route }) {
         name={name}
         handleBtnClick={handleBtnClick}
       />
-      {timerOn && <Timer bookID={route.params.data.id} numberOfPages={route.params.data.pageCount} />}
+
+      <Timer closeModal={() => setTimerOn(false)} visible={timerOn} bookID={route.params.data.id} numberOfPages={route.params.data.pageCount} />
 
       <View style={styles.headerBody}>
         <View style={styles.headers}>

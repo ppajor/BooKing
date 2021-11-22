@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, TouchableHighlight } from "react-native";
+import { StyleSheet, View, Text, TouchableHighlight, Modal } from "react-native";
 import Slider from "@react-native-community/slider";
 import PropTypes from "prop-types";
 import firebase from "firebase";
 import DefText from "./DefText";
 import { useNavigation } from "@react-navigation/native";
 import { updateFirestore } from "../api/firebaseCalls";
-import { global } from "../styles";
+import { global, globalSheet } from "../styles";
 
 const Timer = ({ numberOfPages, ...props }) => {
   const [time, setTime] = React.useState(0);
@@ -41,6 +41,7 @@ const Timer = ({ numberOfPages, ...props }) => {
   };
 
   const handleSave = (num) => {
+    props.closeModal();
     const dataToUpdate = { lastReadPageNumber: parseInt(num) };
     const data = Date.now();
     const hour = Math.floor(time / 3600);
@@ -51,62 +52,76 @@ const Timer = ({ numberOfPages, ...props }) => {
   };
 
   return (
-    <View style={{ backgroundColor: "transparent" }}>
-      <DefText align="center" size={32}>
-        {showTime()}
-      </DefText>
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-          marginTop: 24,
-        }}
-      >
-        <TouchableHighlight onPress={() => setTime(0)}>
-          <DefText>WYCZYSC</DefText>
-        </TouchableHighlight>
-        <TouchableHighlight onPress={() => setTimerOn(false)}>
-          <DefText>STOP</DefText>
-        </TouchableHighlight>
-        <TouchableHighlight onPress={() => setTimerOn(true)}>
-          <DefText>WZNOW</DefText>
-        </TouchableHighlight>
-        <TouchableHighlight onPress={() => endReading()}>
-          <DefText>ZAKOŃCZ</DefText>
-        </TouchableHighlight>
-      </View>
-      {modalVisible && (
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalText}>Na której stronie skończyłeś czytać?</Text>
-          <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-            <Slider
-              style={{ width: 200, height: 40 }}
-              minimumValue={1}
-              maximumValue={numberOfPages}
-              minimumTrackTintColor={global.primaryColor}
-              maximumTrackTintColor="#000000"
-              onValueChange={(val) => setSliderValue(Math.floor(val))}
-            />
-            <DefText>
-              {sliderValue}/{numberOfPages}
-            </DefText>
-          </View>
-          <TouchableHighlight onPress={() => handleSave(sliderValue)}>
-            <DefText>Zatwierdź</DefText>
+    <Modal
+      transparent={true}
+      visible={props.visible}
+      onRequestClose={() => props.closeModal()}
+      style={{ margin: 0, alignItems: "center", justifyContent: "center" }}
+    >
+      <View style={[styles.modal, globalSheet.shadowSecondary]}>
+        <DefText align="center" size={32}>
+          {showTime()}
+        </DefText>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            marginTop: 24,
+          }}
+        >
+          <TouchableHighlight onPress={() => setTime(0)}>
+            <DefText>WYCZYSC</DefText>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={() => setTimerOn(false)}>
+            <DefText>STOP</DefText>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={() => setTimerOn(true)}>
+            <DefText>WZNOW</DefText>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={() => endReading()}>
+            <DefText>ZAKOŃCZ</DefText>
           </TouchableHighlight>
         </View>
-      )}
-    </View>
+        {modalVisible && (
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalText}>Na której stronie skończyłeś czytać?</Text>
+            <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+              <Slider
+                style={{ width: 200, height: 40 }}
+                minimumValue={1}
+                maximumValue={numberOfPages}
+                minimumTrackTintColor={global.primaryColor}
+                maximumTrackTintColor="#000000"
+                onValueChange={(val) => setSliderValue(Math.floor(val))}
+              />
+              <DefText>
+                {sliderValue}/{numberOfPages}
+              </DefText>
+            </View>
+            <TouchableHighlight onPress={() => handleSave(sliderValue)} style={{ marginLeft: "auto" }}>
+              <DefText>Zatwierdź</DefText>
+            </TouchableHighlight>
+          </View>
+        )}
+      </View>
+    </Modal>
   );
 };
 
 export default Timer;
 
 const styles = StyleSheet.create({
+  modal: {
+    position: "absolute",
+    top: "35%",
+    left: "5%",
+    width: "90%",
+    padding: 32,
+    backgroundColor: "#fff",
+  },
   modalContainer: {
     width: "100%",
-    height: 120,
     marginVertical: 24,
     marginHorizontal: 24,
   },
