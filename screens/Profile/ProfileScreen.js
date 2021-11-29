@@ -10,19 +10,16 @@ import { useNavigation } from "@react-navigation/native";
 
 function ProfileScreen() {
   const [currentUsername, setCurrentUsername] = useState(null);
-
   const [toReadLength, setToReadLength] = useState(0);
   const [readNowLength, setReadNowLength] = useState(0);
   const [toRead, setToRead] = useState(null);
   const [readNow, setReadNow] = useState(null);
   const [modalFriendsVisible, setModalFriendsVisible] = useState(false);
 
-  console.log("Modal", modalFriendsVisible);
   const navigation = useNavigation();
 
   useEffect(() => {
     getUserData();
-    console.log("RERENDER");
     const unsub = getReadNow();
     const unsub2 = getToRead();
     return () => {
@@ -32,8 +29,6 @@ function ProfileScreen() {
   }, []);
 
   const getToRead = () => {
-    console.log("ELO");
-
     return firebase
       .firestore()
       .collection("users/" + firebase.auth().currentUser.uid + "/booksToRead")
@@ -50,8 +45,6 @@ function ProfileScreen() {
   };
 
   const getReadNow = () => {
-    console.log("ELO");
-
     return firebase
       .firestore()
       .collection("users/" + firebase.auth().currentUser.uid + "/booksReadNow")

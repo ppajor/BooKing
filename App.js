@@ -27,22 +27,32 @@ import { LogBox } from "react-native";
 //if  (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
 //musimy sprawdzic czy aplikacja zostala juz zainicjowana czy nie, zeby za kazdym razem nie inicjowac apki
+const LoginStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
 const SearchStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+function LoginStackNavigator() {
+  return (
+    <LoginStack.Navigator initialRouteName="LoadingScreen">
+      <LoginStack.Screen name="LoadingScreen" component={LoadingScreen} options={{ headerShown: false }} />
+      <LoginStack.Screen name="WelcomePage" component={WelcomePage} options={{ headerShown: false }} />
+      <LoginStack.Screen name="HomeScreen" component={TabNavigator} options={{ headerShown: false }} />
+      <LoginStack.Screen name="LoginPage" component={LoginPage} options={{ headerShown: false }} />
+      <LoginStack.Screen name="SignUpEmail" component={SignUpEmail} options={{ headerShown: false }} />
+    </LoginStack.Navigator>
+  );
+}
+
 function HomeStackNavigator() {
   return (
-    <HomeStack.Navigator initialRouteName="LoadingScreen">
-      <HomeStack.Screen name="LoadingScreen" component={LoadingScreen} options={{ headerShown: false }} />
+    <HomeStack.Navigator initialRouteName="Home">
       <HomeStack.Screen name="WelcomePage" component={WelcomePage} options={{ headerShown: false }} />
       <HomeStack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-      <HomeStack.Screen name="LoginPage" component={LoginPage} options={{ headerShown: false }} />
-      <HomeStack.Screen name="SignUpEmail" component={SignUpEmail} options={{ headerShown: false }} />
-      <HomeStack.Screen name="AddReview" component={AddReview} />
-      <HomeStack.Screen name="AllBooksShelf" component={AllBooksShelf} />
-      <HomeStack.Screen name="LibraryBookDetails" component={LibraryBookDetails} />
+      <HomeStack.Screen name="AddReview" component={AddReview} options={{ title: "Dodaj recenzję" }} />
+      <HomeStack.Screen name="AllBooksShelf" component={AllBooksShelf} options={{ title: "Wszystkie książki" }} />
+      <HomeStack.Screen name="LibraryBookDetails" component={LibraryBookDetails} options={{ title: "Informacje o książce" }} />
     </HomeStack.Navigator>
   );
 }
@@ -52,7 +62,7 @@ function SearchStackNavigator() {
     <SearchStack.Navigator initialRouteName="SearchScreen">
       <SearchStack.Screen name="SearchScreen" component={SearchScreen} options={{ headerShown: false }} />
       <SearchStack.Screen name="EditBook" component={EditBook} />
-      <SearchStack.Screen name="LibraryBookDetails" component={LibraryBookDetails} />
+      <SearchStack.Screen name="LibraryBookDetails" component={LibraryBookDetails} options={{ title: "Informacje o książce" }} />
       <HomeStack.Screen name="BookScanner" component={BookScanner} options={{ headerShown: false }} />
     </SearchStack.Navigator>
   );
@@ -62,17 +72,17 @@ function ProfileStackNavigator() {
   return (
     <ProfileStack.Navigator initialRouteName="ProfileScreen">
       <ProfileStack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
-      <ProfileStack.Screen name="AllBooksShelf" component={AllBooksShelf} />
-      <ProfileStack.Screen name="EditBook" component={EditBook} />
-      <ProfileStack.Screen name="LibraryBookDetails" component={LibraryBookDetails} />
-      <ProfileStack.Screen name="FriendProfile" component={FriendProfile} />
+      <ProfileStack.Screen name="AllBooksShelf" component={AllBooksShelf} options={{ title: "Wszystkie książki" }} />
+      <ProfileStack.Screen name="EditBook" component={EditBook} options={{ title: "Edytuj książkę" }} />
+      <ProfileStack.Screen name="LibraryBookDetails" component={LibraryBookDetails} options={{ title: "Informacje o książce" }} />
+      <ProfileStack.Screen name="FriendProfile" component={FriendProfile} options={{ title: "Informacje o profilu" }} />
     </ProfileStack.Navigator>
   );
 }
 
 const TabNavigator = () => (
   <Tab.Navigator
-    initialRouteName="HomeScreen"
+    initialRouteName="HomeTab"
     screenOptions={({ route }) => ({
       headerShown: false,
       tabBarStyle: { backgroundColor: "#fff", paddingBottom: 2 },
@@ -81,7 +91,7 @@ const TabNavigator = () => (
     })}
   >
     <Tab.Screen
-      name="HomeScreen"
+      name="HomeTab"
       component={HomeStackNavigator}
       options={{
         headerShown: false,
@@ -114,7 +124,7 @@ function App() {
 
   return (
     <NavigationContainer>
-      <TabNavigator />
+      <LoginStackNavigator />
     </NavigationContainer>
   );
 }

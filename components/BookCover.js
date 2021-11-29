@@ -46,6 +46,7 @@ function BookCover({ item, shelfName, percentage, ...props }) {
       navigation.push("LibraryBookDetails", {
         data: book,
         name: "Dodaj do biblioteki",
+        options: false,
       });
     }
   };

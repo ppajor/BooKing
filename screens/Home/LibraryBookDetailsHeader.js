@@ -1,15 +1,36 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Image, TouchableHighlight, Modal, TouchableOpacity } from "react-native";
-
-import { Link } from "@react-navigation/native";
-import { global } from "../../styles";
+import { Link, useNavigation } from "@react-navigation/native";
+import { global, globalSheet } from "../../styles";
 import DefText from "../../components/DefText";
 import { AntDesign, SimpleLineIcons } from "@expo/vector-icons";
 import OptionsModal from "./OptionsModal";
-import Screen from "../../components/Screen";
+import { removeToReadBook, removeReadNowBook, addBookToDatabase, addReadNowBook, removeLastReadID } from "../../api/firebaseCalls";
 
-function LibraryBookDetailsHeader({ authors, bookPercent, data, name, thumbnail, title, ...props }) {
+function LibraryBookDetailsHeader({ id, authors, bookPercent, data, name, thumbnail, description, title, pages, options, ...props }) {
   const [optionsModalVisible, setOptionsModalVisible] = useState(false);
+
+  const navigation = useNavigation();
+
+  const deleteBook = () => {
+    if (bookPercent == null) removeToReadBook(id);
+    else removeReadNowBook(id);
+    navigation.navigate("Home");
+  };
+
+  const movetoToRead = () => {
+    console.log("MOVE CLICK");
+    removeReadNowBook(id);
+    removeLastReadID(id);
+    addBookToDatabase(id, title, authors, description, thumbnail, pages);
+  };
+
+  const movetoReadNow = () => {
+    console.log("object: ", id);
+    addReadNowBook(id, title, authors, description, thumbnail, pages);
+    removeToReadBook(id);
+  };
+
   return (
     <View style={styles.headerContainer}>
       <View style={styles.header}>
@@ -44,15 +65,34 @@ function LibraryBookDetailsHeader({ authors, bookPercent, data, name, thumbnail,
               {name}
             </DefText>
           </TouchableHighlight>
-          <TouchableOpacity style={styles.optionsIcon} onPress={() => setOptionsModalVisible(true)}>
-            <SimpleLineIcons name="options-vertical" size={16} color="black" />
-          </TouchableOpacity>
-          <OptionsModal
-            visible={optionsModalVisible}
-            dismiss={() => {
-              setOptionsModalVisible(false);
-            }}
-          />
+          {options && (
+            <>
+              <TouchableOpacity style={styles.optionsIcon} onPress={() => setOptionsModalVisible(true)}>
+                <SimpleLineIcons name="options-vertical" size={16} color="black" />
+              </TouchableOpacity>
+              <OptionsModal
+                visible={optionsModalVisible}
+                dismiss={() => {
+                  setOptionsModalVisible(false);
+                }}
+              >
+                <View style={[globalSheet.shadowPrimary, styles.modalOptionsContent]}>
+                  <TouchableOpacity onPress={() => deleteBook()}>
+                    <DefText color="red">Usuń</DefText>
+                  </TouchableOpacity>
+                  {name == "Czytaj teraz!" ? (
+                    <TouchableOpacity onPress={() => movetoToRead()}>
+                      <DefText>Przenieś do "Do przeczytania"</DefText>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={() => movetoReadNow()}>
+                      <DefText>Przenieś do "Czytane"</DefText>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </OptionsModal>
+            </>
+          )}
         </View>
       </View>
       <Link to={{ screen: "EditBook", params: data }} style={styles.link}>
@@ -101,23 +141,6 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
     backgroundColor: "#fff",
   },
-  separator: {
-    width: 50,
-    height: 2,
-    marginTop: 8,
-    marginBottom: 16,
-    backgroundColor: global.primaryColor,
-  },
-
-  modalContainer: {
-    width: "100%",
-    height: 120,
-    marginVertical: 24,
-    marginHorizontal: 24,
-  },
-  modalText: {
-    color: "#a8a8a8",
-  },
   readPercentage: {
     display: "flex",
     justifyContent: "center",
@@ -152,6 +175,14 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     zIndex: 12,
+  },
+  modalOptionsContent: {
+    position: "absolute",
+    top: 108,
+    right: 24,
+    padding: 16,
+    backgroundColor: "#fff",
+    borderRadius: 0,
   },
 });
 

@@ -21,8 +21,12 @@ export default function LibraryBookDetails({ navigation, route }) {
   const [reviews, setReviews] = useState(null);
   const [writeComment, setWriteComment] = useState("");
   const [username, setUsername] = useState(null);
+  const [optionsVisible, setOptionsVisible] = useState(true);
+
+  console.log("name", route.params.name);
 
   useEffect(() => {
+    // console.log("route name:", route.name);
     const unsub = getReviews();
     const unsub2 = getComments();
     return () => {
@@ -32,6 +36,8 @@ export default function LibraryBookDetails({ navigation, route }) {
   }, []);
 
   useEffect(() => {
+    console.log(route.params.options);
+    if (route.params.options == false) setOptionsVisible(false);
     getUsername();
   }, []);
 
@@ -106,6 +112,9 @@ export default function LibraryBookDetails({ navigation, route }) {
   return (
     <ScrollView style={{ flex: 1 }}>
       <LibraryBookDetailsHeader
+        pages={route.params.data.pageCount}
+        description={route.params.data.description}
+        id={route.params.data.id}
         thumbnail={route.params.data.thumbnail}
         bookPercent={route.params.bookPercent}
         title={route.params.data.title}
@@ -113,9 +122,16 @@ export default function LibraryBookDetails({ navigation, route }) {
         data={route.params.data}
         name={name}
         handleBtnClick={handleBtnClick}
+        options={optionsVisible}
       />
 
-      <Timer closeModal={() => setTimerOn(false)} visible={timerOn} bookID={route.params.data.id} numberOfPages={route.params.data.pageCount} />
+      <Timer
+        closeModal={() => setTimerOn(false)}
+        visible={timerOn}
+        book={route.params.data}
+        bookID={route.params.data.id}
+        numberOfPages={route.params.data.pageCount}
+      />
 
       <View style={styles.headerBody}>
         <View style={styles.headers}>

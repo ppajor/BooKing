@@ -6,7 +6,7 @@ import BookCover from "./BookCover";
 import { global } from "../styles";
 
 const Shelf = (props) => {
-  const { data = null, name = null, percentage = null } = props;
+  const { data = null, name = null, percentage = null, options = true } = props;
 
   return (
     <>

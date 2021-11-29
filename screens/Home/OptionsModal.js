@@ -10,21 +10,7 @@ function OptionsModal(props) {
         <TouchableWithoutFeedback onPress={props.dismiss}>
           <View style={styles.modalOverlay} />
         </TouchableWithoutFeedback>
-
-        <View style={[globalSheet.shadowPrimary, styles.modalContent]}>
-          <TouchableOpacity onPress={() => console.log("CLICK")}>
-            <DefText color="red">Usuń</DefText>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <DefText>Przenieś do "Do przeczytania"</DefText>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <DefText>Przenieś do "Czytane"</DefText>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <DefText>Przenieś do "Przeczytane"</DefText>
-          </TouchableOpacity>
-        </View>
+        {props.children}
       </Modal>
     </View>
   );
@@ -44,13 +30,5 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-  },
-  modalContent: {
-    position: "absolute",
-    top: 108,
-    right: 24,
-    padding: 16,
-    backgroundColor: "#fff",
-    borderRadius: 0,
   },
 });

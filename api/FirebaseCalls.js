@@ -207,6 +207,20 @@ export const addBookToDatabase = (id, bookTitle, author, bookDescription, thumbn
   setFirestore("/users/" + firebase.auth().currentUser.uid + "/booksToRead", id, dataToUpdate);
 };
 
+export const addBookToAlreadyRead = (id, bookTitle, author, bookDescription, thumbnail, pages) => {
+  const dataToUpdate = {
+    id: id,
+    title: bookTitle,
+    authors: author,
+    description: bookDescription,
+    thumbnail: thumbnail,
+    pageCount: parseInt(pages),
+    date: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+  //console.log(`THUMBNAIL FIREBASEFUNC ${thumbnail}`);
+  setFirestore("/users/" + firebase.auth().currentUser.uid + "/booksAlreadyRead", id, dataToUpdate);
+};
+
 export const addReview = (bookID, data, reviewID) => {
   setFirestore("/books/" + bookID + "/reviews/", reviewID, data);
 };

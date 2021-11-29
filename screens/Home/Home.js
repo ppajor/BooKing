@@ -14,6 +14,7 @@ export default function Home({ navigation }) {
   const [username, setUsername] = useState(null);
   const [booksReadNow, setBooksReadNow] = useState(null);
   const [booksToRead, setBooksToRead] = useState(null);
+  const [booksAlreadyRead, setBooksAlreadyRead] = useState(null);
   const [wikusia, setWikusia] = useState(false);
 
   const API_KEY = "AIzaSyACLJEKxGoXNM8qfeNKejGzzhESdRo6e00";
@@ -31,10 +32,12 @@ export default function Home({ navigation }) {
     const unsub = getReadNow();
     const unsub2 = getToRead();
     const unsub3 = getLastRead();
+    const unsub4 = getAlreadyRead();
     return () => {
       unsub();
       unsub2();
       unsub3();
+      unsub4();
     };
   }, []); //podczas resfreshu komponent rerender
 
@@ -71,8 +74,6 @@ export default function Home({ navigation }) {
   };
 
   const getReadNow = () => {
-    console.log("ELO");
-
     return firebase
       .firestore()
       .collection("users/" + firebase.auth().currentUser.uid + "/booksReadNow")
@@ -87,15 +88,24 @@ export default function Home({ navigation }) {
       });
   };
 
+  const getAlreadyRead = () => {
+    return firebase
+      .firestore()
+      .collection("users/" + firebase.auth().currentUser.uid + "/booksAlreadyRead")
+      .orderBy("date", "desc")
+      .onSnapshot((querySnapshot) => {
+        var snaps = [];
+        querySnapshot.forEach((doc) => {
+          snaps.push(doc.data());
+        });
+        // console.log("SNAPS ", snaps);
+        setBooksAlreadyRead(snaps);
+      });
+  };
+
   const getUserInfo = async () => {
     const usernameResult = await getUserName();
     usernameResult ? setUsername(usernameResult) : setUsername(null);
-
-    /*
-    const lastReadIDResult = await getLastReadID();
-    const lastReadBookResult = await getLastReadBook(lastReadIDResult);
-    setLastRead(lastReadBookResult);
-    */
   };
 
   return (
@@ -119,6 +129,7 @@ export default function Home({ navigation }) {
             {lastRead && <LastRead id={lastRead} key={lastRead} />}
             {booksToRead ? <Shelf data={booksToRead} name="Do przeczytania" /> : <Shelf name="Do przeczytania" />}
             {booksReadNow ? <Shelf data={booksReadNow} name="Czytane teraz" percentage={true} /> : <Shelf name="Czytane teraz" percentage={true} />}
+            {booksAlreadyRead ? <Shelf data={booksAlreadyRead} name="Przeczytane" /> : <Shelf name="Przeczytane" />}
           </>
         )}
       </ScrollView>

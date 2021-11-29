@@ -5,10 +5,10 @@ import PropTypes from "prop-types";
 import firebase from "firebase";
 import DefText from "./DefText";
 import { useNavigation } from "@react-navigation/native";
-import { updateFirestore } from "../api/firebaseCalls";
+import { updateFirestore, addBookToAlreadyRead } from "../api/firebaseCalls";
 import { global, globalSheet } from "../styles";
 
-const Timer = ({ numberOfPages, ...props }) => {
+const Timer = ({ book, numberOfPages, ...props }) => {
   const [time, setTime] = React.useState(0);
   const [timerOn, setTimerOn] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -46,7 +46,8 @@ const Timer = ({ numberOfPages, ...props }) => {
     const data = Date.now();
     const hour = Math.floor(time / 3600);
     const minute = Math.floor((time / 60) % 60);
-    updateFirestore("/users/" + firebase.auth().currentUser.uid + "/booksReadNow/", props.bookID, dataToUpdate);
+    if (parseInt(num) == numberOfPages) addBookToAlreadyRead(book.id, book.title, book.authors, book.description, book.thumbnail, book.pageCount);
+    else updateFirestore("/users/" + firebase.auth().currentUser.uid + "/booksReadNow/", props.bookID, dataToUpdate);
     //updateFirebase("/users/" + firebase.auth().currentUser.uid + "/readTime/" + props.bookID + data, { hours: hour, minutes: minute });
     navigation.push("Home");
   };
