@@ -28,15 +28,15 @@ export const globalSheet = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowOffset: { width: 0, height: 2 },
     borderRadius: 8,
-    elevation: 3,
+    elevation: 2,
     backgroundColor: "white",
   },
   shadowSecondary: {
     shadowColor: "#a8a8a8",
-    shadowOpacity: 0.22,
+    shadowOpacity: 0.12,
     shadowOffset: { width: 0, height: 0 },
     borderRadius: 8,
-    elevation: 6,
+    elevation: 1,
     backgroundColor: "white",
   },
   input: {
@@ -72,4 +72,5 @@ export const global = {
   primaryColor: "#B58B8B",
   primaryLight: "rgba(181, 139, 139, 0.1)",
   padding: 16,
+  textColor: "rgba(0,0,0,0.9)",
 };

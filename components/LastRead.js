@@ -1,45 +1,55 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, Image, View, TouchableHighlight } from "react-native";
+import { StyleSheet, Text, Image, View, TouchableHighlight, TouchableOpacity } from "react-native";
 import firebase from "firebase";
 import { globalSheet, global } from "../styles";
 import DefText from "./DefText";
 import { getFirebase, getLastReadBook } from "../api/firebaseCalls";
+import { useNavigation } from "@react-navigation/native";
 
 const LastRead = ({ book, id }) => {
   const [lastReadBook, setLastReadBook] = useState(null);
   const [bookPercent, setBookPercent] = useState(0);
   const [wikusia, setWikusia] = useState(false);
 
+  const navigation = useNavigation();
+
   const getLastRead = async () => {
-    console.log("id", id);
     const book = await getLastReadBook(id);
-    setLastReadBook(book);
-    console.log("book", book);
-    let bookPercentage = Math.floor((book.lastReadPageNumber / book.pageCount) * 100);
-    setBookPercent(bookPercentage);
-    // setLastReadBook(book);
+    if (book) {
+      setLastReadBook(book);
+      let bookPercentage = Math.floor((book.lastReadPageNumber / book.pageCount) * 100);
+      setBookPercent(bookPercentage);
+    }
   };
 
   useEffect(() => {
-    console.log("LAST READ RERENDER");
     getLastRead();
   }, []);
+
+  const handleBookClick = () => {
+    navigation.push("LibraryBookDetails", {
+      data: lastReadBook,
+      name: "Czytaj teraz!",
+      bookPercent: bookPercent,
+    });
+  };
 
   return (
     <>
       {lastReadBook ? (
-        <View>
+        <View style={[styles.mainContainer, globalSheet.shadowPrimary]}>
           <View
             style={{
-              marginBottom: 8,
+              marginBottom: 16,
               paddingLeft: global.padding,
             }}
           >
-            <DefText family="Rubik-Medium" size={16} color=" rgba(36, 36, 36, 0.9)">
+            <DefText family="Rubik-Medium" size={16} color={global.textColor}>
               Ostatnio czytana
             </DefText>
+            <View style={{ width: "15%", height: 2, backgroundColor: global.primaryColor, marginTop: 4 }}></View>
           </View>
-          <View>
+          <TouchableOpacity onPress={() => handleBookClick()}>
             <View style={styles.container}>
               <Image style={styles.bookMockup} source={{ uri: lastReadBook.thumbnail }}></Image>
               <TouchableHighlight style={styles.readPercentage}>
@@ -67,16 +77,14 @@ const LastRead = ({ book, id }) => {
                     {lastReadBook.authors}
                   </DefText>
                 </View>
-                {wikusia && (
-                  <TouchableHighlight style={styles.readBtn}>
-                    <DefText family="OpenSans-LightItalic" size={14} color="#fff">
-                      Czytaj dalej
-                    </DefText>
-                  </TouchableHighlight>
-                )}
+                <TouchableHighlight onPress={() => handleBookClick()} style={styles.readBtn}>
+                  <DefText family="OpenSans-LightItalic" size={14} color="#fff">
+                    Czytaj dalej
+                  </DefText>
+                </TouchableHighlight>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
       ) : null}
     </>
@@ -85,8 +93,12 @@ const LastRead = ({ book, id }) => {
 
 const styles = StyleSheet.create({
   mainContainer: {
+    backgroundColor: "#fff",
     margin: 16,
-    borderRadius: 12,
+    marginBottom: 36,
+    marginTop: 0,
+    paddingTop: 16,
+    borderRadius: 16,
   },
   container: {
     width: "100%",

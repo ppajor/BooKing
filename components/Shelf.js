@@ -1,12 +1,16 @@
 import React from "react";
 import { StyleSheet, ImageBackground, View, FlatList, TouchableOpacity } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import PropTypes from "prop-types";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import DefText from "./DefText";
 import BookCover from "./BookCover";
 import { global } from "../styles";
+import { useNavigation } from "@react-navigation/native";
 
 const Shelf = (props) => {
-  const { data = null, name = null, percentage = null, options = true } = props;
+  const { data = null, name = null, percentage = null } = props;
+
+  const navigation = useNavigation();
 
   return (
     <>
@@ -16,9 +20,18 @@ const Shelf = (props) => {
 
         {name && (
           <View style={styles.refreshIcon}>
-            <DefText family="Rubik-Medium" size={16} color="rgba(227, 227, 227, 0.9)">
+            <DefText family="Rubik-Medium" size={16} color="#fff">
               {name}
             </DefText>
+            <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+              <TouchableOpacity onPress={() => navigation.navigate("AllBooksShelf", { books: Object.values(data) })}>
+                <DefText family="OpenSans-LightItalic" color="rgba(227, 227, 227, 0.9)" size={14}>
+                  Pokaż wszystkie
+                </DefText>
+              </TouchableOpacity>
+
+              <MaterialIcons style={{ marginLeft: 2 }} name="arrow-forward-ios" size={14} color="rgba(227, 227, 227, 0.9)" />
+            </View>
           </View>
         )}
         {data && (
@@ -37,6 +50,12 @@ const Shelf = (props) => {
 };
 
 export default Shelf;
+
+Shelf.propTypes = {
+  data: PropTypes.array, //data z ksiazkami ktore beda w shelfie
+  name: PropTypes.string, //nazwa polki by mozna bylo odrozniac parametry
+  percentage: PropTypes.bool, //dodatkowy prop by dodać percentage overlay
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -59,7 +78,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: "100%",
     height: 10,
-    backgroundColor: "#5b1b09",
+    backgroundColor: "#391715",
   },
   booksContainer: {
     display: "flex",

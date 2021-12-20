@@ -5,6 +5,7 @@ import DefText from "../../components/DefText";
 import { getData, filterData } from "../../api/GoogleBooksCalls";
 import SearchBookDetails from "../../components/SearchBookDetails";
 import { useNavigation } from "@react-navigation/native";
+import { global } from "../../styles";
 
 const API_KEY = "AIzaSyACLJEKxGoXNM8qfeNKejGzzhESdRo6e00";
 
@@ -50,8 +51,8 @@ function SearchBar(props) {
               alignItems: "center",
             }}
           >
-            <MaterialCommunityIcons name="barcode-scan" size={24} color="black" style={{ marginLeft: 24, marginRight: 8 }} />
-            <DefText size={12} family="OpenSans-Light">
+            <MaterialCommunityIcons name="barcode-scan" size={24} color={global.textColor} style={{ marginLeft: 24, marginRight: 8 }} />
+            <DefText size={12} family="OpenSans-Light" color={global.textColor}>
               scan
             </DefText>
           </TouchableOpacity>
@@ -60,13 +61,13 @@ function SearchBar(props) {
           <FlatList horizontal data={Object.values(apiData)} renderItem={({ item }) => <SearchBookDetails item={item} />} keyExtractor={(item) => item.id} />
         )}
         <View style={styles.addBook}>
-          <DefText size={11} family="OpenSans-Light">
+          <DefText size={11} family="OpenSans-LightItalic" color={global.textColor}>
             Nie znalazłeś swojej książki?
           </DefText>
           <TouchableOpacity onPress={() => navigation.push("EditBook", { screen: "HomeScreen" })}>
             <View style={{ display: "flex", flexDirection: "row" }}>
-              <MaterialCommunityIcons name="book-plus" size={16} color="black" style={{ marginRight: 4 }} />
-              <DefText size={11} family="OpenSans-Bold">
+              <MaterialCommunityIcons name="book-plus" size={16} color={global.textColor} style={{ marginRight: 4 }} />
+              <DefText size={11} family="OpenSans-Bold" color={global.textColor}>
                 Dodaj ją ręcznie
               </DefText>
             </View>

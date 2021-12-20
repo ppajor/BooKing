@@ -23,6 +23,7 @@ import FriendProfile from "./screens/Profile/FriendProfile";
 import AddReview from "./screens/Home/AddReview";
 import AllBooksShelf from "./screens/Profile/AllBooksShelf";
 import { LogBox } from "react-native";
+import StatsScreen from "./screens/Statistics/StatsScreen";
 
 //if  (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
@@ -31,6 +32,7 @@ const LoginStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
 const SearchStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
+const StatsStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function LoginStackNavigator() {
@@ -80,6 +82,15 @@ function ProfileStackNavigator() {
   );
 }
 
+function StatsStackNavigator() {
+  return (
+    <StatsStack.Navigator initialRouteName="StatsScreen">
+      <StatsStack.Screen name="StatsScreen" component={StatsScreen} options={{ headerShown: false }} />
+      <StatsStack.Screen name="AllBooksShelf" component={AllBooksShelf} options={{ title: "Wszystkie książki" }} />
+    </StatsStack.Navigator>
+  );
+}
+
 const TabNavigator = () => (
   <Tab.Navigator
     initialRouteName="HomeTab"
@@ -104,6 +115,14 @@ const TabNavigator = () => (
       options={{
         headerShown: false,
         tabBarIcon: ({ color }) => <AntDesign name="search1" size={24} color={color} />,
+      }}
+    />
+    <Tab.Screen
+      name="Statistics"
+      component={StatsStackNavigator}
+      options={{
+        headerShown: false,
+        tabBarIcon: ({ color }) => <AntDesign name="linechart" size={24} color={color} />,
       }}
     />
     <Tab.Screen

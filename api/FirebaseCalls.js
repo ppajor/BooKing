@@ -1,5 +1,6 @@
 import firebase from "firebase";
 import { doc, getDoc, setDoc, get } from "firebase/firestore";
+import { getUniqueID } from "../utils";
 
 export const registerWithEmail = async (inputEmail, inputPassword) => {
   return await firebase
@@ -46,6 +47,25 @@ export const logOut = () => {
       console.log("User signed out!");
     });
 };
+
+export const setFirebase = async (path, data) => {
+  firebase
+    .database()
+    .ref(path)
+    .set(data)
+    .then(() => console.log("set data correct!"));
+};
+/*
+export const saveTimerData = (bookID,timerSeconds)=>{
+  const id=getUniqueID();
+  const obj={bookID:{
+    id:{
+
+    }
+  }}
+  setFirebase("/users/"+firebase.auth().currentUser.uid,)
+}
+*/
 /*
 export const getFirebase = async (path) => {
   return await firebase
@@ -62,13 +82,7 @@ export const getFirebase = async (path) => {
     });
 };
 
-export const setFirebase = async (path, data) => {
-  firebase
-    .database()
-    .ref(path)
-    .set(data)
-    .then(() => console.log("set data correct!"));
-};
+
 
 export const updateFirebase = async (path, data) => {
   return await firebase
@@ -120,6 +134,12 @@ export const getUserName = async () => {
   return user.data().username;
 };
 
+export const getAvatar = async () => {
+  let usersRef = firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid);
+  let user = await usersRef.get();
+  return user.data().avatar;
+};
+
 export const getLastReadID = async () => {
   let ref = firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid);
   let result = await ref.get();
@@ -165,6 +185,42 @@ export const getFriendReadNow = async (friendID) => {
   return snaps;
 };
 
+export const getReadTimeByMonth = async (month) => {
+  let statRef = firebase
+    .firestore()
+    .collection("users/" + firebase.auth().currentUser.uid + "/stats")
+    .where("month", "==", month);
+  let stats = await statRef.get();
+  if (stats) {
+    let time = 0;
+    for (const doc of stats.docs) {
+      time = time + doc.data().readTime;
+      console.log("readtime", doc.data().readTime);
+    }
+    return time / 3600;
+  }
+  return 0;
+};
+/*
+export const getHeatmap = async () => {
+  let statRef = firebase.firestore().collection("users/" + firebase.auth().currentUser.uid + "/stats");
+  let stats = await statRef.get();
+  const snaps = [];
+  for (const doc of stats.docs) {
+    //convert timestamp to date
+    let time = doc.data().date;
+    // const fireBaseTime = new Date(time.seconds * 1000 + time.nanoseconds / 1000000);
+    //const date = fireBaseTime.toLocaleDateString().split("/").join("-");
+    // const date2 = fireBaseTime.getFullYear() + "-" + (fireBaseTime.getMonth() + 1) + "-" + fireBaseTime.getDate();
+    const date3 = "2021-" + doc.data().month + "-" + doc.data().day;
+    const obj = { date: date3, count: doc.data().readTime };
+
+    snaps.push(obj);
+  }
+  console.log(snaps);
+  return snaps;
+};
+*/
 //**************************************************set
 
 export const setFirestore = async (path, id, data) => {
@@ -215,6 +271,7 @@ export const addBookToAlreadyRead = (id, bookTitle, author, bookDescription, thu
     description: bookDescription,
     thumbnail: thumbnail,
     pageCount: parseInt(pages),
+    note: 0,
     date: firebase.firestore.FieldValue.serverTimestamp(),
   };
   //console.log(`THUMBNAIL FIREBASEFUNC ${thumbnail}`);
@@ -235,6 +292,16 @@ export const addCreatedUserData = (userID, data) => {
 
 export const addCreatedUsername = (username, data) => {
   setFirestore("usernames/", username, data);
+};
+
+export const saveTimerData = (id, timeInSeconds, bookID) => {
+  var today = new Date();
+  var date = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
+
+  const object = { bookID: bookID, readTime: timeInSeconds, date: firebase.firestore.FieldValue.serverTimestamp(), month: month, day: day };
+  setFirestore("/users/" + firebase.auth().currentUser.uid + "/stats", id, object);
 };
 
 //**************************************************remove
@@ -260,15 +327,11 @@ export const removeToReadBook = async (docID) => {
   removeFirestore("users/" + firebase.auth().currentUser.uid + "/booksToRead", docID);
 };
 
-export const removeLastReadID = async (id) => {
-  /*
-  var ref = firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid);
+export const removeAlreadyReadBook = async (docID) => {
+  removeFirestore("users/" + firebase.auth().currentUser.uid + "/booksAlreadyRead", docID);
+};
 
-  var ID = ref.update({
-    lastRead: firebase.firestore.FieldValue.delete(),
-  });
-  */
-  // console.log("remove id:", id);
+export const removeLastReadID = async (id) => {
   firebase
     .firestore()
     .collection("users")

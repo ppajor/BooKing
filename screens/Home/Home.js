@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import firebase from "firebase";
 import LastRead from "../../components/LastRead";
-import { getUserName, getLastReadID, getLastReadBook } from "../../api/firebaseCalls";
+import { getUserName, getAvatar } from "../../api/firebaseCalls";
+import { FontAwesome } from "@expo/vector-icons";
+
 import DefText from "../../components/DefText";
 import Shelf from "../../components/Shelf";
 import Screen from "../../components/Screen";
 import { global } from "../../styles";
+import { Image } from "react-native-svg";
 
 export default function Home({ navigation }) {
   const [lastRead, setLastRead] = useState(null);
@@ -15,6 +18,7 @@ export default function Home({ navigation }) {
   const [booksReadNow, setBooksReadNow] = useState(null);
   const [booksToRead, setBooksToRead] = useState(null);
   const [booksAlreadyRead, setBooksAlreadyRead] = useState(null);
+  const [avatar, setAvatar] = useState(null);
   const [wikusia, setWikusia] = useState(false);
 
   const API_KEY = "AIzaSyACLJEKxGoXNM8qfeNKejGzzhESdRo6e00";
@@ -56,8 +60,6 @@ export default function Home({ navigation }) {
   };
 
   const getToRead = () => {
-    console.log("ELO");
-
     return firebase
       .firestore()
       .collection("users/" + firebase.auth().currentUser.uid + "/booksToRead")
@@ -68,7 +70,6 @@ export default function Home({ navigation }) {
           snaps.push(doc.data());
         });
         // console.log("SNAPS ", snaps);
-        console.log("TOREAD listener");
         setBooksToRead(snaps);
       });
   };
@@ -105,7 +106,9 @@ export default function Home({ navigation }) {
 
   const getUserInfo = async () => {
     const usernameResult = await getUserName();
+    const avatarResult = await getAvatar();
     usernameResult ? setUsername(usernameResult) : setUsername(null);
+    setAvatar(avatarResult);
   };
 
   return (
@@ -124,8 +127,19 @@ export default function Home({ navigation }) {
                   </DefText>
                 </View>
               </View>
+              <View>
+                {avatar ? (
+                  <>
+                    <Image source={{ uri: avatar }} style={styles.image} />
+                  </>
+                ) : (
+                  <TouchableOpacity>
+                    <FontAwesome name="user-circle-o" size={32} color="black" />
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
-
+            <Image source={{ uri: avatar }} />
             {lastRead && <LastRead id={lastRead} key={lastRead} />}
             {booksToRead ? <Shelf data={booksToRead} name="Do przeczytania" /> : <Shelf name="Do przeczytania" />}
             {booksReadNow ? <Shelf data={booksReadNow} name="Czytane teraz" percentage={true} /> : <Shelf name="Czytane teraz" percentage={true} />}
@@ -140,7 +154,7 @@ export default function Home({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f8f8f8",
   },
 
   searchInput: {
@@ -159,6 +173,12 @@ const styles = StyleSheet.create({
     padding: global.padding,
     paddingTop: 32,
     paddingBottom: 0,
+  },
+  image: {
+    width: 96,
+    height: 96,
+    marginBottom: 16,
+    borderRadius: 16,
   },
 });
 /*

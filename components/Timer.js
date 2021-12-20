@@ -5,15 +5,16 @@ import PropTypes from "prop-types";
 import firebase from "firebase";
 import DefText from "./DefText";
 import { useNavigation } from "@react-navigation/native";
-import { updateFirestore, addBookToAlreadyRead } from "../api/firebaseCalls";
+import { updateFirestore, addBookToAlreadyRead, removeReadNowBook, saveTimerData } from "../api/firebaseCalls";
 import { global, globalSheet } from "../styles";
+import { convertToSeconds, getUniqueID } from "../utils";
 
 const Timer = ({ book, numberOfPages, ...props }) => {
   const [time, setTime] = React.useState(0);
   const [timerOn, setTimerOn] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [pageNumber, setPageNumber] = useState("1");
-  const [sliderValue, setSliderValue] = useState(1);
+  const [sliderValue, setSliderValue] = useState(book.lastReadPageNumber);
 
   const navigation = useNavigation();
 
@@ -46,9 +47,15 @@ const Timer = ({ book, numberOfPages, ...props }) => {
     const data = Date.now();
     const hour = Math.floor(time / 3600);
     const minute = Math.floor((time / 60) % 60);
-    if (parseInt(num) == numberOfPages) addBookToAlreadyRead(book.id, book.title, book.authors, book.description, book.thumbnail, book.pageCount);
-    else updateFirestore("/users/" + firebase.auth().currentUser.uid + "/booksReadNow/", props.bookID, dataToUpdate);
+    const seconds = time % 60;
+    const secondsConvertion = convertToSeconds(hour, minute, seconds);
+    const statID = getUniqueID();
+    if (parseInt(num) == numberOfPages) {
+      addBookToAlreadyRead(book.id, book.title, book.authors, book.description, book.thumbnail, book.pageCount);
+      removeReadNowBook(book.id);
+    } else updateFirestore("/users/" + firebase.auth().currentUser.uid + "/booksReadNow/", props.bookID, dataToUpdate);
     //updateFirebase("/users/" + firebase.auth().currentUser.uid + "/readTime/" + props.bookID + data, { hours: hour, minutes: minute });
+    saveTimerData(statID, secondsConvertion, book.id);
     navigation.push("Home");
   };
 
@@ -90,6 +97,7 @@ const Timer = ({ book, numberOfPages, ...props }) => {
             <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
               <Slider
                 style={{ width: 200, height: 40 }}
+                value={sliderValue}
                 minimumValue={1}
                 maximumValue={numberOfPages}
                 minimumTrackTintColor={global.primaryColor}

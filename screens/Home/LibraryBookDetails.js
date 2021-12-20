@@ -98,8 +98,6 @@ export default function LibraryBookDetails({ navigation, route }) {
 
   const handleReadNow = () => {
     setTimerOn(true);
-    // const dataToUpdate = { lastRead: route.params.data.id };
-    //updateFirestore("/users/", firebase.auth().currentUser.uid, dataToUpdate);
     updateLastReadBookID(route.params.data.id);
   };
 
@@ -193,8 +191,9 @@ LibraryBookDetails.propTypes = {
         description: PropTypes.string.isRequired,
         thumbnail: PropTypes.string.isRequired,
         pageCount: PropTypes.number.isRequired,
-        lastReadPageNumber: PropTypes.number.isRequired,
+        lastReadPageNumber: PropTypes.number,
       }),
+      name: PropTypes.string.isRequired,
     }),
   }),
 };

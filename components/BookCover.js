@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, TouchableHighlight, Image, StyleSheet, TouchableOpacity } from "react-native";
 
-import { AntDesign } from "@expo/vector-icons";
-import { removeFirebase, getFirebase, removeReadNowBook, removeToReadBook, getLastReadID, removeLastReadID } from "../api/firebaseCalls";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { removeReadNowBook, removeToReadBook, removeAlreadyReadBook, removeLastReadID } from "../api/firebaseCalls";
 import { useNavigation } from "@react-navigation/native";
 import firebase from "firebase";
 import DefText from "./DefText";
@@ -15,16 +15,14 @@ function BookCover({ item, shelfName, percentage, ...props }) {
     setReadPercent(Math.floor((item.lastReadPageNumber / item.pageCount) * 100));
   }, []);
 
-  const handleRemove = async (id, name) => {
-    if (name == "Do przeczytania") {
-      await removeToReadBook(id);
-    }
-    if (name == "Czytane teraz") {
-      //const lastreadID = await getLastReadID();
+  const handleRemove = async (id) => {
+    if (item.note != null) {
+      removeAlreadyReadBook(id);
+    } else if (percentage) {
       removeLastReadID(id);
-
-      //await removeFirebase("/users/" + firebase.auth().currentUser.uid + "/library/readNow/" + id);
       removeReadNowBook(id);
+    } else {
+      await removeToReadBook(id);
     }
   };
 
@@ -40,6 +38,12 @@ function BookCover({ item, shelfName, percentage, ...props }) {
         data: book,
         name: "Czytaj teraz!",
         bookPercent: readPercent,
+      });
+    }
+    if (name == "Przeczytane") {
+      navigation.push("LibraryBookDetails", {
+        data: book,
+        name: "Oceń",
       });
     }
     if (name == null) {
@@ -65,6 +69,12 @@ function BookCover({ item, shelfName, percentage, ...props }) {
         >
           <AntDesign name="close" size={16} color="white" />
         </TouchableHighlight>
+      )}
+      {item.note != null && (
+        <View style={styles.note}>
+          <FontAwesome name="star" size={16} color="orange" style={{ marginRight: 2 }} />
+          <DefText color="#fff">{item.note}</DefText>
+        </View>
       )}
 
       {percentage && (
@@ -111,5 +121,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     opacity: 0.78,
     zIndex: 2,
+  },
+  note: {
+    position: "absolute",
+    height: 28,
+    padding: 8,
+    backgroundColor: "#000",
+    opacity: 0.78,
+    left: 0,
+    top: 0,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

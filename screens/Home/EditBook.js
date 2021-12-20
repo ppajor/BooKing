@@ -30,11 +30,8 @@ function EditBook({ navigation, route }) {
         await updateImage(imagePath)
           .then(() => {
             var ref = firebase.storage().ref().child(id);
-
             ref.getDownloadURL().then((url) => {
-              //console.log(url);
               updateUrl(url);
-              // navigation.push("Home");
             });
           })
           .catch(() => {
@@ -42,7 +39,6 @@ function EditBook({ navigation, route }) {
           });
       } else {
         addBookToDatabase(id, bookTitle, author, bookDescription, thumbnail, pages);
-        //navigation.push("Home");
       }
     }
   };
