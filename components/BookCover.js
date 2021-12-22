@@ -44,6 +44,7 @@ function BookCover({ item, shelfName, percentage, ...props }) {
       navigation.push("LibraryBookDetails", {
         data: book,
         name: "Oceń",
+        alreadyRead: true,
       });
     }
     if (name == null) {

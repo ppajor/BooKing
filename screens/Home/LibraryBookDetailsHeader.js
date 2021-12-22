@@ -1,16 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, View, Image, TouchableHighlight, Modal, TouchableOpacity } from "react-native";
 import { Link, useNavigation } from "@react-navigation/native";
+import PropTypes from "prop-types";
+import { removeToReadBook, removeReadNowBook, addBookToDatabase, addReadNowBook, removeLastReadID, updateBookRate } from "../../api/firebaseCalls";
 import { global, globalSheet } from "../../styles";
-import DefText from "../../components/DefText";
 import { AntDesign, SimpleLineIcons } from "@expo/vector-icons";
+import { Rating, AirbnbRating } from "react-native-ratings";
+import DefText from "../../components/DefText";
 import OptionsModal from "./OptionsModal";
-import { removeToReadBook, removeReadNowBook, addBookToDatabase, addReadNowBook, removeLastReadID } from "../../api/firebaseCalls";
 
-function LibraryBookDetailsHeader({ id, authors, bookPercent, data, name, thumbnail, description, title, pages, options, ...props }) {
+function LibraryBookDetailsHeader({ bookPercent, data, name, options, alreadyRead = false, ...props }) {
+  const { id, authors, thumbnail, description, title, pageCount, note = 0 } = data;
   const [optionsModalVisible, setOptionsModalVisible] = useState(false);
+  const [bookRate, setBookRate] = useState(0);
+  const [rated, setRated] = useState(false);
 
   const navigation = useNavigation();
+  const rateRef = useRef();
+
+  useEffect(() => {
+    rateRef.current = note; //do rate refa przy pierwszym odpaleniu komponentu przypisujemy rating z bazy
+    rateRef.rated = false; //do rate refa przy pierwszym odpaleniu komponentu przypisujemy rating z bazy
+    if (note) setBookRate(note); //jesli jest ocena w bazie zapisz ją w bookRate -będzie wtedy defaultowa
+    return () => {
+      if (rateRef.rated) updateBookRate(id, rateRef.current); //zapisujemy w bazie rating dopiero przy odmontowywaniu
+    };
+  }, []);
 
   const deleteBook = () => {
     if (bookPercent == null) removeToReadBook(id);
@@ -19,15 +34,13 @@ function LibraryBookDetailsHeader({ id, authors, bookPercent, data, name, thumbn
   };
 
   const movetoToRead = () => {
-    console.log("MOVE CLICK");
     removeReadNowBook(id);
     removeLastReadID(id);
-    addBookToDatabase(id, title, authors, description, thumbnail, pages);
+    addBookToDatabase(id, title, authors, description, thumbnail, pageCount);
   };
 
   const movetoReadNow = () => {
-    console.log("object: ", id);
-    addReadNowBook(id, title, authors, description, thumbnail, pages);
+    addReadNowBook(id, title, authors, description, thumbnail, pageCount);
     removeToReadBook(id);
   };
 
@@ -60,11 +73,28 @@ function LibraryBookDetailsHeader({ id, authors, bookPercent, data, name, thumbn
               {authors}
             </DefText>
           </View>
-          <TouchableHighlight style={styles.readBtn} onPress={() => props.handleBtnClick(name)}>
-            <DefText family="OpenSans-LightItalic" size={14} color="#fff">
-              {name}
-            </DefText>
-          </TouchableHighlight>
+          {alreadyRead ? (
+            <Rating
+              startingValue={bookRate}
+              tintColor="#f2f2f2"
+              ratingCount={10}
+              imageSize={24}
+              jumpValue={0}
+              showRating
+              onFinishRating={(val) => {
+                rateRef.current = val;
+                rateRef.rated = true;
+                setBookRate(val);
+              }}
+            />
+          ) : (
+            <TouchableHighlight style={styles.readBtn} onPress={() => props.handleBtnClick(name)}>
+              <DefText family="OpenSans-LightItalic" size={14} color="#fff">
+                {name}
+              </DefText>
+            </TouchableHighlight>
+          )}
+
           {options && (
             <>
               <TouchableOpacity style={styles.optionsIcon} onPress={() => setOptionsModalVisible(true)}>
@@ -106,6 +136,14 @@ function LibraryBookDetailsHeader({ id, authors, bookPercent, data, name, thumbn
     </View>
   );
 }
+
+LibraryBookDetailsHeader.propTypes = {
+  bookPercent: PropTypes.number,
+  data: PropTypes.object || PropTypes.array,
+  name: PropTypes.string,
+  options: PropTypes.bool,
+  note: PropTypes.bool,
+};
 
 export default LibraryBookDetailsHeader;
 const styles = StyleSheet.create({

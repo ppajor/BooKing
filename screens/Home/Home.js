@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { View, StyleSheet, ScrollView, TouchableOpacity, Image } from "react-native";
 import firebase from "firebase";
 import LastRead from "../../components/LastRead";
 import { getUserName, getAvatar } from "../../api/firebaseCalls";
@@ -9,7 +9,6 @@ import DefText from "../../components/DefText";
 import Shelf from "../../components/Shelf";
 import Screen from "../../components/Screen";
 import { global } from "../../styles";
-import { Image } from "react-native-svg";
 
 export default function Home({ navigation }) {
   const [lastRead, setLastRead] = useState(null);
@@ -119,7 +118,7 @@ export default function Home({ navigation }) {
             <View style={styles.userLoggedInNavbar}>
               <View>
                 <DefText family="OpenSans-Italic" color="#C9C9C9">
-                  Hello...
+                  Witaj...
                 </DefText>
                 <View style={{ marginLeft: 38 }}>
                   <DefText family="Rubik-Medium" size={24} color={global.primaryColor}>
@@ -127,17 +126,13 @@ export default function Home({ navigation }) {
                   </DefText>
                 </View>
               </View>
-              <View>
-                {avatar ? (
-                  <>
-                    <Image source={{ uri: avatar }} style={styles.image} />
-                  </>
-                ) : (
-                  <TouchableOpacity>
-                    <FontAwesome name="user-circle-o" size={32} color="black" />
-                  </TouchableOpacity>
-                )}
-              </View>
+              {avatar ? (
+                <Image source={{ uri: avatar }} style={styles.image} />
+              ) : (
+                <TouchableOpacity>
+                  <FontAwesome name="user-circle-o" size={32} color="black" />
+                </TouchableOpacity>
+              )}
             </View>
             <Image source={{ uri: avatar }} />
             {lastRead && <LastRead id={lastRead} key={lastRead} />}
@@ -175,10 +170,10 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   image: {
-    width: 96,
-    height: 96,
+    width: 48,
+    height: 48,
     marginBottom: 16,
-    borderRadius: 16,
+    borderRadius: 12,
   },
 });
 /*

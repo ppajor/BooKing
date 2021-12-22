@@ -53,6 +53,7 @@ function HomeStackNavigator() {
       <HomeStack.Screen name="WelcomePage" component={WelcomePage} options={{ headerShown: false }} />
       <HomeStack.Screen name="Home" component={Home} options={{ headerShown: false }} />
       <HomeStack.Screen name="AddReview" component={AddReview} options={{ title: "Dodaj recenzję" }} />
+      <SearchStack.Screen name="EditBook" component={EditBook} options={{ title: "Edycja książki" }} />
       <HomeStack.Screen name="AllBooksShelf" component={AllBooksShelf} options={{ title: "Wszystkie książki" }} />
       <HomeStack.Screen name="LibraryBookDetails" component={LibraryBookDetails} options={{ title: "Informacje o książce" }} />
     </HomeStack.Navigator>

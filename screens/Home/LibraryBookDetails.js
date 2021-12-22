@@ -13,7 +13,9 @@ import LibraryBookDetailsHeader from "./LibraryBookDetailsHeader";
 import LibraryBookDetailsComments from "./LibraryBookDetailsComments";
 import LibraryBookDetailsReviews from "./LibraryBookDetailsReviews";
 
-export default function LibraryBookDetails({ navigation, route }) {
+export default function LibraryBookDetails({ navigation, route, ...props }) {
+  const { alreadyRead = false, bookPercent = null } = route.params;
+
   const { id } = route.params.data;
   const [name, setName] = useState(route.params.name);
   const [timerOn, setTimerOn] = useState(false);
@@ -22,8 +24,6 @@ export default function LibraryBookDetails({ navigation, route }) {
   const [writeComment, setWriteComment] = useState("");
   const [username, setUsername] = useState(null);
   const [optionsVisible, setOptionsVisible] = useState(true);
-
-  console.log("name", route.params.name);
 
   useEffect(() => {
     // console.log("route name:", route.name);
@@ -78,9 +78,21 @@ export default function LibraryBookDetails({ navigation, route }) {
   };
 
   const handleBtnClick = (buttonName) => {
+    if (alreadyRead) {
+      //nawigacja do modala
+    } else if (bookPercent != null) {
+      handleReadNow();
+    } else if (buttonName == "Dodaj do biblioteki") {
+      handleAddToLibrary(route.params.data);
+    } else if (buttonName == "Czytaj") {
+      handleAddReadNow(route.params.data);
+    }
+
+    /*
     if (buttonName == "Dodaj do biblioteki") handleAddToLibrary(route.params.data);
     if (buttonName == "Czytaj") handleAddReadNow(route.params.data);
     if (buttonName == "Czytaj teraz!") handleReadNow();
+    */
   };
 
   const handleAddToLibrary = (book) => {
@@ -110,17 +122,12 @@ export default function LibraryBookDetails({ navigation, route }) {
   return (
     <ScrollView style={{ flex: 1 }}>
       <LibraryBookDetailsHeader
-        pages={route.params.data.pageCount}
-        description={route.params.data.description}
-        id={route.params.data.id}
-        thumbnail={route.params.data.thumbnail}
         bookPercent={route.params.bookPercent}
-        title={route.params.data.title}
-        authors={route.params.data.authors}
         data={route.params.data}
         name={name}
         handleBtnClick={handleBtnClick}
         options={optionsVisible}
+        alreadyRead={alreadyRead}
       />
 
       <Timer

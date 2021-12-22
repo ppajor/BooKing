@@ -201,26 +201,7 @@ export const getReadTimeByMonth = async (month) => {
   }
   return 0;
 };
-/*
-export const getHeatmap = async () => {
-  let statRef = firebase.firestore().collection("users/" + firebase.auth().currentUser.uid + "/stats");
-  let stats = await statRef.get();
-  const snaps = [];
-  for (const doc of stats.docs) {
-    //convert timestamp to date
-    let time = doc.data().date;
-    // const fireBaseTime = new Date(time.seconds * 1000 + time.nanoseconds / 1000000);
-    //const date = fireBaseTime.toLocaleDateString().split("/").join("-");
-    // const date2 = fireBaseTime.getFullYear() + "-" + (fireBaseTime.getMonth() + 1) + "-" + fireBaseTime.getDate();
-    const date3 = "2021-" + doc.data().month + "-" + doc.data().day;
-    const obj = { date: date3, count: doc.data().readTime };
 
-    snaps.push(obj);
-  }
-  console.log(snaps);
-  return snaps;
-};
-*/
 //**************************************************set
 
 export const setFirestore = async (path, id, data) => {
@@ -352,12 +333,31 @@ export const updateFirestore = (path, id, data) => {
     .catch((error) => console.log("Updating error: ", error));
 };
 
-export const updateLastReadBookID = (id) => {
+export const updateLastReadBookID = async (id) => {
+  let arrayRef = firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid); //get last ready array
+  let array = await arrayRef.get();
+  const arrayData = array.data().lastRead;
+
+  let updatedData = [...arrayData];
+  let index = arrayData.indexOf(id);
+  if (index >= 0 && index != arrayData.length - 1) updatedData.splice(index, 1);
+
+  updatedData.push(id);
+
+  firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid).update({
+    lastRead: updatedData,
+  });
+};
+
+export const updateBookRate = (id, rate) => {
+  console.log("UPDATE FUNC");
   firebase
     .firestore()
-    .collection("users")
-    .doc(firebase.auth().currentUser.uid)
+    .collection("users/" + firebase.auth().currentUser.uid + "/booksAlreadyRead")
+    .doc(id)
     .update({
-      lastRead: firebase.firestore.FieldValue.arrayUnion(id),
-    });
+      note: rate,
+    })
+    .then(() => console.log("updated correctly"))
+    .catch((err) => console.log(err));
 };

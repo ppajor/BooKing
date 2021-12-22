@@ -23,7 +23,6 @@ function ProfileScreen() {
   const [avatar, setAvatar] = useState(null);
 
   const navigation = useNavigation();
-  console.log("avatarr", avatar);
   useEffect(() => {
     getUserData();
     const unsub = getReadNow();

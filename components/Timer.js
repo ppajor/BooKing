@@ -51,6 +51,7 @@ const Timer = ({ book, numberOfPages, ...props }) => {
     const secondsConvertion = convertToSeconds(hour, minute, seconds);
     const statID = getUniqueID();
     if (parseInt(num) == numberOfPages) {
+      // jesli ksiazka została w 100% przeczytana
       addBookToAlreadyRead(book.id, book.title, book.authors, book.description, book.thumbnail, book.pageCount);
       removeReadNowBook(book.id);
     } else updateFirestore("/users/" + firebase.auth().currentUser.uid + "/booksReadNow/", props.bookID, dataToUpdate);
@@ -66,7 +67,7 @@ const Timer = ({ book, numberOfPages, ...props }) => {
       onRequestClose={() => props.closeModal()}
       style={{ margin: 0, alignItems: "center", justifyContent: "center" }}
     >
-      <View style={[styles.modal, globalSheet.shadowSecondary]}>
+      <View style={[styles.modal, globalSheet.shadowPrimary]}>
         <DefText align="center" size={32}>
           {showTime()}
         </DefText>
