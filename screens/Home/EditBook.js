@@ -75,7 +75,7 @@ function EditBook({ navigation, route }) {
         <View style={styles.property}>
           <View style={styles.headerDecorator}>
             <DefText family="Rubik-Medium" color="rgba(0,0,0,0.35)">
-              Title
+              Tytuł
             </DefText>
           </View>
           <TextInput style={globalSheet.lineInput} value={bookTitle} onChangeText={(el) => setBookTitle(el)} />
@@ -83,7 +83,7 @@ function EditBook({ navigation, route }) {
         <View style={styles.property}>
           <View style={styles.headerDecorator}>
             <DefText family="Rubik-Medium" color="rgba(0,0,0,0.35)">
-              Author
+              Autor
             </DefText>
           </View>
           <TextInput style={globalSheet.lineInput} value={author} onChangeText={(el) => setAuthor(el)} />
@@ -91,7 +91,7 @@ function EditBook({ navigation, route }) {
         <View style={styles.property}>
           <View style={styles.headerDecorator}>
             <DefText family="Rubik-Medium" color="rgba(0,0,0,0.35)">
-              Description
+              Opis
             </DefText>
           </View>
 
@@ -109,7 +109,7 @@ function EditBook({ navigation, route }) {
         <View style={styles.property}>
           <View style={styles.headerDecorator}>
             <DefText family="Rubik-Medium" color="rgba(0,0,0,0.35)">
-              Pages
+              Liczba stron
             </DefText>
           </View>
           {pageCount ? (

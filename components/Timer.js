@@ -80,21 +80,24 @@ const Timer = ({ book, numberOfPages, ...props }) => {
           }}
         >
           <TouchableHighlight onPress={() => setTime(0)}>
-            <DefText>WYCZYSC</DefText>
+            <DefText color="#777">WYCZYSC</DefText>
           </TouchableHighlight>
           <TouchableHighlight onPress={() => setTimerOn(false)}>
-            <DefText>STOP</DefText>
+            <DefText color="#777">STOP</DefText>
           </TouchableHighlight>
           <TouchableHighlight onPress={() => setTimerOn(true)}>
-            <DefText>WZNOW</DefText>
+            <DefText color="#777">WZNOW</DefText>
           </TouchableHighlight>
           <TouchableHighlight onPress={() => endReading()}>
-            <DefText>ZAKOŃCZ</DefText>
+            <DefText color="#777">ZAKOŃCZ</DefText>
           </TouchableHighlight>
         </View>
+
         {modalVisible && (
           <View style={styles.modalContainer}>
-            <Text style={styles.modalText}>Na której stronie skończyłeś czytać?</Text>
+            <View style={styles.separator}></View>
+
+            <DefText family="Rubik-Medium">Na której stronie skończyłeś czytać?</DefText>
             <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
               <Slider
                 style={{ width: 200, height: 40 }}
@@ -105,12 +108,14 @@ const Timer = ({ book, numberOfPages, ...props }) => {
                 maximumTrackTintColor="#000000"
                 onValueChange={(val) => setSliderValue(Math.floor(val))}
               />
-              <DefText>
+              <DefText color="#a8a8a8">
                 {sliderValue}/{numberOfPages}
               </DefText>
             </View>
-            <TouchableHighlight onPress={() => handleSave(sliderValue)} style={{ marginLeft: "auto" }}>
-              <DefText>Zatwierdź</DefText>
+            <TouchableHighlight onPress={() => handleSave(sliderValue)} style={[styles.confirmBtn, globalSheet.btnNoFullWidth]}>
+              <DefText size={14} color="#fff">
+                Zatwierdź
+              </DefText>
             </TouchableHighlight>
           </View>
         )}
@@ -132,10 +137,17 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: "100%",
-    marginVertical: 24,
-    marginHorizontal: 24,
   },
-  modalText: {
-    color: "#a8a8a8",
+  confirmBtn: {
+    marginLeft: "auto",
+    marginTop: 12,
+  },
+  separator: {
+    width: "100%",
+    height: 2,
+    backgroundColor: global.primaryColor,
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginVertical: 32,
   },
 });

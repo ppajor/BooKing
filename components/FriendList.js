@@ -40,7 +40,7 @@ function FriendList({ username, ...props }) {
           style={styles.container}
           onPress={() => {
             props.closeModal();
-            navigation.push("FriendProfile", { id: item.friendID, username: item.username });
+            navigation.push("ProfileUser", { id: item.friendID, username: item.username });
           }}
         >
           <DefText>{item.username}</DefText>

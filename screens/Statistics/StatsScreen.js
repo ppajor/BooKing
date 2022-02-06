@@ -12,8 +12,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import { global } from "../../styles";
 
 function StatsScreen() {
-  const [startTime, setStartTime] = useState(9);
-  const [stopTime, setStopTime] = useState(12);
+  const [startTime, setStartTime] = useState(11);
+  const [stopTime, setStopTime] = useState(2);
   const [wholeData, setWholeData] = useState(null);
   const [monthsModalVisible, setMonthsModalVisible] = useState(false);
   const [heatmapModalVisible, setHeatmapModalVisible] = useState(false);
@@ -21,7 +21,7 @@ function StatsScreen() {
   const [chartWidth, setChartWidth] = useState(Dimensions.get("window").width);
   const [heatmapWidth, setHeatmapWidth] = useState(Dimensions.get("window").width);
   const [heatmapDays, setHeatmapDays] = useState(90);
-  const [currentDay, setCurrentDay] = useState(new Date("2021-12-13"));
+  const [currentDay, setCurrentDay] = useState(null);
 
   useEffect(() => {
     getMonthData(startTime, stopTime);
@@ -48,11 +48,12 @@ function StatsScreen() {
       .onSnapshot((querySnapshot) => {
         var snaps = [];
         querySnapshot.forEach((doc) => {
-          const date3 = "2021-" + doc.data().month + "-" + doc.data().day;
+          const date3 = doc.data().year + "-" + doc.data().month + "-" + doc.data().day;
           const obj = { date: date3, count: doc.data().readTime };
           snaps.push(obj);
         });
         setHeatmap(snaps);
+        console.log("SNAPS", snaps);
       });
   };
 
@@ -60,13 +61,29 @@ function StatsScreen() {
     const months = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 
     let dataValues = [];
-    let label = months.slice(start - 1, stop);
-    for (let i = start; i <= stop; i++) {
-      const result = await getReadTimeByMonth(i);
-      dataValues.push(result);
-    }
-    let obj = { labels: label, datasets: [{ data: dataValues }] };
+    let label = [];
+    if (stop < start) {
+      let one = months.slice(start - 1, months.length);
+      let two = months.slice(0, stop);
+      label = one.concat(two);
 
+      for (let i = start; i <= months.length - 1; i++) {
+        const result = await getReadTimeByMonth(i);
+        dataValues.push(result);
+      }
+      for (let i = 0; i <= stop; i++) {
+        const result = await getReadTimeByMonth(i);
+        dataValues.push(result);
+      }
+    } else {
+      label = months.slice(start - 1, stop);
+      for (let i = start; i <= stop; i++) {
+        const result = await getReadTimeByMonth(i);
+        dataValues.push(result);
+      }
+    }
+
+    let obj = { labels: label, datasets: [{ data: dataValues }] };
     setWholeData(obj);
   };
 
@@ -74,9 +91,10 @@ function StatsScreen() {
     <Screen>
       <View style={{ paddingVertical: 32, paddingHorizontal: 16, backgroundColor: "#f8f8f8" }}>
         <DefText family="Rubik-Bold" size={24} color={global.textColor}>
-          Statistics
+          Dostępne statystyki
         </DefText>
-        {wholeData && (
+
+        {wholeData && heatmap && currentDay && (
           <View>
             <View style={{ paddingTop: 32, paddingBottom: 16 }}>
               <DefText family="Rubik-Medium" align="center" color={global.textColor}>
@@ -119,8 +137,8 @@ function StatsScreen() {
             </View>
             <ScrollView horizontal>
               <ContributionGraph
-                values={heatmap}
-                endDate={currentDay}
+                values={commitsData}
+                endDate={new Date("2017-02-06")}
                 numDays={heatmapDays}
                 width={heatmapWidth}
                 height={220}
@@ -154,7 +172,19 @@ function StatsScreen() {
 }
 
 export default StatsScreen;
-
+const commitsData = [
+  { date: "2017-01-19", count: 1 },
+  { date: "2017-01-03", count: 2 },
+  { date: "2017-01-22", count: 3 },
+  { date: "2017-01-05", count: 4 },
+  { date: "2017-01-06", count: 5 },
+  { date: "2017-01-30", count: 2 },
+  { date: "2017-01-31", count: 3 },
+  { date: "2017-02-01", count: 2 },
+  { date: "2017-01-02", count: 4 },
+  { date: "2017-01-05", count: 2 },
+  { date: "2017-01-30", count: 4 },
+];
 const chartConfig = {
   backgroundGradientFrom: "#fff",
   backgroundGradientFromOpacity: 0,

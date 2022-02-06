@@ -1,155 +1,33 @@
 import React, { useState, useEffect } from "react";
-import firebase from "firebase";
 import Screen from "../../components/Screen";
 import DefText from "../../components/DefText";
 import { StyleSheet, View, TouchableOpacity, Modal, Image } from "react-native";
 import { FontAwesome, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { logOut, getUserName, getAvatar } from "../../api/firebaseCalls";
+import firebase from "firebase";
 import FriendsModal from "./FriendsModal";
 import EditProfileModal from "./EditProfileModal";
-import { useNavigation } from "@react-navigation/native";
 import { globalSheet, global } from "../../styles";
+import UserProfileHeader from "../../components/UserProfileHeader";
 
 function ProfileScreen() {
   const [currentUsername, setCurrentUsername] = useState(null);
-  const [toReadLength, setToReadLength] = useState(0);
-  const [readNowLength, setReadNowLength] = useState(0);
-  const [alreadyReadLength, setAlreadyReadLength] = useState(0);
-  const [toRead, setToRead] = useState(null);
-  const [readNow, setReadNow] = useState(null);
-  const [alreadyRead, setAlreadyRead] = useState(null);
   const [modalFriendsVisible, setModalFriendsVisible] = useState(false);
   const [modalEditProfileVisible, setModalEditProfileVisible] = useState(false);
-  const [avatar, setAvatar] = useState(null);
 
-  const navigation = useNavigation();
   useEffect(() => {
     getUserData();
-    const unsub = getReadNow();
-    const unsub2 = getToRead();
-    const unsub3 = getAlreadyRead();
-    return () => {
-      unsub();
-      unsub2();
-      unsub3();
-    };
   }, []);
-
-  const getToRead = () => {
-    return firebase
-      .firestore()
-      .collection("users/" + firebase.auth().currentUser.uid + "/booksToRead")
-      .onSnapshot((querySnapshot) => {
-        var snaps = [];
-        querySnapshot.forEach((doc) => {
-          snaps.push(doc.data());
-        });
-        // console.log("SNAPS ", snaps);
-        // console.log("TOREAD listener");
-        setToRead(snaps);
-        setToReadLength(snaps.length);
-      });
-  };
-
-  const getReadNow = () => {
-    return firebase
-      .firestore()
-      .collection("users/" + firebase.auth().currentUser.uid + "/booksReadNow")
-      .onSnapshot((querySnapshot) => {
-        var snaps = [];
-        querySnapshot.forEach((doc) => {
-          snaps.push(doc.data());
-        });
-        // console.log("SNAPS ", snaps);
-        setReadNow(snaps);
-        setReadNowLength(snaps.length);
-      });
-  };
-
-  const getAlreadyRead = () => {
-    return firebase
-      .firestore()
-      .collection("users/" + firebase.auth().currentUser.uid + "/booksAlreadyRead")
-      .onSnapshot((querySnapshot) => {
-        var snaps = [];
-        querySnapshot.forEach((doc) => {
-          snaps.push(doc.data());
-        });
-        // console.log("SNAPS ", snaps);
-        setAlreadyRead(snaps);
-        setAlreadyReadLength(snaps.length);
-      });
-  };
 
   const getUserData = async () => {
     const username = await getUserName();
-    const avatar = await getAvatar();
     setCurrentUsername(username);
-    setAvatar(avatar);
   };
 
   return (
     <Screen>
       <View style={styles.container}>
-        <View style={[styles.profileHeader, globalSheet.shadowPrimary]}>
-          {avatar ? (
-            <Image source={{ uri: avatar }} style={styles.image} />
-          ) : (
-            <TouchableOpacity style={styles.av}>
-              <FontAwesome name="user-circle-o" size={96} color="black" />
-            </TouchableOpacity>
-          )}
-
-          <View style={{ marginBottom: 32 }}>
-            <DefText family="Rubik-Medium" size={20}>
-              {currentUsername}
-            </DefText>
-          </View>
-          <View style={styles.bookNumberContainer}>
-            <View style={styles.bookNumberContent}>
-              <View style={{ marginBottom: 8 }}>
-                <DefText size={14} family="Rubik-Regular" color="rgba(0,0,0,0.5)">
-                  Do przeczytania
-                </DefText>
-              </View>
-              {toRead && (
-                <TouchableOpacity onPress={() => navigation.push("AllBooksShelf", { books: toRead })}>
-                  <DefText family="Rubik-Regular" size={20}>
-                    {toReadLength}
-                  </DefText>
-                </TouchableOpacity>
-              )}
-            </View>
-            <View style={styles.bookNumberContent}>
-              <View style={{ marginBottom: 8 }}>
-                <DefText size={14} family="Rubik-Regular" color="rgba(0,0,0,0.5)">
-                  Czytane
-                </DefText>
-              </View>
-              {readNow && (
-                <TouchableOpacity onPress={() => navigation.push("AllBooksShelf", { books: readNow })}>
-                  <DefText family="Rubik-Regular" size={20}>
-                    {readNowLength}
-                  </DefText>
-                </TouchableOpacity>
-              )}
-            </View>
-            <View style={styles.bookNumberContent}>
-              <View style={{ marginBottom: 8 }}>
-                <DefText size={14} family="Rubik-Regular" color="rgba(0,0,0,0.5)">
-                  Przeczytane
-                </DefText>
-              </View>
-              {alreadyRead && (
-                <TouchableOpacity onPress={() => navigation.push("AllBooksShelf", { books: readNow })}>
-                  <DefText family="Rubik-Regular" size={20}>
-                    {alreadyReadLength}
-                  </DefText>
-                </TouchableOpacity>
-              )}
-            </View>
-          </View>
-        </View>
+        {currentUsername && <UserProfileHeader id={firebase.auth().currentUser.uid} username={currentUsername} />}
         <View style={[styles.profileModals, globalSheet.shadowPrimary]}>
           <TouchableOpacity onPress={() => setModalFriendsVisible(true)}>
             <View style={styles.modalContainer}>

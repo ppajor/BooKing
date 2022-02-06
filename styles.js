@@ -23,6 +23,15 @@ export const globalSheet = StyleSheet.create({
     backgroundColor: "#B58B8B",
     borderRadius: 8,
   },
+  btnNoFullWidth: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "#B58B8B",
+    borderRadius: 4,
+  },
   shadowPrimary: {
     shadowColor: "black",
     shadowOpacity: 0.12,
@@ -38,6 +47,14 @@ export const globalSheet = StyleSheet.create({
     borderRadius: 8,
     elevation: 1,
     backgroundColor: "white",
+  },
+  shadowThird: {
+    shadowColor: "#a8a8a8",
+    shadowOpacity: 0.72,
+    shadowOffset: { width: 0, height: 2 },
+    borderRadius: 8,
+    elevation: 12,
+    backgroundColor: "#f8f8f8",
   },
   input: {
     width: "100%",

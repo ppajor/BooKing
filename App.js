@@ -24,10 +24,8 @@ import AddReview from "./screens/Home/AddReview";
 import AllBooksShelf from "./screens/Profile/AllBooksShelf";
 import { LogBox } from "react-native";
 import StatsScreen from "./screens/Statistics/StatsScreen";
+import ProfileUser from "./screens/Profile/ProfileUser";
 
-//if  (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-
-//musimy sprawdzic czy aplikacja zostala juz zainicjowana czy nie, zeby za kazdym razem nie inicjowac apki
 const LoginStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
 const SearchStack = createNativeStackNavigator();
@@ -53,7 +51,7 @@ function HomeStackNavigator() {
       <HomeStack.Screen name="WelcomePage" component={WelcomePage} options={{ headerShown: false }} />
       <HomeStack.Screen name="Home" component={Home} options={{ headerShown: false }} />
       <HomeStack.Screen name="AddReview" component={AddReview} options={{ title: "Dodaj recenzję" }} />
-      <SearchStack.Screen name="EditBook" component={EditBook} options={{ title: "Edycja książki" }} />
+      <HomeStack.Screen name="EditBook" component={EditBook} options={{ title: "Edycja książki" }} />
       <HomeStack.Screen name="AllBooksShelf" component={AllBooksShelf} options={{ title: "Wszystkie książki" }} />
       <HomeStack.Screen name="LibraryBookDetails" component={LibraryBookDetails} options={{ title: "Informacje o książce" }} />
     </HomeStack.Navigator>
@@ -64,9 +62,9 @@ function SearchStackNavigator() {
   return (
     <SearchStack.Navigator initialRouteName="SearchScreen">
       <SearchStack.Screen name="SearchScreen" component={SearchScreen} options={{ headerShown: false }} />
-      <SearchStack.Screen name="EditBook" component={EditBook} />
+      <SearchStack.Screen name="EditBook" component={EditBook} options={{ title: "Dodaj książkę" }} />
       <SearchStack.Screen name="LibraryBookDetails" component={LibraryBookDetails} options={{ title: "Informacje o książce" }} />
-      <HomeStack.Screen name="BookScanner" component={BookScanner} options={{ headerShown: false }} />
+      <SearchStack.Screen name="BookScanner" component={BookScanner} options={{ headerShown: false }} />
     </SearchStack.Navigator>
   );
 }
@@ -79,6 +77,7 @@ function ProfileStackNavigator() {
       <ProfileStack.Screen name="EditBook" component={EditBook} options={{ title: "Edytuj książkę" }} />
       <ProfileStack.Screen name="LibraryBookDetails" component={LibraryBookDetails} options={{ title: "Informacje o książce" }} />
       <ProfileStack.Screen name="FriendProfile" component={FriendProfile} options={{ title: "Informacje o profilu" }} />
+      <ProfileStack.Screen name="ProfileUser" component={ProfileUser} options={{ title: "Profil usera" }} />
     </ProfileStack.Navigator>
   );
 }
@@ -103,7 +102,7 @@ const TabNavigator = () => (
     })}
   >
     <Tab.Screen
-      name="HomeTab"
+      name="Główna"
       component={HomeStackNavigator}
       options={{
         headerShown: false,
@@ -111,7 +110,7 @@ const TabNavigator = () => (
       }}
     />
     <Tab.Screen
-      name="Search"
+      name="Szukaj"
       component={SearchStackNavigator}
       options={{
         headerShown: false,
@@ -119,7 +118,7 @@ const TabNavigator = () => (
       }}
     />
     <Tab.Screen
-      name="Statistics"
+      name="Statystyki"
       component={StatsStackNavigator}
       options={{
         headerShown: false,
@@ -127,7 +126,7 @@ const TabNavigator = () => (
       }}
     />
     <Tab.Screen
-      name="Profile"
+      name="Profil"
       component={ProfileStackNavigator}
       options={{
         headerShown: false,

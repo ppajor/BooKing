@@ -11,16 +11,18 @@ export const registerWithEmail = async (inputEmail, inputPassword) => {
     })
     .catch((error) => {
       if (error.code === "auth/email-already-in-use") {
-        console.log("That email address is already in use!");
-        setError("That email address is already in use!");
+        let err = "Ten adres e-mail jest już zajęty";
+        return err;
+        //  setError("That email address is already in use!");
       }
 
       if (error.code === "auth/invalid-email") {
-        console.log("That email address is invalid!");
-        setError("That email address is invalid!");
+        let err = "Wprowadzono błędny adres e-mail";
+        return err;
+        //setError("That email address is invalid!");
       }
 
-      console.error(error);
+      // console.error(error);
     });
 };
 
@@ -134,8 +136,8 @@ export const getUserName = async () => {
   return user.data().username;
 };
 
-export const getAvatar = async () => {
-  let usersRef = firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid);
+export const getAvatar = async (userID) => {
+  let usersRef = firebase.firestore().collection("users").doc(userID);
   let user = await usersRef.get();
   return user.data().avatar;
 };
@@ -278,10 +280,11 @@ export const addCreatedUsername = (username, data) => {
 export const saveTimerData = (id, timeInSeconds, bookID) => {
   var today = new Date();
   var date = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+  const year = today.getFullYear();
   const month = today.getMonth() + 1;
   const day = today.getDate();
 
-  const object = { bookID: bookID, readTime: timeInSeconds, date: firebase.firestore.FieldValue.serverTimestamp(), month: month, day: day };
+  const object = { bookID: bookID, readTime: timeInSeconds, date: firebase.firestore.FieldValue.serverTimestamp(), year: year, month: month, day: day };
   setFirestore("/users/" + firebase.auth().currentUser.uid + "/stats", id, object);
 };
 

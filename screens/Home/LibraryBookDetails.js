@@ -157,7 +157,7 @@ export default function LibraryBookDetails({ navigation, route, ...props }) {
         {reviews ? (
           <LibraryBookDetailsReviews reviews={reviews} />
         ) : (
-          <DefText size={11} color="rgba(0,0,0,0.35)">
+          <DefText family="OpenSans-LightItalic" size={14} color="rgba(0, 0, 0, 0.5)">
             Brak recenzji
           </DefText>
         )}

@@ -129,7 +129,7 @@ function LibraryBookDetailsHeader({ bookPercent, data, name, options, alreadyRea
         <AntDesign name="edit" size={16} color={global.primaryColor} />
         <View style={{ marginLeft: 4 }}>
           <DefText size={14} color={global.primaryColor}>
-            edit book
+            Edytuj książkę
           </DefText>
         </View>
       </Link>

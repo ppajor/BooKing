@@ -27,7 +27,9 @@ function AllBooksShelf(props) {
     setData(array);
   }, []);
 
-  return <>{data ? <FlatList data={data} keyExtractor={(item, idx) => idx.toString()} renderItem={({ item }) => <Shelf data={item} />} /> : null}</>;
+  return (
+    <>{data ? <FlatList data={data} keyExtractor={(item, idx) => idx.toString()} renderItem={({ item }) => <Shelf data={item} showAll={false} />} /> : null}</>
+  );
 }
 
 export default AllBooksShelf;

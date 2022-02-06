@@ -6,7 +6,7 @@ import ModalReview from "./ModalReview";
 
 function Review({ data }) {
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [shown, setShown] = useState(false);
   return (
     <TouchableOpacity onPress={() => setModalVisible(true)}>
       <Modal
@@ -29,10 +29,12 @@ function Review({ data }) {
             {data.author}
           </DefText>
         </View>
-        <View style={styles.rateReview}>
-          <AntDesign name="like1" size={16} color="#2FC035" />
-          <AntDesign name="dislike1" size={16} color="#DB1A1A" style={{ marginLeft: 8 }} />
-        </View>
+        {shown && (
+          <View style={styles.rateReview}>
+            <AntDesign name="like1" size={16} color="#2FC035" />
+            <AntDesign name="dislike1" size={16} color="#DB1A1A" style={{ marginLeft: 8 }} />
+          </View>
+        )}
       </View>
       <View style={{ width: "100%", height: "60%", overflow: "hidden" }}>
         <DefText family="OpenSans-Light" size={14} color="rgba(0,0,0,0.75)">

@@ -22,7 +22,7 @@ export default function WelcomePage({ navigation }) {
           // OR find more Lottie files @ https://lottiefiles.com/featured
           // Just click the one you like, place that file in the 'assets' folder to the left, and replace the above 'require' statement
         />
-        <Image source={require("../../img/logo.png")}></Image>
+        <Image source={require("../../img/logo2.png")}></Image>
         <View style={{ marginTop: 10 }}>
           <DefText size={14} color="#979797">
             Czytaj, zapisuj i dziel się z innymi!
@@ -31,18 +31,18 @@ export default function WelcomePage({ navigation }) {
 
         <TouchableOpacity style={styles.signUpBtn} onPress={() => navigation.push("LoginPage")}>
           <DefText size={14} color="#fff">
-            Log in with e-mail
+            Zaloguj się
           </DefText>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.loginBtn} onPress={() => navigation.push("SignUpEmail")}>
           <DefText size={14} color="#B58B8B">
-            Sign up with e-mail
+            Zarejestruj się
           </DefText>
         </TouchableOpacity>
         <TouchableOpacity style={{ marginTop: 48 }} onPress={() => handleAnonymousSignIn()}>
           <DefText size={12} color="#ccc">
-            Sign in anonymously
+            Zaloguj anonimowo
           </DefText>
         </TouchableOpacity>
       </View>

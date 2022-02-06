@@ -4,38 +4,42 @@ import PropTypes from "prop-types";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import DefText from "./DefText";
 import BookCover from "./BookCover";
-import { global } from "../styles";
+import { global, globalSheet } from "../styles";
 import { useNavigation } from "@react-navigation/native";
 
 const Shelf = (props) => {
-  const { data = null, name = null, percentage = null } = props;
+  const { data = null, name = null, percentage = null, showAll = true } = props;
 
   const navigation = useNavigation();
 
   return (
-    <>
-      <View style={[styles.container, !name && styles.noHeader]}>
-        <ImageBackground source={require("../img/wood_texture.jpg")} style={styles.bookshelfContainer}></ImageBackground>
-        <View style={styles.bookshelf}></View>
-
+    <View style={styles.container}>
+      <View style={styles.shelfLabelContainer}>
         {name && (
-          <View style={styles.refreshIcon}>
-            <DefText family="Rubik-Medium" size={16} color="#fff">
+          <View style={styles.shelfLabel}>
+            <DefText family="Rubik-Medium" size={16} color="rgba(0,0,0,0.9)">
               {name}
             </DefText>
-            <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-              <TouchableOpacity onPress={() => navigation.navigate("AllBooksShelf", { books: Object.values(data) })}>
-                <DefText family="OpenSans-LightItalic" color="rgba(227, 227, 227, 0.9)" size={14}>
-                  Pokaż wszystkie
-                </DefText>
-              </TouchableOpacity>
-
-              <MaterialIcons style={{ marginLeft: 2 }} name="arrow-forward-ios" size={14} color="rgba(227, 227, 227, 0.9)" />
-            </View>
+            <View style={{ width: 50, height: 2, backgroundColor: global.primaryColor, marginTop: 4 }}></View>
           </View>
         )}
+
+        {showAll && (
+          <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+            <TouchableOpacity onPress={() => navigation.navigate("AllBooksShelf", { books: Object.values(data) })}>
+              <DefText family="OpenSans-LightItalic" color="rgba(28, 28, 28, 0.9)" size={14}>
+                Pokaż wszystkie
+              </DefText>
+            </TouchableOpacity>
+
+            <MaterialIcons style={{ marginLeft: 2 }} name="arrow-forward-ios" size={14} color="rgba(227, 227, 227, 0.9)" />
+          </View>
+        )}
+      </View>
+
+      <View style={[styles.bookContainer, globalSheet.shadowPrimary]}>
         {data && (
-          <View style={styles.booksContainer}>
+          <View style={styles.book}>
             <FlatList
               horizontal
               data={Object.values(data)}
@@ -44,8 +48,11 @@ const Shelf = (props) => {
             />
           </View>
         )}
+        <View style={styles.brownBarContainer}>
+          <View style={styles.brownBar}></View>
+        </View>
       </View>
-    </>
+    </View>
   );
 };
 
@@ -59,47 +66,32 @@ Shelf.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    height: 185,
-    borderWidth: 2,
+    flex: 1,
+    padding: 16,
   },
-  noHeader: {
-    height: 160,
+  shelfLabelContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 16,
   },
-  bookshelfContainer: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    //backgroundCOlor: "#d2d2d2",
-  },
-  bookshelf: {
-    position: "absolute",
 
-    bottom: 0,
+  bookContainer: {
+    justifyContent: "flex-end",
+    width: "100%",
+    height: 150,
+    paddingHorizontal: 8,
+  },
+  brownBarContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    height: 10,
+    width: "100%",
+  },
+  brownBar: {
     width: "100%",
     height: 10,
+    borderRadius: 8,
     backgroundColor: "#391715",
-  },
-  booksContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-    position: "relative",
-    width: "100%",
-    height: "100%",
-    paddingBottom: 10,
-  },
-  refreshIcon: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    position: "absolute",
-    top: 16,
-    left: global.padding,
-    width: "92%",
-    right: 36,
-    zIndex: 4,
   },
 });

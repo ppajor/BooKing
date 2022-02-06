@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-around",
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: "#f8f8f8",
   },
   titleInput: {
     width: "100%",

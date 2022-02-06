@@ -8,7 +8,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import DefText from "../../components/DefText";
 import Shelf from "../../components/Shelf";
 import Screen from "../../components/Screen";
-import { global } from "../../styles";
+import { global, globalSheet } from "../../styles";
 
 export default function Home({ navigation }) {
   const [lastRead, setLastRead] = useState(null);
@@ -105,7 +105,7 @@ export default function Home({ navigation }) {
 
   const getUserInfo = async () => {
     const usernameResult = await getUserName();
-    const avatarResult = await getAvatar();
+    const avatarResult = await getAvatar(firebase.auth().currentUser.uid);
     usernameResult ? setUsername(usernameResult) : setUsername(null);
     setAvatar(avatarResult);
   };
@@ -127,7 +127,9 @@ export default function Home({ navigation }) {
                 </View>
               </View>
               {avatar ? (
-                <Image source={{ uri: avatar }} style={styles.image} />
+                <View style={[styles.imageContainer, globalSheet.shadowThird]}>
+                  <Image source={{ uri: avatar }} style={styles.image} />
+                </View>
               ) : (
                 <TouchableOpacity>
                   <FontAwesome name="user-circle-o" size={32} color="black" />
@@ -169,11 +171,16 @@ const styles = StyleSheet.create({
     paddingTop: 32,
     paddingBottom: 0,
   },
-  image: {
+  imageContainer: {
     width: 48,
     height: 48,
     marginBottom: 16,
     borderRadius: 12,
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 8,
   },
 });
 /*

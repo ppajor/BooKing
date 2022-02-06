@@ -6,6 +6,7 @@ import { removeReadNowBook, removeToReadBook, removeAlreadyReadBook, removeLastR
 import { useNavigation } from "@react-navigation/native";
 import firebase from "firebase";
 import DefText from "./DefText";
+import { globalSheet } from "../styles";
 
 function BookCover({ item, shelfName, percentage, ...props }) {
   const [readPercent, setReadPercent] = useState(null);
@@ -54,10 +55,17 @@ function BookCover({ item, shelfName, percentage, ...props }) {
         options: false,
       });
     }
+    if (name == "Polecane") {
+      navigation.push("LibraryBookDetails", {
+        data: book,
+        name: "Dodaj do biblioteki",
+        options: false,
+      });
+    }
   };
 
   return (
-    <View style={styles.bookContainer}>
+    <View style={[styles.bookContainer, globalSheet.shadowPrimary]}>
       <TouchableHighlight onPress={() => handleBookPress(item, shelfName)}>
         <Image style={styles.bookMockup} source={{ uri: item.thumbnail }}></Image>
       </TouchableHighlight>
@@ -97,7 +105,7 @@ const styles = StyleSheet.create({
     width: 75,
     height: 112,
     marginLeft: 10,
-    marginRight: 10,
+    marginRight: 0,
   },
   bookMockup: {
     width: 75,

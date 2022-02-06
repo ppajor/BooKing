@@ -53,7 +53,7 @@ function SearchBar(props) {
           >
             <MaterialCommunityIcons name="barcode-scan" size={24} color={global.textColor} style={{ marginLeft: 24, marginRight: 8 }} />
             <DefText size={12} family="OpenSans-Light" color={global.textColor}>
-              scan
+              Skanuj
             </DefText>
           </TouchableOpacity>
         </View>
@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 24,
     paddingBottom: 16,
-    backgroundColor: "#fff",
   },
   searchInputContainer: {
     width: "100%",
@@ -108,6 +107,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 24,
+    marginTop: 48,
   },
 });

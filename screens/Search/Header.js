@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 240,
     marginTop: 16,
+    marginBottom: 16,
     borderRadius: 16,
     overflow: "hidden",
   },

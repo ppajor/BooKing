@@ -31,19 +31,19 @@ export default function LoginPage({ navigation }) {
         console.log("User logged in");
       })
       .catch((error) => {
-        setError("Invalid email or password.");
+        setError("Nieprawidłowy e-mail lub hasło");
       });
   };
 
   return (
     <View style={styles.container}>
-      <Image width="50" style={styles.logo} source={require("../../img/logo.png")}></Image>
+      <Image width="50" style={styles.logo} source={require("../../img/logo2.png")}></Image>
 
-      <TextInput style={[styles.input, styles.margin]} placeholder="Username" onChangeText={(text) => setInputUsername(text)} value={inputUsername} />
-      <TextInput style={styles.input} placeholder="Password" onChangeText={(text) => setInputPassword(text)} value={inputPassword} />
+      <TextInput style={[styles.input, styles.margin]} placeholder="E-mail" onChangeText={(text) => setInputUsername(text)} value={inputUsername} />
+      <TextInput style={styles.input} placeholder="Hasło" secureTextEntry={true} onChangeText={(text) => setInputPassword(text)} value={inputPassword} />
       <TouchableOpacity style={styles.loginButton} color="dodgerblue" onPress={handleLogin}>
         <DefText size={14} color="#fff">
-          Log in
+          Zaloguj się
         </DefText>
       </TouchableOpacity>
       {error && (
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: "#f8f8f8",
   },
   margin: {
     marginTop: 50,
@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
     borderColor: "#e2e2e2",
     borderRadius: 5,
     color: "#000",
+    backgroundColor: "#fff",
   },
   loginButton: {
     display: "flex",

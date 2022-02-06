@@ -37,7 +37,7 @@ const LastRead = ({ book, id }) => {
   return (
     <>
       {lastReadBook ? (
-        <View style={[styles.mainContainer, globalSheet.shadowPrimary]}>
+        <>
           <View
             style={{
               marginBottom: 16,
@@ -47,45 +47,47 @@ const LastRead = ({ book, id }) => {
             <DefText family="Rubik-Medium" size={16} color={global.textColor}>
               Ostatnio czytana
             </DefText>
-            <View style={{ width: "15%", height: 2, backgroundColor: global.primaryColor, marginTop: 4 }}></View>
+            <View style={{ width: 50, height: 2, backgroundColor: global.primaryColor, marginTop: 4 }}></View>
           </View>
-          <TouchableOpacity onPress={() => handleBookClick()}>
-            <View style={styles.container}>
-              <Image style={styles.bookMockup} source={{ uri: lastReadBook.thumbnail }}></Image>
-              <TouchableHighlight style={styles.readPercentage}>
-                <View>
-                  <DefText size={28} color="#fff" align="center">
-                    {bookPercent}%
-                  </DefText>
-                </View>
-              </TouchableHighlight>
-              <View
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <View>
-                  <View style={{ marginBottom: 4, paddingRight: global.padding }}>
-                    <DefText family="Rubik-Regular" size={16}>
-                      {lastReadBook.title}
+          <View style={[styles.mainContainer, globalSheet.shadowPrimary]}>
+            <TouchableOpacity onPress={() => handleBookClick()}>
+              <View style={styles.container}>
+                <Image style={styles.bookMockup} source={{ uri: lastReadBook.thumbnail }}></Image>
+                <TouchableHighlight style={styles.readPercentage}>
+                  <View>
+                    <DefText size={28} color="#fff" align="center">
+                      {bookPercent}%
                     </DefText>
                   </View>
-
-                  <DefText family="OpenSans-LightItalic" size={14}>
-                    {lastReadBook.authors}
-                  </DefText>
-                </View>
-                <TouchableHighlight onPress={() => handleBookClick()} style={styles.readBtn}>
-                  <DefText family="OpenSans-LightItalic" size={14} color="#fff">
-                    Czytaj dalej
-                  </DefText>
                 </TouchableHighlight>
+                <View
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View>
+                    <View style={{ marginBottom: 4, paddingRight: global.padding }}>
+                      <DefText family="Rubik-Regular" size={16}>
+                        {lastReadBook.title}
+                      </DefText>
+                    </View>
+
+                    <DefText family="OpenSans-LightItalic" size={14}>
+                      {lastReadBook.authors}
+                    </DefText>
+                  </View>
+                  <TouchableHighlight onPress={() => handleBookClick()} style={styles.readBtn}>
+                    <DefText family="OpenSans-Light" size={12} color="#fff">
+                      Czytaj dalej
+                    </DefText>
+                  </TouchableHighlight>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        </View>
+            </TouchableOpacity>
+          </View>
+        </>
       ) : null}
     </>
   );
@@ -129,8 +131,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "90%",
-    paddingVertical: 5,
+    paddingVertical: 8,
     backgroundColor: global.primaryColor,
+    borderRadius: 6,
   },
 });
 

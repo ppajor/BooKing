@@ -17,16 +17,16 @@ function LibraryBookDetailsComments({ comments, data, writeComment, ...props }) 
         multiline
         numberOfLines={6}
         value={writeComment}
-        placeholder="Write a comment..."
+        placeholder="Napisz komentarz..."
         textAlignVertical="top"
         onChangeText={(text) => {
           props.setWriteComment(text);
         }}
       />
       <View style={{ width: "100%", marginBottom: 24 }}>
-        <TouchableOpacity onPress={() => props.handleAddComment(data)} style={{ marginLeft: "auto", marginRight: 8 }}>
-          <DefText size={12} color="#A8A8A8">
-            Add comment
+        <TouchableOpacity onPress={() => props.handleAddComment(data)} style={[styles.commentBtn, globalSheet.btnNoFullWidth]}>
+          <DefText size={12} color="#fff">
+            Dodaj komentarz
           </DefText>
         </TouchableOpacity>
       </View>
@@ -41,5 +41,9 @@ const styles = StyleSheet.create({
   input: {
     marginBottom: 12,
     paddingTop: 8,
+  },
+  commentBtn: {
+    marginLeft: "auto",
+    marginRight: 8,
   },
 });

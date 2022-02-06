@@ -9,12 +9,13 @@ import Shelf from "../../components/Shelf";
 function SearchScreen() {
   return (
     <Screen>
-      <ScrollView>
-        <Header />
-        <SearchBar />
-        <HeaderBar name="Uwielbiane przez użytkowników" image={require("../../img/ulubione2.jpg")} iconName="star" />
-        <Shelf data={books} />
-      </ScrollView>
+      <View style={{ flex: 1, backgroundColor: "#f8f8f8" }}>
+        <ScrollView>
+          <SearchBar />
+          <Header />
+          <Shelf data={books} name="Polecane" />
+        </ScrollView>
+      </View>
     </Screen>
   );
 }

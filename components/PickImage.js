@@ -47,7 +47,7 @@ export default function PickImage({ aspect = [2, 3], width = 100, height = 150, 
             <View style={{ marginBottom: 16 }}>
               <Entypo name="images" size={64} color="#9D9D9D" />
             </View>
-            <DefText color="#9D9D9D">Choose photo up to 1MB</DefText>
+            <DefText color="#9D9D9D">Wybierz zdjęcie</DefText>
           </TouchableOpacity>
         )}
       </View>
