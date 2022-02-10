@@ -32,7 +32,7 @@ export default function LoginPage({ navigation }) {
       if (typeof result == "string") {
         setError(result);
       } else {
-        const dataToSet1 = { id: result.user.uid, name: inputEmail, username: inputUsername };
+        const dataToSet1 = { id: result.user.uid, name: inputEmail, lastRead: [], username: inputUsername };
         addCreatedUserData(result.user.uid, dataToSet1);
         const dataToSet2 = { userID: result.user.uid };
         addCreatedUsername(inputUsername, dataToSet2);

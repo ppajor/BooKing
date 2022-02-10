@@ -41,17 +41,10 @@ function StatsScreen() {
     let day = today.getDate();
     //day 0 z przody
     if (day < 10) day = 0 + day.toString();
-
-    console.log("day type", typeof day);
-    console.log("day", day);
     //month 0 z przodu
     if (currentMonth < 10) currentMonth = 0 + currentMonth.toString();
 
-    console.log("month type", typeof currentMonth);
-    console.log("month", currentMonth);
     var date = today.getFullYear() + "-" + currentMonth + "-" + day;
-
-    console.log("date", date);
     setCurrentDay(date);
     setStopTime(currentMonth);
 
@@ -61,7 +54,6 @@ function StatsScreen() {
     } else {
       setStartTime(currentMonth - 4);
     }
-    console.log("modulo", currentMonth % 4);
   }, []);
 
   const getHeatmapData = () => {
