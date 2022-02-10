@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity, Image } from "react-native";
 import firebase from "firebase";
 import LastRead from "../../components/LastRead";
-import { getUserName, getAvatar } from "../../api/firebaseCalls";
+import { getUserName, getAvatar, getUserType } from "../../api/firebaseCalls";
 import { FontAwesome } from "@expo/vector-icons";
 
 import DefText from "../../components/DefText";
@@ -18,8 +18,9 @@ export default function Home({ navigation }) {
   const [booksToRead, setBooksToRead] = useState(null);
   const [booksAlreadyRead, setBooksAlreadyRead] = useState(null);
   const [avatar, setAvatar] = useState(null);
+  const [userType, setUserType] = useState(null);
   const [wikusia, setWikusia] = useState(false);
-
+  console.log("user type render", userType);
   const API_KEY = "AIzaSyACLJEKxGoXNM8qfeNKejGzzhESdRo6e00";
   //console.log("USER ID LOGGED IN:" + firebase.auth().currentUser.uid);
   useEffect(() => {
@@ -104,10 +105,12 @@ export default function Home({ navigation }) {
   };
 
   const getUserInfo = async () => {
+    const getType = await getUserType();
     const usernameResult = await getUserName();
     const avatarResult = await getAvatar(firebase.auth().currentUser.uid);
     usernameResult ? setUsername(usernameResult) : setUsername(null);
     setAvatar(avatarResult);
+    getType ? setUserType(getType) : setUserType(null);
   };
 
   return (
@@ -120,12 +123,13 @@ export default function Home({ navigation }) {
                 <DefText family="OpenSans-Italic" color="#C9C9C9">
                   Witaj...
                 </DefText>
-                <View style={{ marginLeft: 38 }}>
+                <View style={{ marginLeft: 38, width: "75%" }}>
                   <DefText family="Rubik-Medium" size={24} color={global.primaryColor}>
                     {username}
                   </DefText>
                 </View>
               </View>
+
               {avatar ? (
                 <View style={[styles.imageContainer, globalSheet.shadowThird]}>
                   <Image source={{ uri: avatar }} style={styles.image} />

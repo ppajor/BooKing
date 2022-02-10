@@ -12,8 +12,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import { global } from "../../styles";
 
 function StatsScreen() {
-  const [startTime, setStartTime] = useState(11);
-  const [stopTime, setStopTime] = useState(2);
+  const [startTime, setStartTime] = useState(null);
+  const [stopTime, setStopTime] = useState(null);
   const [wholeData, setWholeData] = useState(null);
   const [monthsModalVisible, setMonthsModalVisible] = useState(false);
   const [heatmapModalVisible, setHeatmapModalVisible] = useState(false);
@@ -25,7 +25,7 @@ function StatsScreen() {
 
   useEffect(() => {
     getMonthData(startTime, stopTime);
-  }, [startTime]);
+  }, [startTime, stopTime]);
 
   useEffect(() => {
     const unsub = getHeatmapData();
@@ -37,8 +37,31 @@ function StatsScreen() {
   useEffect(() => {
     var today = new Date();
 
-    var date = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
-    setCurrentDay(new Date(date));
+    let currentMonth = today.getMonth() + 1;
+    let day = today.getDate();
+    //day 0 z przody
+    if (day < 10) day = 0 + day.toString();
+
+    console.log("day type", typeof day);
+    console.log("day", day);
+    //month 0 z przodu
+    if (currentMonth < 10) currentMonth = 0 + currentMonth.toString();
+
+    console.log("month type", typeof currentMonth);
+    console.log("month", currentMonth);
+    var date = today.getFullYear() + "-" + currentMonth + "-" + day;
+
+    console.log("date", date);
+    setCurrentDay(date);
+    setStopTime(currentMonth);
+
+    if (currentMonth - 4 < 0) {
+      // jesli miesiac jest mniejszy od czwartego
+      setStartTime(12 - (currentMonth % 4) + 1);
+    } else {
+      setStartTime(currentMonth - 4);
+    }
+    console.log("modulo", currentMonth % 4);
   }, []);
 
   const getHeatmapData = () => {
@@ -94,7 +117,7 @@ function StatsScreen() {
           Dostępne statystyki
         </DefText>
 
-        {wholeData && heatmap && currentDay && (
+        {wholeData && heatmap && currentDay && stopTime && (
           <View>
             <View style={{ paddingTop: 32, paddingBottom: 16 }}>
               <DefText family="Rubik-Medium" align="center" color={global.textColor}>
@@ -138,7 +161,7 @@ function StatsScreen() {
             <ScrollView horizontal>
               <ContributionGraph
                 values={commitsData}
-                endDate={new Date("2017-02-06")}
+                endDate={currentDay}
                 numDays={heatmapDays}
                 width={heatmapWidth}
                 height={220}

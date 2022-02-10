@@ -8,6 +8,8 @@ import DefText from "../../components/DefText";
 export default function WelcomePage({ navigation }) {
   const handleAnonymousSignIn = () => {
     anonymousRegister();
+    const dataToSet1 = { id: user.uid, name: user.uid, lastRead: [], type: "anonymous", username: user.uid };
+    addCreatedUserData(user.uid, dataToSet1);
   };
 
   return (

@@ -3,7 +3,7 @@ import Screen from "../../components/Screen";
 import DefText from "../../components/DefText";
 import { StyleSheet, View, TouchableOpacity, Modal, Image } from "react-native";
 import { FontAwesome, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
-import { logOut, getUserName, getAvatar } from "../../api/firebaseCalls";
+import { logOut, getUserName, getAvatar, getUserType } from "../../api/firebaseCalls";
 import firebase from "firebase";
 import FriendsModal from "./FriendsModal";
 import EditProfileModal from "./EditProfileModal";
@@ -14,44 +14,50 @@ function ProfileScreen() {
   const [currentUsername, setCurrentUsername] = useState(null);
   const [modalFriendsVisible, setModalFriendsVisible] = useState(false);
   const [modalEditProfileVisible, setModalEditProfileVisible] = useState(false);
+  const [userType, setUserType] = useState(null);
 
   useEffect(() => {
     getUserData();
   }, []);
 
   const getUserData = async () => {
+    const getType = await getUserType();
     const username = await getUserName();
     setCurrentUsername(username);
+    getType ? setUserType(getType) : setUserType(null);
   };
 
   return (
     <Screen>
       <View style={styles.container}>
         {currentUsername && <UserProfileHeader id={firebase.auth().currentUser.uid} username={currentUsername} />}
-        <View style={[styles.profileModals, globalSheet.shadowPrimary]}>
-          <TouchableOpacity onPress={() => setModalFriendsVisible(true)}>
-            <View style={styles.modalContainer}>
-              <View style={styles.modalHeaderIcon}>
-                <FontAwesome5 name="user-friends" size={24} color={global.textColor} style={{ marginRight: 8 }} />
-                <DefText color="rgba(0,0,0,0.75)">Znajomi</DefText>
+        {userType != "anonymous" && (
+          <View style={[styles.profileModals, globalSheet.shadowPrimary]}>
+            <TouchableOpacity onPress={() => setModalFriendsVisible(true)}>
+              <View style={styles.modalContainer}>
+                <View style={styles.modalHeaderIcon}>
+                  <FontAwesome5 name="user-friends" size={24} color={global.textColor} style={{ marginRight: 8 }} />
+                  <DefText color="rgba(0,0,0,0.75)">Znajomi</DefText>
+                </View>
+                <MaterialIcons name="keyboard-arrow-right" size={24} color="rgba(0,0,0,0.75)" />
               </View>
-              <MaterialIcons name="keyboard-arrow-right" size={24} color="rgba(0,0,0,0.75)" />
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => setModalEditProfileVisible(true)}
-            style={{ marginTop: 16, borderTopWidth: 1, borderTopColor: "#f2f2f2", paddingTop: 16 }}
-          >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalHeaderIcon}>
-                <FontAwesome5 name="user-edit" size={24} color="black" style={{ marginRight: 8 }} />
-                <DefText color="rgba(0,0,0,0.75)">Edycja profilu</DefText>
+            <TouchableOpacity
+              onPress={() => setModalEditProfileVisible(true)}
+              style={{ marginTop: 16, borderTopWidth: 1, borderTopColor: "#f2f2f2", paddingTop: 16 }}
+            >
+              <View style={styles.modalContainer}>
+                <View style={styles.modalHeaderIcon}>
+                  <FontAwesome5 name="user-edit" size={24} color="black" style={{ marginRight: 8 }} />
+                  <DefText color="rgba(0,0,0,0.75)">Edycja profilu</DefText>
+                </View>
+                <MaterialIcons name="keyboard-arrow-right" size={24} color="rgba(0,0,0,0.75)" />
               </View>
-              <MaterialIcons name="keyboard-arrow-right" size={24} color="rgba(0,0,0,0.75)" />
-            </View>
-          </TouchableOpacity>
-        </View>
+            </TouchableOpacity>
+          </View>
+        )}
+
         <TouchableOpacity onPress={() => logOut()} style={styles.signOut}>
           <MaterialIcons name="exit-to-app" size={20} color="black" style={{ marginRight: 4 }} />
           <DefText family="OpenSans-Italic" size={14} color="rgba(0,0,0,0.75)">

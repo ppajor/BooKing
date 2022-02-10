@@ -31,7 +31,7 @@ export const anonymousRegister = async () => {
     .auth()
     .signInAnonymously()
     .then(() => {
-      console.log("User signed in anonymously");
+      console.log("Anonimowy user został stworzony");
     })
     .catch((error) => {
       if (error.code === "auth/operation-not-allowed") {
@@ -134,6 +134,13 @@ export const getUserName = async () => {
   let usersRef = firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid);
   let user = await usersRef.get();
   return user.data().username;
+};
+
+export const getUserType = async () => {
+  let usersRef = firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid);
+  console.log(firebase.auth().currentUser.uid);
+  let user = await usersRef.get();
+  return user.data().type;
 };
 
 export const getAvatar = async (userID) => {
