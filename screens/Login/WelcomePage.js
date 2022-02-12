@@ -42,11 +42,6 @@ export default function WelcomePage({ navigation }) {
             Zarejestruj się
           </DefText>
         </TouchableOpacity>
-        <TouchableOpacity style={{ marginTop: 48 }} onPress={() => handleAnonymousSignIn()}>
-          <DefText size={12} color="#ccc">
-            Zaloguj anonimowo
-          </DefText>
-        </TouchableOpacity>
       </View>
     </Screen>
   );

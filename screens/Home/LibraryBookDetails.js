@@ -106,6 +106,8 @@ export default function LibraryBookDetails({ navigation, route, ...props }) {
   const handleAddReadNow = (el) => {
     addReadNowBook(el.id, el.title, el.authors, el.description, el.thumbnail, el.pageCount);
     removeToReadBook(el.id);
+    setTimerOn(true);
+    updateLastReadBookID(route.params.data.id);
   };
 
   const handleReadNow = () => {
