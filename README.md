@@ -1,6 +1,12 @@
 # BooKing
 Mobile application for android platform created to store information about books read by a certain user. App can create statistics and store user's friends information
 
+### Used Technologies
+* React Native
+* Firebase
+* Expo
+* GoogleBooks API
+
 ### Setup Instructions
 
 #### System setup
